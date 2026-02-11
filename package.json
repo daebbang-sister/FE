@@ -1,0 +1,14 @@
+{
+  "name": "daebbang-sister",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "client": "pnpm --filter client",
+    "admin": "pnpm --filter admin"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.29.2"
+}
