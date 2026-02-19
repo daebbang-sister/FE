@@ -5,6 +5,12 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "isolatedModules": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@repo/ui": ["packages/ui/src"],
+      "@repo/types": ["packages/types/src"]
+    }
   }
 }
