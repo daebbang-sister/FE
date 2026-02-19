@@ -14,7 +14,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "typecheck": "tsc -b",
+    "typecheck:admin": "tsc -b apps/admin",
+    "typecheck:client": "tsc -b apps/client"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
