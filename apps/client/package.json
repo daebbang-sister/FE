@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "vitest run --config vitest.config.ts",
+    "test:tdd": "vitest --config vitest.config.ts"
   },
   "dependencies": {
     "next": "16.1.6",
