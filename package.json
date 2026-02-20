@@ -21,7 +21,10 @@
     "test:client": "pnpm --filter client test",
     "test:client:tdd": "pnpm --filter client test:tdd",
     "test:admin": "pnpm --filter admin test",
-    "test:admin:tdd": "pnpm --filter admin test:tdd"
+    "test:admin:tdd": "pnpm --filter admin test:tdd",
+    "typecheck": "tsc -b",
+    "typecheck:admin": "tsc -b apps/admin",
+    "typecheck:client": "tsc -b apps/client"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

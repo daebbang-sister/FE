@@ -65,6 +65,12 @@ importers:
 
   apps/admin:
     dependencies:
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       react:
         specifier: ^19.2.0
         version: 19.2.3
@@ -87,6 +93,12 @@ importers:
 
   apps/client:
     dependencies:
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       next:
         specifier: 16.1.6
         version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -109,6 +121,17 @@ importers:
       tailwindcss:
         specifier: ^4
         version: 4.1.18
+
+  packages/types: {}
+
+  packages/ui:
+    dependencies:
+      react:
+        specifier: ^19
+        version: 19.2.3
+      react-dom:
+        specifier: ^19
+        version: 19.2.3(react@19.2.3)
 
 packages:
 
