@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@source "../../apps/**/*.{js,ts,jsx,tsx,mdx,html}";
+@source "../../packages/**/*.{js,ts,jsx,tsx,mdx}";
+
+@theme {
+  --color-bg: #16a34a;
+}
