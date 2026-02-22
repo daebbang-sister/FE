@@ -1,0 +1,48 @@
+@utility title2 {
+  font-size: var(--text-24);
+}
+
+@utility title3 {
+  font-size: var(--text-20);
+}
+
+@utility body1 {
+  font-size: var(--text-16);
+}
+
+@utility body1-16 {
+  font-size: var(--text-16);
+  line-height: var(--leading-16);
+}
+
+@utility body1-bold {
+  font-size: var(--text-16);
+  font-weight: 700;
+}
+
+@utility body2 {
+  font-size: var(--text-14);
+}
+
+@utility body2-16 {
+  font-size: var(--text-14);
+  line-height: var(--leading-16);
+}
+
+@utility caption1 {
+  font-size: var(--text-14);
+}
+
+@utility caption1-16 {
+  font-size: var(--text-14);
+  line-height: var(--leading-16);
+}
+
+@utility caption2 {
+  font-size: var(--text-12);
+}
+
+@utility caption2-16 {
+  font-size: var(--text-12);
+  line-height: var(--leading-16);
+}

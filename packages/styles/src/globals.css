@@ -1,8 +1,19 @@
 @import "tailwindcss";
+@import "./index.css";
 
 @source "../../apps/**/*.{js,ts,jsx,tsx,mdx,html}";
 @source "../../packages/**/*.{js,ts,jsx,tsx,mdx}";
 
-@theme {
-  --color-bg: #16a34a;
+html {
+  font-family: var(--font-base);
+  letter-spacing: var(--tracking-tight-2);
+  font-weight: 400;
+  line-height: var(--leading-base);
+  color: var(--color-text-primary);
+}
+
+body {
+  background-color: var(--color-neutral-0);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
 }

@@ -1,0 +1,68 @@
+@theme {
+  /* text */
+  --font-base:
+    "Pretendard", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+
+  --tracking-tight-2: -0.02em;
+
+  --text-24: 24px;
+  --text-20: 20px;
+  --text-16: 16px;
+  --text-14: 14px;
+  --text-12: 12px;
+
+  --leading-12: 120%;
+  --leading-16: 160%;
+
+  /* color */
+  --color-text-primary: oklch(26.1% 0.030109 265);
+  --color-text-secondary: oklch(43% 0.021323 264.3);
+  --color-text-disabled: oklch(63.3% 0.018538 268.4);
+
+  --color-neutral-0: oklch(100% 0 0);
+  --color-neutral-100: oklch(98.2% 0.004121 271.4);
+  --color-neutral-200: oklch(96.4% 0.008291 271.3);
+  --color-neutral-300: oklch(92.4% 0.013336 262.4);
+  --color-neutral-700: oklch(38.5% 0.016683 262.3);
+  --color-neutral-800: oklch(27.2% 0.015961 264.3);
+  --color-neutral-900: oklch(23.9% 0.01664 264.2);
+  --color-neutral-1000: oklch(15.9% 0.015734 266.6);
+
+  --color-brand-100: oklch(98.5% 0.030589 98.9);
+  --color-brand-300: oklch(88.3% 0.172921 99.1);
+  --color-brand-700: oklch(90.9% 0.176177 100.4);
+
+  --color-danger-100: oklch(96.9% 0.014083 12);
+  --color-danger-200: oklch(59.1% 0.212301 23);
+  --color-danger-800: oklch(51.6% 0.183567 22.8);
+  --color-danger-900: oklch(44.2% 0.159181 23);
+
+  --color-green-200: oklch(56% 0.178175 143.7);
+
+  /* border */
+  --color-border-default: var(--color-neutral-300);
+  --color-border-focus: var(--color-text-primary);
+  --color-border-error: var(--color-danger-200);
+
+  /* radius */
+  --radius-16: 16px;
+
+  /* input */
+  --field-bg: var(--color-neutral-0);
+  --field-bg-disabled: var(--color-neutral-200);
+
+  --field-border: var(--color-border-default);
+  --field-border-focus: var(--color-border-focus);
+  --field-border-error: var(--color-border-error);
+
+  --field-text-default: var(--color-text-primary);
+  --field-placeholder: var(--color-text-disabled);
+
+  /* breakpoint */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}

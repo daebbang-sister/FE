@@ -1,9 +1,9 @@
-import "./App.css";
-
 function App() {
   return (
     <>
-      <div className="p-6 text-red-500 bg-bg font-bold">tailwind admin ok</div>
+      <div className="border border-border-default">
+        <p>프리텐다드</p>
+      </div>
     </>
   );
 }
