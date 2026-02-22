@@ -1,16 +1,13 @@
 @utility title2 {
   font-size: var(--text-24);
-  line-height: var(--leading-12);
 }
 
 @utility title3 {
   font-size: var(--text-20);
-  line-height: var(--leading-12);
 }
 
-@utility body1-12 {
+@utility body1 {
   font-size: var(--text-16);
-  line-height: var(--leading-12);
 }
 
 @utility body1-16 {
@@ -18,15 +15,13 @@
   line-height: var(--leading-16);
 }
 
-@utility body1-bold-12 {
+@utility body1-bold {
   font-size: var(--text-16);
-  line-height: var(--leading-12);
   font-weight: 700;
 }
 
-@utility body2-12 {
+@utility body2 {
   font-size: var(--text-14);
-  line-height: var(--leading-12);
 }
 
 @utility body2-16 {
@@ -34,9 +29,8 @@
   line-height: var(--leading-16);
 }
 
-@utility caption1-12 {
+@utility caption1 {
   font-size: var(--text-14);
-  line-height: var(--leading-12);
 }
 
 @utility caption1-16 {
@@ -44,9 +38,8 @@
   line-height: var(--leading-16);
 }
 
-@utility caption2-12 {
+@utility caption2 {
   font-size: var(--text-12);
-  line-height: var(--leading-12);
 }
 
 @utility caption2-16 {
