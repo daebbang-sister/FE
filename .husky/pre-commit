@@ -1,6 +1,21 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm exec lint-staged
-pnpm typecheck
+# pnpm exec lint-staged
+# pnpm typecheck
 # pnpm test
+
+pnpm exec lint-staged ||
+{
+  echo "❌ lint-staged 실패"
+  exit 1
+}
+
+pnpm typecheck ||
+{
+  echo "❌ typecheck 실패"
+  exit 1
+}
+
+
+echo "✅ pre-commit checks 성공"
