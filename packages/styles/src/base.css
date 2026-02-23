@@ -1,4 +1,18 @@
 @layer base {
+  html {
+    font-family: var(--font-base);
+    letter-spacing: var(--tracking-tight-2);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-normal);
+    color: var(--color-text-primary);
+  }
+
+  body {
+    background-color: var(--color-neutral-0);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
   button,
   select {
     cursor: pointer;
@@ -11,7 +25,7 @@
 
   html {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-gray-600) transparent;
+    scrollbar-color: var(--color-text-disabled) transparent;
   }
 
   html::-webkit-scrollbar {
@@ -20,7 +34,7 @@
   }
 
   html::-webkit-scrollbar-thumb {
-    background-color: var(--color-gray-600);
+    background-color: var(--color-text-disabled);
     border-radius: 3px;
   }
 

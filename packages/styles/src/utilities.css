@@ -1,48 +1,77 @@
 @utility title2 {
-  font-size: var(--text-24);
+  font-size: var(--text-title2);
 }
 
 @utility title3 {
-  font-size: var(--text-20);
+  font-size: var(--text-title3);
 }
 
 @utility body1 {
-  font-size: var(--text-16);
+  font-size: var(--text-body1);
 }
 
-@utility body1-16 {
-  font-size: var(--text-16);
-  line-height: var(--leading-16);
+@utility body1-loose {
+  font-size: var(--text-body1);
+  line-height: var(--line-loose);
 }
 
 @utility body1-bold {
-  font-size: var(--text-16);
-  font-weight: 700;
+  font-size: var(--text-body1);
+  font-weight: var(--font-weight-bold);
 }
 
 @utility body2 {
-  font-size: var(--text-14);
+  font-size: var(--text-body2);
 }
 
-@utility body2-16 {
-  font-size: var(--text-14);
-  line-height: var(--leading-16);
+@utility body2-loose {
+  font-size: var(--text-body2);
+  line-height: var(--line-loose);
 }
 
 @utility caption1 {
-  font-size: var(--text-14);
+  font-size: var(--text-caption1);
 }
 
-@utility caption1-16 {
-  font-size: var(--text-14);
-  line-height: var(--leading-16);
+@utility caption1-loose {
+  font-size: var(--text-caption1);
+  line-height: var(--line-loose);
 }
 
 @utility caption2 {
-  font-size: var(--text-12);
+  font-size: var(--text-caption2);
 }
 
-@utility caption2-16 {
-  font-size: var(--text-12);
-  line-height: var(--leading-16);
+@utility caption2-loose {
+  font-size: var(--text-caption2);
+  line-height: var(--line-loose);
+}
+
+@utility radius-16 {
+  border-radius: var(--radius-16);
+}
+
+@utility field {
+  background-color: var(--color-neutral-0);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-primary);
+
+  &::placeholder {
+    color: var(--color-text-disabled);
+  }
+
+  &:focus {
+    border-color: var(--color-border-focus);
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: var(--color-neutral-200);
+    color: var(--color-text-disabled);
+    cursor: not-allowed;
+  }
+}
+
+@utility field-error {
+  border-color: var(--color-border-error);
 }
