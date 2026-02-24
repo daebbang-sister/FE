@@ -46,7 +46,7 @@ export function Input({
     <div>
       <input
         id={id}
-        className={cn(inputVariants({ status, className }))}
+        className={cn(inputVariants({ status }), className)}
         disabled={status === "disabled"}
         aria-invalid={status === "error"}
         aria-describedby={describedBy}
