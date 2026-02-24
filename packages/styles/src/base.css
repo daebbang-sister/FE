@@ -5,6 +5,7 @@
     font-weight: var(--font-weight-regular);
     line-height: var(--line-normal);
     color: var(--color-text-primary);
+    font-size: var(--text-body1);
   }
 
   body {
