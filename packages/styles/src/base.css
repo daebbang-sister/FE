@@ -24,6 +24,13 @@
     cursor: pointer;
   }
 
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    outline: none;
+  }
+
   html {
     scrollbar-width: thin;
     scrollbar-color: var(--color-text-disabled) transparent;

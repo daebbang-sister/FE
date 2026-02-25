@@ -8,7 +8,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="min-h-screen">
-        <header className="h-25 w-full fixed top-0 bg-neutral-900">
+        <header className="h-25 w-full fixed top-0 bg-neutral-900 z-9999">
           Header
         </header>
         <main className="flex justify-center header-h">{children}</main>
