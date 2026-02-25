@@ -6,8 +6,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body className="min-h-screen">
+    <html lang="ko" suppressHydrationWarning>
+      <body className="min-h-screen" suppressHydrationWarning>
         <header className="h-25 w-full fixed top-0 bg-neutral-900">
           Header
         </header>
