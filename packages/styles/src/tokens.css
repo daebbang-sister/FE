@@ -52,6 +52,10 @@
   /* radius */
   --radius-16: 16px;
 
+  /* space */
+  --size-header-h: 99px;
+  --space-page-y: 64px;
+
   /* breakpoint */
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;

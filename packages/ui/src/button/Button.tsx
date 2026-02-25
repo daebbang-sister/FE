@@ -21,18 +21,12 @@ const buttonVariants = cva(
 );
 
 type ButtonProps = React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    width?: string;
-  };
+  VariantProps<typeof buttonVariants>;
 
-export function Button({ className, variant, width, ...props }: ButtonProps) {
+export function Button({ className, variant, ...props }: ButtonProps) {
   return (
     <button
-      className={cn(
-        buttonVariants({ variant }),
-        width ? width : "w-full",
-        className
-      )}
+      className={cn(buttonVariants({ variant }), "w-full", className)}
       {...props}
     />
   );

@@ -51,27 +51,10 @@
   border-radius: var(--radius-16);
 }
 
-@utility field {
-  background-color: var(--color-neutral-0);
-  border: 1px solid var(--color-border-default);
-  color: var(--color-text-primary);
-
-  &::placeholder {
-    color: var(--color-text-disabled);
-  }
-
-  &:focus {
-    border-color: var(--color-border-focus);
-    outline: none;
-  }
-
-  &:disabled {
-    background-color: var(--color-neutral-200);
-    color: var(--color-text-disabled);
-    cursor: not-allowed;
-  }
+@utility header-h {
+  margin-top: var(--size-header-h);
 }
 
-@utility field-error {
-  border-color: var(--color-border-error);
+@utility page-y {
+  margin-block: var(--space-page-y);
 }

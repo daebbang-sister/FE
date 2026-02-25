@@ -43,7 +43,7 @@ export function Input({
     [helperId, errorId].filter(Boolean).join(" ") || undefined;
 
   return (
-    <div>
+    <div className="w-full">
       <input
         id={id}
         className={cn(inputVariants({ status }), className)}
@@ -53,9 +53,9 @@ export function Input({
         {...props}
       />
 
-      <div className="mt-1.5">
+      <div>
         {helperMessage && (
-          <p id={helperId} className="caption1 text-text-disabled">
+          <p id={helperId} className="mt-1.5 caption1 text-text-disabled">
             {helperMessage}
           </p>
         )}
