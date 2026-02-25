@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+"use client";
+import { useState } from "react";
+import { cva } from "class-variance-authority";
 import { cn } from "../lib/utils";
 
 const tabVariants = cva("flex text-center", {
