@@ -1,0 +1,103 @@
+"use client";
+import { loginSchema } from "apps/client/src/features/auth/schemas/login.schema";
+import { Input } from "packages/ui/src";
+import { Button } from "packages/ui/src";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import Link from "next/link";
+
+type FormData = z.infer<typeof loginSchema>;
+
+export default function LoginPage() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
+    defaultValues: {
+      id: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    console.log("로그인 콘솔", data);
+  };
+
+  return (
+    <section className="w-97.5 max-97.5 page-y">
+      <h1 className="title2 mb-12 text-center">로그인</h1>
+      <form action="" onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
+              <label htmlFor="userId">아이디</label>
+              <Input
+                id="userId"
+                type="text"
+                placeholder="아이디를 입력하세요"
+                {...register("id")}
+                errorMessage={errors.id?.message}
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <label htmlFor="userPassword">비밀번호</label>
+              <Input
+                id="userPassword"
+                type="password"
+                placeholder="비밀번호를 입력하세요"
+                {...register("password")}
+                errorMessage={errors.password?.message}
+              />
+            </div>
+          </div>
+          <div className="text-text-disabled flex justify-between body2 mt-3">
+            <div className="flex gap-1.25">
+              <p>체크</p>
+              <p>아이디 저장</p>
+            </div>
+            <div>
+              <Link href={"/sign-up"}>회원가입</Link>
+              <span> I </span>
+              <Link href={"/find/"}>아이디 · 비밀번호 찾기</Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-9 mt-9">
+          <Button disabled={!isValid} variant="gray">
+            로그인
+          </Button>
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-neutral-300" />
+            <span className="text-sm text-neutral-300 body2">또는</span>
+            <div className="h-px flex-1 bg-neutral-300" />
+          </div>
+          <button
+            type="button"
+            className="
+    flex w-full items-center justify-center gap-2
+    rounded-xl bg-[#FEE500] px-4 py-3
+    font-bold text-black h-12.75
+    hover:brightness-95 active:brightness-90
+  "
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden
+            >
+              <path d="M10 2C4.9 2 1 5.3 1 9.2c0 2.5 1.7 4.7 4.2 6l-.6 2.4c-.1.4.3.7.7.5l2.8-1.8c.6.1 1.2.2 1.9.2 5.1 0 9-3.3 9-7.3S15.1 2 10 2z" />
+            </svg>
+            카카오 로그인
+          </button>
+        </div>
+      </form>
+    </section>
+  );
+}

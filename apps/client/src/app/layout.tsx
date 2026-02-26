@@ -6,9 +6,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body className="min-h-screen">
-        <header className="h-25 w-full fixed top-0 bg-neutral-900 z-9999">
+    <html lang="ko" suppressHydrationWarning>
+      <body className="min-h-screen" suppressHydrationWarning>
+        <header className="h-25 w-full fixed top-0 bg-neutral-900">
           Header
         </header>
         <main className="flex justify-center header-h">{children}</main>
