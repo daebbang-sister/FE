@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/utils";
@@ -23,6 +24,7 @@ type TabButtonProps = {
   tabs: string[];
   size?: "M" | "L";
   defaultIndex?: number;
+  className?: string;
   onChange?: (index: number) => void;
 };
 
@@ -30,6 +32,7 @@ export function TabButton({
   tabs,
   size = "M",
   defaultIndex = 0,
+  className,
   onChange,
 }: TabButtonProps) {
   const [selectedIndex, setSelectedIndex] = useState(defaultIndex);
@@ -50,7 +53,8 @@ export function TabButton({
             tabVariants({
               variant: index === selectedIndex ? "active" : "inactive",
               size,
-            })
+            }),
+            className
           )}
           onClick={() => handleClick(index)}
         >
