@@ -17,24 +17,14 @@ export const signUpSchema = z
       .min(8, "비밀번호는 8자 이상입니다.")
       .max(16, "비밀번호는 16자 이하입니다.")
       .superRefine((val, ctx) => {
-        const hasUpper = /[A-Z]/.test(val);
-        const hasLower = /[a-z]/.test(val);
         const hasLetter = /[A-Za-z]/.test(val);
         const hasNumber = /\d/.test(val);
         const hasSpecial = /[^A-Za-z0-9]/.test(val);
-        if (hasLetter && !(hasUpper && hasLower)) {
-          ctx.addIssue({
-            code: "custom",
-            message: "영문은 대소문자를 모두 포함해야 합니다.",
-          });
-          return;
-        }
         const count = [hasLetter, hasNumber, hasSpecial].filter(Boolean).length;
         if (count < 2) {
           ctx.addIssue({
             code: "custom",
-            message:
-              "영문 대소문자/숫자/특수문자 중 2가지 이상 조합해야 합니다.",
+            message: "영문/숫자/특수문자 중 2가지 이상 조합해야 합니다.",
           });
         }
       }),
