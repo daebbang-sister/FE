@@ -1,0 +1,44 @@
+name: Github Actions CI 자동화
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📂 Github Repository 파일 불러오기
+        uses: actions/checkout@v4
+
+      - name: 📦 pnpm 설치
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.29.2
+
+      - name: 🧩 node.js 설치하기
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - name: ✅ dependencies 설치
+        run: pnpm install --frozen-lockfile
+
+      - name: ✅ prettier 검증
+        run: pnpm format:check
+
+      - name: ✅ lint 검증
+        run: pnpm lint
+
+      - name: ✅ typecheck 검증
+        run: pnpm typecheck
