@@ -1,6 +1,6 @@
 export type Address = {
   alias: string | null;
-  zipCode: string;
-  address: string;
-  detailAddress: string;
+  zipCode: string | null;
+  address: string | null;
+  detailAddress: string | null;
 };
