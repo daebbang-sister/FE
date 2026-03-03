@@ -1,5 +1,10 @@
 import { Address } from "packages/types/src";
 
+export type UserLogin = {
+  id: string;
+  password: string;
+};
+
 export type UserSignUp = {
   name: string;
   loginId: string;
@@ -7,4 +12,15 @@ export type UserSignUp = {
   phoneNumber: string;
   email: string;
   address: Address;
+};
+
+export type UserFindId = {
+  name: string;
+  email: string;
+};
+
+export type UserFindPw = {
+  userId: string;
+  username: string;
+  userEmail: string;
 };

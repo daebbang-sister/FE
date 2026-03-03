@@ -6,6 +6,7 @@ import { Button, Input } from "packages/ui/src";
 import { z } from "zod";
 
 import { findPasswordSchema } from "apps/client/src/features/auth/schemas/find-password.schema";
+import { userFindPw } from "../api";
 
 type PasswordFormData = z.infer<typeof findPasswordSchema>;
 
@@ -14,14 +15,19 @@ export default function FindPasswordForm() {
     resolver: zodResolver(findPasswordSchema),
     mode: "onChange",
     defaultValues: {
-      id: "",
-      name: "",
-      email: "",
+      userId: "",
+      username: "",
+      userEmail: "",
     },
   });
 
-  const findPwOnSubmit = (data: PasswordFormData) => {
-    console.log("find password", data);
+  const findPwOnSubmit = async (data: PasswordFormData) => {
+    try {
+      const res = await userFindPw(data);
+      console.log("비밀번호 찾기", res);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -32,8 +38,8 @@ export default function FindPasswordForm() {
           <Input
             id="id"
             placeholder="아이디를 입력하세요"
-            {...pwForm.register("id")}
-            errorMessage={pwForm.formState.errors.id?.message}
+            {...pwForm.register("userId")}
+            errorMessage={pwForm.formState.errors.userId?.message}
           />
         </div>
 
@@ -42,8 +48,8 @@ export default function FindPasswordForm() {
           <Input
             id="find-pw-name"
             placeholder="이름을 입력하세요"
-            {...pwForm.register("name")}
-            errorMessage={pwForm.formState.errors.name?.message}
+            {...pwForm.register("username")}
+            errorMessage={pwForm.formState.errors.username?.message}
           />
         </div>
 
@@ -52,8 +58,8 @@ export default function FindPasswordForm() {
           <Input
             id="email"
             placeholder="이메일을 입력하세요"
-            {...pwForm.register("email")}
-            errorMessage={pwForm.formState.errors.email?.message}
+            {...pwForm.register("userEmail")}
+            errorMessage={pwForm.formState.errors.userEmail?.message}
           />
         </div>
       </div>

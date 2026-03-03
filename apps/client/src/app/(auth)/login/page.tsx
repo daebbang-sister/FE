@@ -1,15 +1,18 @@
 "use client";
 import { loginSchema } from "apps/client/src/features/auth/schemas/login.schema";
-import { Input } from "packages/ui/src";
-import { Button } from "packages/ui/src";
-import z from "zod";
+import { CheckBox, Input, Button } from "packages/ui/src";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import { useState } from "react";
+import { loginUser } from "apps/client/src/features/auth/api";
 
 type FormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const [rememberId, setRememberId] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -23,14 +26,24 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("로그인 콘솔", data);
+  const onSubmit = async (data: FormData) => {
+    try {
+      const res = await loginUser(data);
+      console.log("데이터 잘 들어감?", res);
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  function handleChecked(e: React.ChangeEvent<HTMLInputElement>) {
+    const checked = e.target.checked;
+    setRememberId(checked);
+  }
 
   return (
     <section className="w-97.5 max-97.5 page-y">
       <h1 className="title2 mb-12 text-center">로그인</h1>
-      <form action="" onSubmit={handleSubmit(onSubmit)}>
+      <form action="javascript:void(0)" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
@@ -56,7 +69,11 @@ export default function LoginPage() {
           </div>
           <div className="text-text-disabled flex justify-between body2 mt-3">
             <div className="flex gap-1.25">
-              <p>체크</p>
+              <CheckBox
+                id="rememberId"
+                checked={rememberId}
+                onChange={handleChecked}
+              />
               <p>아이디 저장</p>
             </div>
             <div>
