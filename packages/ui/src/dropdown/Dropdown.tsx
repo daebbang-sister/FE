@@ -19,6 +19,7 @@ export type DropdownProps = VariantProps<typeof dropDownVariants> & {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  menuWidth?: string;
 };
 
 const dropDownVariants = cva(
@@ -73,15 +74,16 @@ export function Dropdown({
   placeholder = "선택해주세요.",
   className,
   disabled = false,
+  menuWidth,
 }: DropdownProps) {
   const isDisabled = disabled || status === "disabled";
   const [selected, setSelected] = useState(defaultValue ?? "");
 
   return (
-    <div className="w-full">
+    <div>
       {name ? <input type="hidden" name={name} value={selected} /> : null}
 
-      <Menu as="div" className="relative w-full">
+      <Menu as="div" className="relative">
         <MenuButton
           disabled={isDisabled}
           className={cn(
@@ -108,7 +110,12 @@ export function Dropdown({
         </MenuButton>
 
         {!isDisabled && (
-          <MenuItems className="absolute left-0 top-full z-2 w-full bg-neutral-0 shadow-[0_2px_4px_rgba(0,0,0,0.08)] outline-none">
+          <MenuItems
+            className={cn(
+              "absolute right-0 top-full z-10 bg-neutral-0 shadow-[0_2px_4px_rgba(0,0,0,0.08)] outline-none focus:outline-none",
+              menuWidth ?? "w-full"
+            )}
+          >
             {options.map((option) => {
               const isSelected = selected === option.value;
 

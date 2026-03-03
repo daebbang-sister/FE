@@ -12,7 +12,7 @@ export default function Page() {
 
   return (
     <div>
-      <div className=" w-3xl space-y-6">
+      <div className=" w-3xl space-y-6 ">
         {/* ① 전체 disabled */}
         <Dropdown
           name="phonePrefixAllDisabled"
@@ -31,20 +31,22 @@ export default function Page() {
         />
 
         <Dropdown
-          name="phonePrefixPartialDisabled"
-          placeholder="사이즈를 선택해주세요."
+          name="defaultValue"
+          defaultValue="010"
           options={phoneOptions}
           size="L"
         />
       </div>
-      <div className=" w-sm space-y-6 ml-auto">
+      <div className="flex justify-between space-y-6 ml-auto bg-amber-400">
         {/* 정렬 */}
+        <div>ss</div>
         <Dropdown
           name="phonePrefixPartialDisabled"
           defaultValue="정렬"
           options={phoneOptions}
           size="M"
-          className="w-20 ml-auto"
+          className="w-auto ml-auto"
+          menuWidth="w-30 "
         />
       </div>
     </div>
