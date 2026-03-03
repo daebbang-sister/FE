@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Button, CheckBox, Input } from "packages/ui/src";
 import { useKakaoPostcode } from "apps/client/src/shared/hooks/useKakaoPostcode";
 import AuthInputLabel from "apps/client/src/features/auth/components/AuthInputLabel";
@@ -10,8 +11,17 @@ import {
   signUpSchema,
 } from "apps/client/src/features/auth/schemas/sign-up.schema";
 import { useState } from "react";
+import {
+  createUser,
+  smsSend,
+  smsVerify,
+} from "apps/client/src/features/auth/api";
+import { PhoneNumber, PhoneVerify } from "apps/client/src/features/auth/model";
+import { ApiError } from "apps/client/src/shared/lib/error";
+import { toUserSignUpRequest } from "apps/client/src/features/auth/mapper/user.mapper";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -53,36 +63,67 @@ export default function SignUpPage() {
     name: ["phone1", "phone2", "phone3"],
   });
   const [phone1, phone2, phone3] = phoneValues;
+  const fullPhone = [phone1, phone2, phone3].join("-");
 
   // 인증번호 발송
   const handleVerifyPhone = async () => {
     const isValid = await trigger(["phone1", "phone2", "phone3"]);
     if (!isValid) return;
-    const fullPhone = [phone1, phone2, phone3].join("-");
-    console.log(fullPhone); // 이부분 sms api 연동
-    alert("인증번호가 발송 되었습니다.");
-    setIsSmsSent(true);
+    const userData: PhoneNumber = { phoneNumber: fullPhone };
+    try {
+      await smsSend(userData);
+      alert("인증번호가 발송 되었습니다.");
+      setIsSmsSent(true);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
+    }
   };
 
   // 인증번호 검사
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
-  const handleVerifyCerti = () => {
+  const handleVerifyCerti = async () => {
     const certiValue = getValues("phoneCerti");
     if (!certiValue) return;
-    console.log("인증번호 확인:", certiValue); // 이부분 인증번호 검사 api 연동
-    // if (success) {
-    //   setIsPhoneVerified(true);
-    // }
+    const userData: PhoneVerify = {
+      phoneNumber: fullPhone,
+      authCode: certiValue,
+    };
+    try {
+      await smsVerify(userData);
+      alert("휴대폰 인증이 완료 되었습니다.");
+      setIsPhoneVerified(true);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
+    }
   };
 
   // 데이터 폼(회원가입) 제출
-  const onSubmitt = (data: SignUpFormValues) => {
+  const onSubmitt = async (data: SignUpFormValues) => {
     if (!isPhoneVerified) {
       alert("전화번호 인증을 완료해주세요.");
       return;
     }
-
-    console.log("폼 데이터", data);
+    const payload = toUserSignUpRequest(data);
+    try {
+      // console.log("폼 데이터", payload);
+      await createUser(payload);
+      alert("회원가입이 완료되었습니다.");
+      router.push("/");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
+    }
   };
 
   return (
