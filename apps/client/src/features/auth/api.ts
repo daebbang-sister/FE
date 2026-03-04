@@ -21,7 +21,7 @@ export const smsSend = async (
   userData: PhoneNumber
 ): Promise<ApiResponse<null>> => {
   return (await request<null>(
-    "/v1/sms/sends",
+    "/v1/sms/send",
     {
       method: "POST",
       body: JSON.stringify(userData),
