@@ -29,7 +29,7 @@ export default function FindPasswordForm() {
     try {
       const res = await userFindPw(data);
       alert(res.message);
-      router.replace("/");
+      router.replace("/login");
     } catch (err) {
       if (err instanceof ApiError) {
         alert(err.message);
