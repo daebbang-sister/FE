@@ -12,7 +12,7 @@ async function handleResponse<T>(
   if (!response.ok) {
     // response.ok란 200~299 코드인지 확인
     throw new ApiError({
-      message: "Network error",
+      message: "네트워크 연결이 불안정합니다. 잠시 후 다시 시도해 주세요.",
       status: String(response.status),
       code: "HTTP_ERROR",
     });
@@ -22,7 +22,7 @@ async function handleResponse<T>(
 
   // 3️⃣ 서버 응답 구조 검증
   if (!isApiResponse<T>(resData)) {
-    throw new Error("응답 형식이 올바르지 않습니다.");
+    throw new Error("서버 응답 형식이 올바르지 않습니다.");
   }
   // 4️⃣ 서버가 실패라고 명시한 경우
   if (!resData.success) {
@@ -44,19 +44,26 @@ export default async function request<T>(
 ): Promise<T | ApiResponse<T>> {
   let absoluteUrl = url;
 
-  if (
-    typeof url === "string" &&
-    !url.startsWith("http") &&
-    typeof window === "undefined"
-  ) {
-    absoluteUrl = new URL(url, env.APP_URL).toString();
+  // if (
+  //   typeof url === "string" &&
+  //   !url.startsWith("http") &&
+  //   typeof window === "undefined"
+  // ) {
+  //   absoluteUrl = new URL(url, env.API_URL).toString();
+  // }
+  if (typeof url === "string" && !url.startsWith("http")) {
+    if (!env.API_URL) {
+      throw new Error("env.API_URL이 설정되지 않았습니다.");
+    }
+    // 예: API_URL이 'https://api.com'이고 url이 '/v1/test'면 -> 'https://api.com/v1/test'
+    absoluteUrl = new URL(url, env.API_URL).toString();
   }
 
   const response = await fetch(absoluteUrl, {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      //   "Authorization": `Bearer ${token}`,
+      // "Authorization": `Bearer ${token}`,
       ...(options?.headers || {}),
     },
     ...options,

@@ -8,3 +8,10 @@ export type UserSignUp = {
   email: string;
   address: Address;
 };
+
+export type PhoneNumber = {
+  phoneNumber: string;
+};
+export type PhoneVerify = PhoneNumber & {
+  authCode: string;
+};
