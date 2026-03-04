@@ -15,7 +15,7 @@ export default function Page() {
       <div className=" w-3xl space-y-6 ">
         {/* ① 전체 disabled */}
         <Dropdown
-          name="phonePrefixAllDisabled"
+          id="phonePrefixAllDisabled"
           placeholder="선택"
           options={phoneOptions}
           status="disabled"
@@ -24,14 +24,14 @@ export default function Page() {
 
         {/* ② 016만 disabled */}
         <Dropdown
-          name="phonePrefixPartialDisabled"
+          id="phonePrefixPartialDisabled"
           placeholder="선택"
           options={phoneOptions}
           size="L"
         />
 
         <Dropdown
-          name="defaultValue"
+          id="defaultValue"
           defaultValue="010"
           options={phoneOptions}
           size="L"
@@ -41,7 +41,7 @@ export default function Page() {
         {/* 정렬 */}
         <div>ss</div>
         <Dropdown
-          name="phonePrefixPartialDisabled"
+          id="phonePrefixPartialDisabled"
           defaultValue="정렬"
           options={phoneOptions}
           size="M"
