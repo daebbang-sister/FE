@@ -14,7 +14,10 @@ type FormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const [rememberId, setRememberId] = useState(false);
+  const [rememberId, setRememberId] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("rememberId") === "true";
+  });
 
   const {
     register,
