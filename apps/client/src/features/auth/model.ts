@@ -15,8 +15,8 @@ export type UserSignUp = {
 };
 
 export type UserFindId = {
-  name: string;
-  email: string;
+  username: string;
+  userEmail: string;
 };
 
 export type UserFindPw = {

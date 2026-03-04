@@ -37,7 +37,10 @@ export const createUser = async (
 };
 
 export const userFindId = async (params: UserFindId) => {
-  const query = new URLSearchParams(params).toString();
+  const query = new URLSearchParams({
+    username: params.username,
+    userEmail: params.userEmail,
+  }).toString();
 
   return request(
     `/v1/users/find/id?${query}`,
