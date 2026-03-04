@@ -19,6 +19,13 @@ export type UserFindId = {
   userEmail: string;
 };
 
+export type FindIdResponse = {
+  userIds: {
+    id: string;
+    provider: string;
+  }[];
+};
+
 export type UserFindPw = {
   userId: string;
   username: string;
