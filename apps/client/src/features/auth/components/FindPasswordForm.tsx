@@ -6,6 +6,9 @@ import { Button, Input } from "packages/ui/src";
 import { z } from "zod";
 
 import { findPasswordSchema } from "apps/client/src/features/auth/schemas/find-password.schema";
+import { userFindPw } from "../api";
+import { ApiError } from "apps/client/src/shared/lib/error";
+import { useRouter } from "next/navigation";
 
 type PasswordFormData = z.infer<typeof findPasswordSchema>;
 
@@ -14,14 +17,26 @@ export default function FindPasswordForm() {
     resolver: zodResolver(findPasswordSchema),
     mode: "onChange",
     defaultValues: {
-      id: "",
-      name: "",
-      email: "",
+      userId: "",
+      username: "",
+      userEmail: "",
     },
   });
 
-  const findPwOnSubmit = (data: PasswordFormData) => {
-    console.log("find password", data);
+  const router = useRouter();
+
+  const findPwOnSubmit = async (data: PasswordFormData) => {
+    try {
+      const res = await userFindPw(data);
+      alert(res.message);
+      router.replace("/");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
+    }
   };
 
   return (
@@ -32,8 +47,8 @@ export default function FindPasswordForm() {
           <Input
             id="id"
             placeholder="아이디를 입력하세요"
-            {...pwForm.register("id")}
-            errorMessage={pwForm.formState.errors.id?.message}
+            {...pwForm.register("userId")}
+            errorMessage={pwForm.formState.errors.userId?.message}
           />
         </div>
 
@@ -42,8 +57,8 @@ export default function FindPasswordForm() {
           <Input
             id="find-pw-name"
             placeholder="이름을 입력하세요"
-            {...pwForm.register("name")}
-            errorMessage={pwForm.formState.errors.name?.message}
+            {...pwForm.register("username")}
+            errorMessage={pwForm.formState.errors.username?.message}
           />
         </div>
 
@@ -52,8 +67,8 @@ export default function FindPasswordForm() {
           <Input
             id="email"
             placeholder="이메일을 입력하세요"
-            {...pwForm.register("email")}
-            errorMessage={pwForm.formState.errors.email?.message}
+            {...pwForm.register("userEmail")}
+            errorMessage={pwForm.formState.errors.userEmail?.message}
           />
         </div>
       </div>

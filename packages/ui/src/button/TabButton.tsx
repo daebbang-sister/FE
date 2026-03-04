@@ -4,7 +4,7 @@ import { useState } from "react";
 import { cva } from "class-variance-authority";
 import { cn } from "../lib/utils";
 
-const tabVariants = cva("flex text-center", {
+const tabVariants = cva("text-center", {
   variants: {
     variant: {
       active: "text-text-primary border-b border-b-text-primary",
@@ -48,6 +48,7 @@ export function TabButton({
     <div className={containerClass}>
       {tabs.map((tab, index) => (
         <button
+          type="button"
           key={tab}
           className={cn(
             tabVariants({
