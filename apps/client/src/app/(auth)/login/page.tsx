@@ -5,17 +5,21 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginUser } from "apps/client/src/features/auth/api";
+import { ApiError } from "apps/client/src/shared/lib/error";
+import { useRouter } from "next/navigation";
 
 type FormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
   const [rememberId, setRememberId] = useState(false);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useForm<FormData>({
     resolver: zodResolver(loginSchema),
@@ -26,18 +30,46 @@ export default function LoginPage() {
     },
   });
 
+  useEffect(() => {
+    if (!rememberId) return;
+
+    const savedId = localStorage.getItem("saveId");
+    if (savedId) {
+      setValue("id", savedId, { shouldValidate: true });
+    }
+  }, [setValue, rememberId]);
+
   const onSubmit = async (data: FormData) => {
     try {
       const res = await loginUser(data);
-      console.log("데이터 잘 들어감?", res);
-    } catch (error) {
-      console.error(error);
+
+      if (rememberId) {
+        localStorage.setItem("saveId", data.id);
+      } else {
+        localStorage.removeItem("saveId");
+      }
+
+      alert(res.message);
+
+      router.replace("/");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
     }
   };
 
   function handleChecked(e: React.ChangeEvent<HTMLInputElement>) {
     const checked = e.target.checked;
     setRememberId(checked);
+
+    localStorage.setItem("rememberId", String(checked));
+
+    if (!checked) {
+      localStorage.removeItem("saveId");
+    }
   }
 
   return (

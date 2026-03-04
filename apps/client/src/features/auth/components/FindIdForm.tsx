@@ -7,6 +7,8 @@ import { z } from "zod";
 
 import { findIdSchema } from "apps/client/src/features/auth/schemas/find-id.schema";
 import { userFindId } from "../api";
+import { ApiError } from "apps/client/src/shared/lib/error";
+import { ApiResponse } from "packages/types/src";
 
 type IdFormData = z.infer<typeof findIdSchema>;
 
@@ -22,10 +24,21 @@ export default function FindIdForm() {
 
   const findIdOnSubmit = async (data: IdFormData) => {
     try {
-      const res = await userFindId(data);
-      console.log("아이디 찾기", res);
-    } catch (error) {
-      console.error(error);
+      const res = (await userFindId(data)) as ApiResponse<{
+        userIds: { id: string; provider: string }[];
+      }>;
+
+      const ids = res.data.userIds
+        .map((user) => `${user.id} (${user.provider})`)
+        .join("\n");
+
+      alert(`찾은 아이디:\n${ids}`);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
     }
   };
 
