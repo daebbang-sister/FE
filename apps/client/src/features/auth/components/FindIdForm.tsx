@@ -15,8 +15,8 @@ export default function FindIdForm() {
     resolver: zodResolver(findIdSchema),
     mode: "onChange",
     defaultValues: {
-      name: "",
-      email: "",
+      username: "",
+      userEmail: "",
     },
   });
 
@@ -37,8 +37,8 @@ export default function FindIdForm() {
           <Input
             id="find-id-name"
             placeholder="이름을 입력하세요"
-            {...idForm.register("name")}
-            errorMessage={idForm.formState.errors.name?.message}
+            {...idForm.register("username")}
+            errorMessage={idForm.formState.errors.username?.message}
           />
         </div>
 
@@ -47,8 +47,8 @@ export default function FindIdForm() {
           <Input
             id="find-id-email"
             placeholder="이메일을 입력하세요"
-            {...idForm.register("email")}
-            errorMessage={idForm.formState.errors.email?.message}
+            {...idForm.register("userEmail")}
+            errorMessage={idForm.formState.errors.userEmail?.message}
           />
         </div>
       </div>
