@@ -13,9 +13,11 @@ type DropdownOption = {
 };
 
 export type DropdownProps = VariantProps<typeof dropDownVariants> & {
-  name?: string;
+  id?: string;
   options: DropdownOption[];
   defaultValue?: string;
+  value?: string;
+  onChange?: (value: string) => void;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
@@ -68,20 +70,23 @@ const dropDownItemVariants = cva(
 export function Dropdown({
   status,
   size,
-  name,
+  id,
   options,
   defaultValue,
+  value,
+  onChange,
   placeholder = "선택해주세요.",
   className,
   disabled = false,
   menuWidth,
 }: DropdownProps) {
   const isDisabled = disabled || status === "disabled";
-  const [selected, setSelected] = useState(defaultValue ?? "");
+  const [internalValue, setInternalValue] = useState(defaultValue ?? "");
+  const selected = value !== undefined ? value : internalValue;
 
   return (
     <div>
-      {name ? <input type="hidden" name={name} value={selected} /> : null}
+      {id ? <input type="hidden" id={id} value={selected} /> : null}
 
       <Menu as="div" className="relative">
         <MenuButton
@@ -125,7 +130,12 @@ export function Dropdown({
                   as="button"
                   type="button"
                   disabled={option.disabled}
-                  onClick={() => setSelected(option.value)}
+                  onClick={() => {
+                    if (value === undefined) {
+                      setInternalValue(option.value);
+                    }
+                    onChange?.(option.value);
+                  }}
                   className={cn(
                     dropDownItemVariants({ size }),
                     isSelected && "text-text-primary cursor-not-allowed"

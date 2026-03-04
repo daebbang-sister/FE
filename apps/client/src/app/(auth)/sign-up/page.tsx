@@ -1,18 +1,19 @@
 "use client";
 
+import { useState } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { Button, CheckBox, Input } from "packages/ui/src";
+import { Button, CheckBox, Dropdown, Input } from "packages/ui/src";
 import { useKakaoPostcode } from "apps/client/src/shared/hooks/useKakaoPostcode";
 import AuthInputLabel from "apps/client/src/features/auth/components/AuthInputLabel";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
 import {
   SignUpFormValues,
   signUpSchema,
 } from "apps/client/src/features/auth/schemas/sign-up.schema";
-import { useState } from "react";
 import {
   createUser,
+  duplicationCheckId,
   smsSend,
   smsVerify,
 } from "apps/client/src/features/auth/api";
@@ -29,11 +30,41 @@ export default function SignUpPage() {
     setValue,
     getValues,
     control,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     mode: "onBlur",
   });
+
+  // 아이디 조회
+  const [verifiedUserId, setVerifiedUserId] = useState<string | null>(null);
+  const watchedUserId = useWatch({ control, name: "userId" });
+  const isIdVerified = watchedUserId === verifiedUserId;
+
+  const idCheck = async () => {
+    const userId = getValues("userId");
+    const isValid = await trigger("userId");
+    if (!isValid) return;
+
+    try {
+      const res = await duplicationCheckId(userId);
+      alert(res.message); // 이거
+      clearErrors("userId");
+      setVerifiedUserId(userId);
+    } catch (err) {
+      setVerifiedUserId(null);
+      if (err instanceof ApiError) {
+        setError("userId", {
+          type: "manual",
+          message: err.message,
+        });
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
+    }
+  };
 
   // 주소 조회
   const { openPostcode } = useKakaoPostcode();
@@ -55,6 +86,16 @@ export default function SignUpPage() {
     setValue("agree01", checked, { shouldValidate: true });
     setValue("agree02", checked, { shouldValidate: true });
   };
+
+  // 전화 번호 드롭다운
+  const phoneOptions = [
+    { label: "010", value: "010" },
+    { label: "011", value: "011" },
+    { label: "016", value: "016" },
+    { label: "017", value: "017" },
+    { label: "018", value: "018" },
+    { label: "019", value: "019" },
+  ];
 
   // 전화번호 인증
   const [isSmsSent, setIsSmsSent] = useState(false); // 버튼 변경
@@ -107,6 +148,13 @@ export default function SignUpPage() {
 
   // 데이터 폼(회원가입) 제출
   const onSubmitt = async (data: SignUpFormValues) => {
+    if (!isIdVerified) {
+      setError("userId", {
+        type: "manual",
+        message: "아이디 중복 확인을 해주세요.",
+      });
+      return;
+    }
     if (!isPhoneVerified) {
       alert("전화번호 인증을 완료해주세요.");
       return;
@@ -155,7 +203,11 @@ export default function SignUpPage() {
               id="userId"
               type="text"
               placeholder="아이디를 입력하세요."
-              helperMessage="(4-16자 영문 소문자 또는 숫자 조합, 특수기호 제외)"
+              helperMessage={
+                isIdVerified
+                  ? undefined
+                  : "(4-16자 영문 소문자 또는 숫자 조합, 특수기호 제외)"
+              }
               status={errors.userId ? "error" : "default"}
               errorMessage={errors.userId?.message}
               {...register("userId")}
@@ -164,10 +216,16 @@ export default function SignUpPage() {
               type="button"
               variant="black"
               className="max-w-[90px] h-13.5"
+              onClick={idCheck}
             >
               중복 확인
             </Button>
           </div>
+          {isIdVerified && (
+            <p className="caption1 text-green-200 mt-1.5">
+              중복 확인이 완료되었습니다.
+            </p>
+          )}
         </div>
 
         {/* 비밀번호 */}
@@ -209,15 +267,20 @@ export default function SignUpPage() {
             연락처
           </AuthInputLabel>
           <div className="grid grid-cols-4 gap-2.5 mb-3">
-            <Input
-              id="phone1"
-              type="text"
-              inputMode="numeric"
-              maxLength={3}
+            <Controller
+              name="phone1"
+              control={control}
               defaultValue="010"
-              // disabled={isPhoneVerified}
-              status={errors.phone1 ? "error" : "default"}
-              {...register("phone1")}
+              render={({ field }) => (
+                <Dropdown
+                  id="phone1"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="010"
+                  options={phoneOptions}
+                  size="L"
+                />
+              )}
             />
             <Input
               id="phone2"

@@ -42,3 +42,15 @@ export const smsVerify = async (
     "full"
   )) as ApiResponse<null>;
 };
+
+export const duplicationCheckId = async (
+  loginId: string
+): Promise<ApiResponse<null>> => {
+  return (await request<null>(
+    `/v1/users/check/id?loginId=${encodeURIComponent(loginId)}`,
+    {
+      method: "GET",
+    },
+    "full"
+  )) as ApiResponse<null>;
+};
