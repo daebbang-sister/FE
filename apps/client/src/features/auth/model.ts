@@ -24,3 +24,11 @@ export type UserFindPw = {
   username: string;
   userEmail: string;
 };
+
+export type PhoneNumber = {
+  phoneNumber: string;
+};
+
+export type PhoneVerify = PhoneNumber & {
+  authCode: string;
+};

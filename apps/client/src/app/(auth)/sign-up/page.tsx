@@ -1,16 +1,41 @@
 "use client";
 
-import { Button, Input } from "packages/ui/src";
+import { useRouter } from "next/navigation";
+import { Button, CheckBox, Input } from "packages/ui/src";
 import { useKakaoPostcode } from "apps/client/src/shared/hooks/useKakaoPostcode";
 import AuthInputLabel from "apps/client/src/features/auth/components/AuthInputLabel";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   SignUpFormValues,
   signUpSchema,
-} from "apps/client/src/features/auth/schemas/signUp.schema";
+} from "apps/client/src/features/auth/schemas/sign-up.schema";
+import { useState } from "react";
+import {
+  createUser,
+  smsSend,
+  smsVerify,
+} from "apps/client/src/features/auth/api";
+import { PhoneNumber, PhoneVerify } from "apps/client/src/features/auth/model";
+import { ApiError } from "apps/client/src/shared/lib/error";
+import { toUserSignUpRequest } from "apps/client/src/features/auth/mapper/user.mapper";
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    setValue,
+    getValues,
+    control,
+    formState: { errors },
+  } = useForm<SignUpFormValues>({
+    resolver: zodResolver(signUpSchema),
+    mode: "onBlur",
+  });
+
+  // 주소 조회
   const { openPostcode } = useKakaoPostcode();
   const handleSearchAddress = () => {
     openPostcode((data) => {
@@ -19,19 +44,86 @@ export default function SignUpPage() {
     });
   };
 
-  const {
-    register,
-    handleSubmit,
-    trigger,
-    setValue,
-    formState: { errors },
-  } = useForm<SignUpFormValues>({
-    resolver: zodResolver(signUpSchema),
-    mode: "onBlur",
+  // 약관 동의
+  const agreeValues = useWatch({
+    control,
+    name: ["agree01", "agree02"],
   });
+  const [agree01, agree02] = agreeValues;
+  const isAllChecked = agree01 && agree02;
+  const handleAllAgree = (checked: boolean) => {
+    setValue("agree01", checked, { shouldValidate: true });
+    setValue("agree02", checked, { shouldValidate: true });
+  };
 
-  const onSubmitt = (data: SignUpFormValues) => {
-    console.log("폼 데이터", data);
+  // 전화번호 인증
+  const [isSmsSent, setIsSmsSent] = useState(false); // 버튼 변경
+  const phoneValues = useWatch({
+    control,
+    name: ["phone1", "phone2", "phone3"],
+  });
+  const [phone1, phone2, phone3] = phoneValues;
+  const fullPhone = [phone1, phone2, phone3].join("-");
+
+  // 인증번호 발송
+  const handleVerifyPhone = async () => {
+    const isValid = await trigger(["phone1", "phone2", "phone3"]);
+    if (!isValid) return;
+    const userData: PhoneNumber = { phoneNumber: fullPhone };
+    try {
+      await smsSend(userData);
+      alert("인증번호가 발송 되었습니다.");
+      setIsSmsSent(true);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
+    }
+  };
+
+  // 인증번호 검사
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const handleVerifyCerti = async () => {
+    const certiValue = getValues("phoneCerti");
+    if (!certiValue) return;
+    const userData: PhoneVerify = {
+      phoneNumber: fullPhone,
+      authCode: certiValue,
+    };
+    try {
+      await smsVerify(userData);
+      alert("휴대폰 인증이 완료 되었습니다.");
+      setIsPhoneVerified(true);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
+    }
+  };
+
+  // 데이터 폼(회원가입) 제출
+  const onSubmitt = async (data: SignUpFormValues) => {
+    if (!isPhoneVerified) {
+      alert("전화번호 인증을 완료해주세요.");
+      return;
+    }
+    const payload = toUserSignUpRequest(data);
+    try {
+      // console.log("폼 데이터", payload);
+      await createUser(payload);
+      alert("회원가입이 완료되었습니다.");
+      router.push("/");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("알 수 없는 오류가 발생했습니다.");
+      }
+    }
   };
 
   return (
@@ -117,33 +209,58 @@ export default function SignUpPage() {
             연락처
           </AuthInputLabel>
           <div className="grid grid-cols-4 gap-2.5 mb-3">
-            <Input id="phone" type="number" placeholder="010" />
             <Input
-              id="phone"
+              id="phone1"
+              type="text"
+              inputMode="numeric"
+              maxLength={3}
+              defaultValue="010"
+              // disabled={isPhoneVerified}
+              status={errors.phone1 ? "error" : "default"}
+              {...register("phone1")}
+            />
+            <Input
+              id="phone2"
               type="text"
               inputMode="numeric"
               maxLength={4}
-              onChange={(e) => {
-                e.target.value = e.target.value.replace(/\D/g, "");
-              }}
+              // disabled={isPhoneVerified}
+              status={errors.phone1 ? "error" : "default"}
+              {...register("phone2", {
+                onChange: (e) => {
+                  e.target.value = e.target.value.replace(/\D/g, "");
+                },
+              })}
             />
             <Input
-              id="phone"
+              id="phone3"
               type="text"
               inputMode="numeric"
               maxLength={4}
-              onChange={(e) => {
-                e.target.value = e.target.value.replace(/\D/g, "");
-              }}
+              // disabled={isPhoneVerified}
+              status={errors.phone1 ? "error" : "default"}
+              {...register("phone3", {
+                onChange: (e) => {
+                  e.target.value = e.target.value.replace(/\D/g, "");
+                },
+              })}
             />
-            <Button type="button" variant="white">
-              인증
-            </Button>
+            {!isSmsSent ? (
+              <Button type="button" variant="white" onClick={handleVerifyPhone}>
+                인증
+              </Button>
+            ) : (
+              <Button type="button" variant="black" onClick={handleVerifyCerti}>
+                확인
+              </Button>
+            )}
           </div>
           <Input
-            id="certification"
+            id="phoneCerti"
             type="text"
             placeholder="인증번호를 입력하세요."
+            {...register("phoneCerti")}
+            errorMessage={errors.phone1?.message}
           />
         </div>
 
@@ -193,8 +310,38 @@ export default function SignUpPage() {
           />
         </div>
 
-        <div>약관 동의</div>
-        <Button type="submit" variant="gray">
+        {/* 약관 동의 */}
+        <div>
+          <div className="flex items-center justify-between">
+            <AuthInputLabel htmlFor="agreement">약관 동의</AuthInputLabel>
+            <div className="flex items-center gap-1.25 mb-3">
+              <CheckBox
+                id="agree-all"
+                checked={!!isAllChecked}
+                onChange={(e) => handleAllAgree(e.target.checked)}
+              />
+              <p>모든 약관 동의</p>
+            </div>
+          </div>
+          <ul className="flex flex-col gap-3">
+            <li className="flex gap-1.25">
+              <CheckBox id="agree01" {...register("agree01")} />
+              이용약관 동의 [필수]
+            </li>
+            <li className="flex gap-1.25">
+              <CheckBox id="agree02" {...register("agree02")} />
+              개인정보 수집 및 이용 [필수]
+            </li>
+            {/* 에러 메시지 */}
+            {(errors.agree01 || errors.agree02) && (
+              <p className="caption1 text-danger-200 mt-1.5">
+                {errors.agree01?.message || errors.agree02?.message}
+              </p>
+            )}
+          </ul>
+        </div>
+
+        <Button type="submit" variant="gray" className="mt-12">
           회원가입
         </Button>
       </form>

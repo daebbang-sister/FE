@@ -1,7 +1,14 @@
 // auth.service.ts
 import request from "../../shared/lib/request";
 import { ApiResponse } from "packages/types/src";
-import { UserFindId, UserFindPw, UserLogin, UserSignUp } from "./model";
+import {
+  UserFindId,
+  UserFindPw,
+  UserLogin,
+  UserSignUp,
+  PhoneNumber,
+  PhoneVerify,
+} from "./model";
 
 export const loginUser = async (
   userData: UserLogin
@@ -27,7 +34,6 @@ export const createUser = async (
     },
     "full"
   )) as ApiResponse<null>;
-  // 끝부분에 as를 붙여서 "이건 무조건 ApiResponse 형태야"라고 명시합니다.
 };
 
 export const userFindId = async (params: UserFindId) => {
@@ -55,14 +61,28 @@ export const userFindPw = async (
   )) as ApiResponse<null>;
 };
 
-// 오버라이드 형식
-// function request<T>(url: string, options?: RequestInit, mode?: "data"): Promise<T>;
-// function request<T>(url: string, options?: RequestInit, mode?: "full"): Promise<ApiResponse<T>>;
-// // 실제 구현부
-// async function request<T>(
-//   url: string,
-//   options?: RequestInit,
-//   mode: "data" | "full" = "data"
-// ) {
-//   // ... 기존 코드 동일 ...
-// }
+export const smsSend = async (
+  userData: PhoneNumber
+): Promise<ApiResponse<null>> => {
+  return (await request<null>(
+    "/v1/sms/send",
+    {
+      method: "POST",
+      body: JSON.stringify(userData),
+    },
+    "full"
+  )) as ApiResponse<null>;
+};
+
+export const smsVerify = async (
+  userData: PhoneVerify
+): Promise<ApiResponse<null>> => {
+  return (await request<null>(
+    "/v1/sms/verify",
+    {
+      method: "POST",
+      body: JSON.stringify(userData),
+    },
+    "full"
+  )) as ApiResponse<null>;
+};

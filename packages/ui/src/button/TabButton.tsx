@@ -48,6 +48,7 @@ export function TabButton({
     <div className={containerClass}>
       {tabs.map((tab, index) => (
         <button
+          type="button"
           key={tab}
           className={cn(
             tabVariants({
