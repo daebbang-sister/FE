@@ -6,6 +6,7 @@ import { Button, Input } from "packages/ui/src";
 import { z } from "zod";
 
 import { findIdSchema } from "apps/client/src/features/auth/schemas/find-id.schema";
+import { userFindId } from "../api";
 
 type IdFormData = z.infer<typeof findIdSchema>;
 
@@ -15,14 +16,17 @@ export default function FindIdForm() {
     mode: "onChange",
     defaultValues: {
       name: "",
-      phone1: "",
-      phone2: "",
-      phone3: "",
+      email: "",
     },
   });
 
-  const findIdOnSubmit = (data: IdFormData) => {
-    console.log("find id", data);
+  const findIdOnSubmit = async (data: IdFormData) => {
+    try {
+      const res = await userFindId(data);
+      console.log("아이디 찾기", res);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -39,43 +43,13 @@ export default function FindIdForm() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <label>전화번호</label>
-          <div className="flex gap-2.5">
-            <Input
-              id="phone1"
-              placeholder="통신사"
-              {...idForm.register("phone1")}
-              errorMessage={idForm.formState.errors.phone1?.message}
-            />
-
-            <Input
-              id="phone2"
-              placeholder="0000"
-              inputMode="numeric"
-              maxLength={4}
-              {...idForm.register("phone2")}
-              onInput={(e) =>
-                (e.currentTarget.value = e.currentTarget.value.replace(
-                  /[^0-9]/g,
-                  ""
-                ))
-              }
-            />
-
-            <Input
-              id="phone3"
-              placeholder="0000"
-              inputMode="numeric"
-              maxLength={4}
-              {...idForm.register("phone3")}
-              onInput={(e) =>
-                (e.currentTarget.value = e.currentTarget.value.replace(
-                  /[^0-9]/g,
-                  ""
-                ))
-              }
-            />
-          </div>
+          <label htmlFor="email">이메일</label>
+          <Input
+            id="find-id-email"
+            placeholder="이메일을 입력하세요"
+            {...idForm.register("email")}
+            errorMessage={idForm.formState.errors.email?.message}
+          />
         </div>
       </div>
 
