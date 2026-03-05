@@ -1,0 +1,126 @@
+name: gemini pr review (opt-in)
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, ready_for_review]
+    paths:
+      - "apps/**"
+      - "packages/**"
+      - ".github/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  gemini-review:
+    if: contains(github.event.pull_request.labels.*.name, 'ai-review')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📂 Github Repository 파일 불러오기
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 pnpm 설치
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.29.2
+
+      - name: 🧩 node.js 설치하기
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: ✅ dependencies 설치 (minimal)
+        run: pnpm add -D @google/generative-ai
+
+      - name: 🧾 PR diff 가져오기
+        id: diff
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+
+            const res = await github.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              mediaType: { format: 'diff' },
+            });
+
+            const diffText = typeof res.data === 'string' ? res.data : '';
+            core.setOutput('diff', diffText);
+            core.setOutput('diff_len', String(diffText.length));
+
+      - name: 🛑 diff 너무 크면 스킵 (비용 보호)
+        if: ${{ steps.diff.outputs.diff_len > 80000 }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const msg =
+              "🤖 Gemini 자동 리뷰를 건너뛰었어요.\n\n" +
+              "- PR diff가 너무 커서(> 80,000 chars) 토큰/비용 위험이 큼\n" +
+              "- PR을 쪼개서 올리거나 핵심 변경만 먼저 올려줘!\n";
+            await github.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: msg,
+            });
+
+      - name: 🤖 Gemini 리뷰 작성 (요약 코멘트)
+        if: ${{ steps.diff.outputs.diff_len <= 80000 }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { GoogleGenerativeAI } = await import("@google/generative-ai");
+            const pr = context.payload.pull_request;
+
+            const diff = `${{ toJson(steps.diff.outputs.diff) }}`;
+
+            // ✅ Gemini로 보내는 diff도 잘라서 비용 최소화
+            const MAX_CHARS = 60000;
+            const sliced = diff.length > MAX_CHARS ? diff.slice(0, MAX_CHARS) : diff;
+
+            const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+            const prompt =
+              "You are a senior frontend reviewer. Review this PR diff.\n" +
+              "Project: Next.js + TypeScript monorepo (apps/, packages/).\n\n" +
+              "Write in Korean.\n" +
+              "Return markdown with:\n" +
+              "1) 요약(1~3줄)\n" +
+              "2) 위험/버그 가능성(우선순위)\n" +
+              "3) 개선 제안(실행 가능한 것 위주)\n" +
+              "4) 테스트/엣지케이스 체크리스트\n\n" +
+              "No nitpicks about formatting.\n\n" +
+              "=== DIFF START ===\n" + sliced + "\n=== DIFF END ===\n";
+
+            const result = await model.generateContent(prompt);
+            const text = result.response.text();
+
+            const body =
+              "## 🤖 Gemini 자동 코드리뷰 (opt-in)\n" +
+              "> 실행 조건: PR에 `ai-review` 라벨이 있을 때만 실행\n" +
+              "> 비용 최소화를 위해 diff 일부만 전달\n\n" +
+              text;
+
+            await github.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body,
+            });
