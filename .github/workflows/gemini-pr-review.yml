@@ -20,7 +20,6 @@ permissions:
 
 jobs:
   gemini-review:
-    if: contains(github.event.pull_request.labels.*.name, 'ai-review')
     runs-on: ubuntu-latest
 
     steps:
@@ -41,7 +40,7 @@ jobs:
           cache: pnpm
 
       - name: ✅ dependencies 설치 (minimal)
-        run: pnpm add -D @google/generative-ai
+        run: pnpm add -Dw @google/generative-ai
 
       - name: 🧾 PR diff 가져오기
         id: diff
