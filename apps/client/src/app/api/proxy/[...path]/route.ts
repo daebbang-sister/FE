@@ -39,6 +39,18 @@ function isAllowedPath(path: string) {
   return ALLOWED_PREFIX.some((p) => path.startsWith(p));
 }
 
+const hopByHopHeaders = new Set([
+  "connection",
+  "keep-alive",
+  "proxy-authenticate",
+  "proxy-authorization",
+  "te",
+  "trailer",
+  "transfer-encoding",
+  "upgrade",
+  "content-length",
+]);
+
 export async function handler(req: NextRequest, ctx: Ctx) {
   if (!API_ORIGIN) {
     console.error("[proxy] API_ORIGIN is missing");
@@ -92,18 +104,24 @@ export async function handler(req: NextRequest, ctx: Ctx) {
   if (location && [301, 302, 303, 307, 308].includes(upstream.status)) {
     let nextLocation = location;
 
+    const api = new URL(API_ORIGIN);
+
     try {
-      const loc = new URL(location);
-      const api = new URL(API_ORIGIN);
-      if (loc.origin === api.origin) {
+      const loc = new URL(location, api);
+
+      if (loc.host === api.host && isAllowedPath(loc.pathname)) {
         nextLocation = `/api/proxy${loc.pathname}${loc.search}`;
       }
     } catch {
       nextLocation = location;
     }
 
+    const redirectUrl = nextLocation.startsWith("/")
+      ? new URL(nextLocation, req.nextUrl.origin)
+      : nextLocation;
+
     return NextResponse.redirect(
-      nextLocation,
+      redirectUrl,
       upstream.status as 301 | 302 | 303 | 307 | 308
     );
   }
@@ -112,7 +130,10 @@ export async function handler(req: NextRequest, ctx: Ctx) {
   const res = new NextResponse(data, { status: upstream.status });
 
   upstream.headers.forEach((value, key) => {
-    if (key.toLowerCase() === "set-cookie") {
+    const k = key.toLowerCase();
+    if (hopByHopHeaders.has(k)) return;
+
+    if (k === "set-cookie") {
       res.headers.append("set-cookie", value);
     } else {
       res.headers.set(key, value);
