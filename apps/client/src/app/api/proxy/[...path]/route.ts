@@ -59,7 +59,7 @@ export async function handler(req: NextRequest, ctx: Ctx) {
     );
   }
 
-  const targetUrl = new URL(`${API_ORIGIN}${pathname}`);
+  const targetUrl = new URL(pathname, API_ORIGIN);
   targetUrl.search = req.nextUrl.search;
 
   const method = req.method.toUpperCase();
