@@ -82,7 +82,7 @@ jobs:
           const sliced = diff.length > MAX_CHARS ? diff.slice(0, MAX_CHARS) : diff;
 
           const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-          const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+          const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
 
           const prompt =
             "You are a senior frontend reviewer. Review this PR diff.\n" +
