@@ -137,6 +137,9 @@ export default function LoginPage() {
           </div>
           <button
             type="button"
+            onClick={() => {
+              window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth2/authorization/kakao`;
+            }}
             className="
     flex w-full items-center justify-center gap-2
     rounded-xl bg-[#FEE500] px-4 py-3
