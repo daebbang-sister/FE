@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
 import { loginUser } from "apps/client/src/features/auth/api";
 import { ApiError } from "apps/client/src/shared/lib/error";
@@ -12,11 +13,16 @@ import { useRouter } from "next/navigation";
 
 type FormData = z.infer<typeof loginSchema>;
 
+const STORAGE_KEYS = {
+  REMEMBER_ID: "login_remember_id",
+  SAVED_ID: "login_saved_id",
+} as const;
+
 export default function LoginPage() {
   const router = useRouter();
   const [rememberId, setRememberId] = useState(() => {
     if (typeof window === "undefined") return false;
-    return localStorage.getItem("rememberId") === "true";
+    return localStorage.getItem(STORAGE_KEYS.REMEMBER_ID) === "true";
   });
 
   const {
@@ -36,7 +42,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (!rememberId) return;
 
-    const savedId = localStorage.getItem("saveId");
+    const savedId = localStorage.getItem(STORAGE_KEYS.SAVED_ID);
     if (savedId) {
       setValue("id", savedId, { shouldValidate: true });
     }
@@ -47,9 +53,9 @@ export default function LoginPage() {
       const res = await loginUser(data);
 
       if (rememberId) {
-        localStorage.setItem("saveId", data.id);
+        localStorage.setItem(STORAGE_KEYS.SAVED_ID, data.id);
       } else {
-        localStorage.removeItem("saveId");
+        localStorage.removeItem(STORAGE_KEYS.SAVED_ID);
       }
 
       alert(res.message);
@@ -64,27 +70,28 @@ export default function LoginPage() {
     }
   };
 
-  function handleChecked(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChecked(e: ChangeEvent<HTMLInputElement>) {
     const checked = e.target.checked;
     setRememberId(checked);
 
-    localStorage.setItem("rememberId", String(checked));
+    localStorage.setItem(STORAGE_KEYS.REMEMBER_ID, String(checked));
 
     if (!checked) {
-      localStorage.removeItem("saveId");
+      localStorage.removeItem(STORAGE_KEYS.SAVED_ID);
+      setValue("id", "", { shouldValidate: true });
     }
   }
 
   return (
     <section className="w-97.5 max-97.5 page-y">
       <h1 className="title2 mb-12 text-center">로그인</h1>
-      <form action="javascript:void(0)" onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
-              <label htmlFor="userId">아이디</label>
+              <label htmlFor="id">아이디</label>
               <Input
-                id="userId"
+                id="id"
                 type="text"
                 placeholder="아이디를 입력하세요"
                 {...register("id")}
@@ -92,9 +99,9 @@ export default function LoginPage() {
               />
             </div>
             <div className="flex flex-col gap-3">
-              <label htmlFor="userPassword">비밀번호</label>
+              <label htmlFor="password">비밀번호</label>
               <Input
-                id="userPassword"
+                id="password"
                 type="password"
                 placeholder="비밀번호를 입력하세요"
                 {...register("password")}
