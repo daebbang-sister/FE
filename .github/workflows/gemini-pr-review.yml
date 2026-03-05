@@ -37,7 +37,7 @@ jobs:
           node-version: "22"
           cache: pnpm
 
-      - name: ✅ dependencies 설치
+      - name: ✅ dependencies 설치 (minimal)
         run: pnpm add -Dw @google/generative-ai
 
       - name: 🧾 PR diff 파일로 저장
@@ -52,7 +52,7 @@ jobs:
             -o pr.diff
           echo "diff_len=$(wc -c < pr.diff)" >> $GITHUB_OUTPUT
 
-      - name: 🛑 diff 너무 크면 스킵
+      - name: 🛑 diff 너무 크면 스킵 (비용 보호)
         if: ${{ steps.diff.outputs.diff_len > 80000 }}
         uses: actions/github-script@v7
         with:
@@ -63,12 +63,12 @@ jobs:
               repo: context.repo.repo,
               issue_number: pr.number,
               body:
-                "🤖 Gemini 자동 리뷰를 건너뛰었습니다.\n\n" +
-                "- PR diff가 너무 커서(> 80,000 chars) 비용 위험이 있습니다.\n" +
-                "- PR을 나눠서 올리거나 변경 범위를 줄여주세요.",
+                "🤖 Gemini 자동 리뷰를 건너뛰었어요.\n\n" +
+                "- PR diff가 너무 커서(> 80,000 chars) 토큰/비용 위험이 큼\n" +
+                "- PR을 쪼개서 올리거나 변경 범위를 줄여줘!\n",
             });
 
-      - name: 🤖 Gemini 리뷰 생성
+      - name: 🤖 Gemini 리뷰 생성 (node)
         if: ${{ steps.diff.outputs.diff_len <= 80000 }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -78,49 +78,42 @@ jobs:
           const { GoogleGenerativeAI } = require("@google/generative-ai");
 
           const diff = fs.readFileSync("pr.diff", "utf8");
-
           const MAX_CHARS = 60000;
           const sliced = diff.length > MAX_CHARS ? diff.slice(0, MAX_CHARS) : diff;
 
           const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-          const model = genAI.getGenerativeModel({
-            model: "models/gemini-2.0-flash",
-            generationConfig: {
-              maxOutputTokens: 800
-            }
-          });
+          const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
 
           const prompt =
-            "You are a senior frontend reviewer.\n" +
-            "Project: Next.js + TypeScript monorepo.\n\n" +
+            "You are a senior frontend code reviewer.\n" +
+            "Project: Next.js + TypeScript monorepo (apps/, packages/).\n\n" +
             "Write in Korean.\n" +
-            "Keep the review very short.\n\n" +
-            "Format:\n" +
-            "요약: 한 줄\n" +
-            "문제:\n" +
-            "- 최대 3개\n" +
-            "개선:\n" +
-            "- 최대 3개\n\n" +
+            "Keep the review short and practical.\n\n" +
+            "Return markdown using this format:\n" +
+            "요약: 한 줄\n\n" +
+            "주요 문제:\n" +
+            "- 최대 3개 (각 1~2줄)\n\n" +
+            "개선 제안:\n" +
+            "- 최대 3개 (간단하게)\n\n" +
+            "Rules:\n" +
+            "- 전체 리뷰는 10줄 이내\n" +
+            "- 실제 버그나 구조적 문제만 언급\n" +
+            "- 사소한 스타일/포맷팅 지적 금지\n\n" +
             "=== DIFF START ===\n" +
             sliced +
             "\n=== DIFF END ===";
 
-          model.generateContent(prompt)
-            .then((result) => {
-              const text = result.response.text();
-
-              fs.writeFileSync(
-                "gemini_review.md",
-                "## 🤖 Gemini 자동 코드리뷰\n" +
-                "> 비용 절감을 위해 diff 일부만 전달되었습니다.\n\n" +
-                text
-              );
-            })
-            .catch((err) => {
-              console.error(err);
-              process.exit(1);
-            });
+          model.generateContent(prompt).then((result) => {
+            const text = result.response.text();
+            fs.writeFileSync("gemini_review.md", 
+              "## 🤖 Gemini 자동 코드리뷰\n" +
+              "> 비용 최소화를 위해 diff 일부만 전달했어요.\n\n" +
+              text
+            );
+          }).catch((err) => {
+            console.error(err);
+            process.exit(1);
+          });
           NODE
 
       - name: 💬 PR에 리뷰 코멘트 달기
@@ -131,7 +124,6 @@ jobs:
             const fs = require("fs");
             const pr = context.payload.pull_request;
             const body = fs.readFileSync("gemini_review.md", "utf8");
-
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
