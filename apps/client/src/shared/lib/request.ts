@@ -1,4 +1,3 @@
-import { env } from "./env";
 import { ApiError } from "./error";
 import { isApiResponse } from "./api-response.guard";
 import { ApiResponse } from "packages/types/src";
@@ -56,20 +55,22 @@ export default async function request<T>(
   mode: "data" | "full" = "data"
 ): Promise<T | ApiResponse<T>> {
   let absoluteUrl = url;
+
   if (typeof url === "string" && !url.startsWith("http")) {
-    if (!env.API_URL) {
-      throw new Error("env.API_URL이 설정되지 않았습니다.");
-    }
-    absoluteUrl = new URL(url, env.API_URL).toString();
+    const path = url.startsWith("/") ? url : `/${url}`;
+    absoluteUrl = `/api/proxy${path}`;
   }
+
+  const mergedHeaders = {
+    "Content-Type": "application/json",
+    ...(options?.headers ?? {}),
+  };
+
   const response = await fetch(absoluteUrl, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      // "Authorization": `Bearer ${token}`,
-      ...(options?.headers || {}),
-    },
     ...options,
+    credentials: "include",
+    headers: mergedHeaders,
   });
+
   return handleResponse<T>(response, mode);
 }

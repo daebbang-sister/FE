@@ -138,7 +138,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => {
-              window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth2/authorization/kakao`;
+              window.location.href = "/api/proxy/oauth2/authorization/kakao";
             }}
             className="
     flex w-full items-center justify-center gap-2
