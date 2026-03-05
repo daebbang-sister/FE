@@ -1,4 +1,4 @@
-name: gemini pr review (opt-in)
+name: gemini 코드 리뷰
 
 on:
   pull_request:
