@@ -37,7 +37,7 @@ jobs:
           node-version: "22"
           cache: pnpm
 
-      - name: ✅ dependencies 설치 (minimal)
+      - name: ✅ dependencies 설치
         run: pnpm add -Dw @google/generative-ai
 
       - name: 🧾 PR diff 파일로 저장
@@ -52,7 +52,7 @@ jobs:
             -o pr.diff
           echo "diff_len=$(wc -c < pr.diff)" >> $GITHUB_OUTPUT
 
-      - name: 🛑 diff 너무 크면 스킵 (비용 보호)
+      - name: 🛑 diff 너무 크면 스킵
         if: ${{ steps.diff.outputs.diff_len > 80000 }}
         uses: actions/github-script@v7
         with:
@@ -63,9 +63,9 @@ jobs:
               repo: context.repo.repo,
               issue_number: pr.number,
               body:
-                "🤖 Gemini 자동 리뷰를 건너뛰었어요.\n\n" +
-                "- PR diff가 너무 커서(> 80,000 chars) 토큰/비용 위험이 큼\n" +
-                "- PR을 쪼개서 올리거나 변경 범위를 줄여주세요.\n",
+                "🤖 Gemini 자동 리뷰를 건너뛰었습니다.\n\n" +
+                "- PR diff가 너무 커서(> 80,000 chars) 비용 위험이 있습니다.\n" +
+                "- PR을 나눠서 올리거나 변경 범위를 줄여주세요.",
             });
 
       - name: 🤖 Gemini 리뷰 생성
@@ -85,26 +85,26 @@ jobs:
           const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
           const model = genAI.getGenerativeModel({
-            model: "models/gemini-2.5-flash",
+            model: "models/gemini-2.0-flash",
             generationConfig: {
-              maxOutputTokens: 300
+              maxOutputTokens: 800
             }
           });
 
           const prompt =
             "You are a senior frontend reviewer.\n" +
-            "Project: Next.js + TypeScript monorepo (apps/, packages/).\n\n" +
+            "Project: Next.js + TypeScript monorepo.\n\n" +
             "Write in Korean.\n" +
-            "Keep the review VERY SHORT.\n\n" +
-            "Return markdown with:\n" +
-            "1) 요약 (1줄)\n" +
-            "2) 주요 문제 최대 3개 (각 1~2줄)\n" +
-            "3) 개선 제안 (3줄 이내)\n\n" +
-            "Limit the entire review under 10 lines.\n" +
-            "Ignore minor style comments.\n\n" +
+            "Keep the review very short.\n\n" +
+            "Format:\n" +
+            "요약: 한 줄\n" +
+            "문제:\n" +
+            "- 최대 3개\n" +
+            "개선:\n" +
+            "- 최대 3개\n\n" +
             "=== DIFF START ===\n" +
             sliced +
-            "\n=== DIFF END ===\n";
+            "\n=== DIFF END ===";
 
           model.generateContent(prompt)
             .then((result) => {
