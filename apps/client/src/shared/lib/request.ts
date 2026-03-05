@@ -37,6 +37,18 @@ async function handleResponse<T>(
   return mode === "data" ? resData.data : resData;
 }
 
+export default function request<T>(
+  url: string | URL,
+  options?: RequestInit,
+  mode?: "data"
+): Promise<T>;
+
+export default function request<T>(
+  url: string | URL,
+  options: RequestInit | undefined,
+  mode: "full"
+): Promise<ApiResponse<T>>;
+
 // 요청 함수
 export default async function request<T>(
   url: string | URL,

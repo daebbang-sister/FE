@@ -1,4 +1,3 @@
-// auth.service.ts
 import request from "../../shared/lib/request";
 import { ApiResponse } from "packages/types/src";
 import {
@@ -11,33 +10,27 @@ import {
   FindIdResponse,
 } from "./model";
 
-export const loginUser = async (
-  userData: UserLogin
-): Promise<ApiResponse<null>> => {
-  return (await request<null>(
+export const loginUser = (userData: UserLogin): Promise<ApiResponse<null>> =>
+  request<null>(
     "/v1/auth/login",
     {
       method: "POST",
       body: JSON.stringify(userData),
     },
     "full"
-  )) as ApiResponse<null>;
-};
+  );
 
-export const createUser = async (
-  userData: UserSignUp
-): Promise<ApiResponse<null>> => {
-  return (await request<null>(
+export const createUser = (userData: UserSignUp): Promise<ApiResponse<null>> =>
+  request<null>(
     "/v1/users",
     {
       method: "POST",
       body: JSON.stringify(userData),
     },
     "full"
-  )) as ApiResponse<null>;
-};
+  );
 
-export const userFindId = async (
+export const userFindId = (
   params: UserFindId
 ): Promise<ApiResponse<FindIdResponse>> => {
   const query = new URLSearchParams({
@@ -45,60 +38,48 @@ export const userFindId = async (
     userEmail: params.userEmail,
   }).toString();
 
-  return (await request<FindIdResponse>(
+  return request<FindIdResponse>(
     `/v1/users/find/id?${query}`,
     { method: "GET" },
     "full"
-  )) as ApiResponse<FindIdResponse>;
+  );
 };
 
-export const userFindPw = async (
-  userData: UserFindPw
-): Promise<ApiResponse<null>> => {
-  return (await request<null>(
+export const userFindPw = (userData: UserFindPw): Promise<ApiResponse<null>> =>
+  request<null>(
     "/v1/users/find/password",
     {
       method: "POST",
       body: JSON.stringify(userData),
     },
     "full"
-  )) as ApiResponse<null>;
-};
+  );
 
-export const smsSend = async (
-  userData: PhoneNumber
-): Promise<ApiResponse<null>> => {
-  return (await request<null>(
+export const smsSend = (userData: PhoneNumber): Promise<ApiResponse<null>> =>
+  request<null>(
     "/v1/sms/send",
     {
       method: "POST",
       body: JSON.stringify(userData),
     },
     "full"
-  )) as ApiResponse<null>;
-};
+  );
 
-export const smsVerify = async (
-  userData: PhoneVerify
-): Promise<ApiResponse<null>> => {
-  return (await request<null>(
+export const smsVerify = (userData: PhoneVerify): Promise<ApiResponse<null>> =>
+  request<null>(
     "/v1/sms/verify",
     {
       method: "POST",
       body: JSON.stringify(userData),
     },
     "full"
-  )) as ApiResponse<null>;
-};
+  );
 
-export const duplicationCheckId = async (
+export const duplicationCheckId = (
   loginId: string
-): Promise<ApiResponse<null>> => {
-  return (await request<null>(
+): Promise<ApiResponse<null>> =>
+  request<null>(
     `/v1/users/check/id?loginId=${encodeURIComponent(loginId)}`,
-    {
-      method: "GET",
-    },
+    { method: "GET" },
     "full"
-  )) as ApiResponse<null>;
-};
+  );
