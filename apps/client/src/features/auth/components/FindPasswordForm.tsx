@@ -13,7 +13,11 @@ import { useRouter } from "next/navigation";
 type PasswordFormData = z.infer<typeof findPasswordSchema>;
 
 export default function FindPasswordForm() {
-  const pwForm = useForm<PasswordFormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<PasswordFormData>({
     resolver: zodResolver(findPasswordSchema),
     mode: "onChange",
     defaultValues: {
@@ -40,41 +44,42 @@ export default function FindPasswordForm() {
   };
 
   return (
-    <form onSubmit={pwForm.handleSubmit(findPwOnSubmit)}>
+    <form onSubmit={handleSubmit(findPwOnSubmit)}>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
-          <label htmlFor="id">아이디</label>
+          <label htmlFor="userId">아이디</label>
           <Input
-            id="id"
+            id="userId"
             placeholder="아이디를 입력하세요"
-            {...pwForm.register("userId")}
-            errorMessage={pwForm.formState.errors.userId?.message}
+            {...register("userId")}
+            errorMessage={errors.userId?.message}
           />
         </div>
 
         <div className="flex flex-col gap-3">
-          <label htmlFor="name">이름</label>
+          <label htmlFor="username">이름</label>
           <Input
-            id="find-pw-name"
+            id="username"
             placeholder="이름을 입력하세요"
-            {...pwForm.register("username")}
-            errorMessage={pwForm.formState.errors.username?.message}
+            {...register("username")}
+            errorMessage={errors.username?.message}
           />
         </div>
 
         <div className="flex flex-col gap-3">
-          <label htmlFor="email">이메일</label>
+          <label htmlFor="userEmail">이메일</label>
           <Input
-            id="email"
+            id="userEmail"
+            type="email"
             placeholder="이메일을 입력하세요"
-            {...pwForm.register("userEmail")}
-            errorMessage={pwForm.formState.errors.userEmail?.message}
+            {...register("userEmail")}
+            errorMessage={errors.userEmail?.message}
           />
         </div>
       </div>
 
       <div className="mt-9">
-        <Button disabled={!pwForm.formState.isValid} variant="gray">
+        <Button disabled={!isValid} variant="gray">
           확인
         </Button>
       </div>

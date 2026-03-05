@@ -8,6 +8,7 @@ import {
   UserSignUp,
   PhoneNumber,
   PhoneVerify,
+  FindIdResponse,
 } from "./model";
 
 export const loginUser = async (
@@ -36,19 +37,19 @@ export const createUser = async (
   )) as ApiResponse<null>;
 };
 
-export const userFindId = async (params: UserFindId) => {
+export const userFindId = async (
+  params: UserFindId
+): Promise<ApiResponse<FindIdResponse>> => {
   const query = new URLSearchParams({
     username: params.username,
     userEmail: params.userEmail,
   }).toString();
 
-  return request(
+  return (await request<FindIdResponse>(
     `/v1/users/find/id?${query}`,
-    {
-      method: "GET",
-    },
+    { method: "GET" },
     "full"
-  );
+  )) as ApiResponse<FindIdResponse>;
 };
 
 export const userFindPw = async (
