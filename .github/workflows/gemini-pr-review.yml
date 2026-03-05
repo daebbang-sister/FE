@@ -25,8 +25,6 @@ jobs:
     steps:
       - name: 📂 Github Repository 파일 불러오기
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 📦 pnpm 설치
         uses: pnpm/action-setup@v4
@@ -70,48 +68,55 @@ jobs:
                 "- PR을 쪼개서 올리거나 변경 범위를 줄여줘!\n",
             });
 
-      - name: 🤖 Gemini 리뷰 작성 (요약 코멘트)
+      - name: 🤖 Gemini 리뷰 생성 (node)
         if: ${{ steps.diff.outputs.diff_len <= 80000 }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+          const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+          const diff = fs.readFileSync("pr.diff", "utf8");
+          const MAX_CHARS = 60000;
+          const sliced = diff.length > MAX_CHARS ? diff.slice(0, MAX_CHARS) : diff;
+
+          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+          const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+          const prompt =
+            "You are a senior frontend reviewer. Review this PR diff.\n" +
+            "Project: Next.js + TypeScript monorepo (apps/, packages/).\n\n" +
+            "Write in Korean.\n" +
+            "Return markdown with:\n" +
+            "1) 요약(1~3줄)\n" +
+            "2) 위험/버그 가능성(우선순위)\n" +
+            "3) 개선 제안(실행 가능한 것 위주)\n" +
+            "4) 테스트/엣지케이스 체크리스트\n\n" +
+            "No nitpicks about formatting.\n\n" +
+            "=== DIFF START ===\n" + sliced + "\n=== DIFF END ===\n";
+
+          model.generateContent(prompt).then((result) => {
+            const text = result.response.text();
+            fs.writeFileSync("gemini_review.md", 
+              "## 🤖 Gemini 자동 코드리뷰\n" +
+              "> 비용 최소화를 위해 diff 일부만 전달했어요.\n\n" +
+              text
+            );
+          }).catch((err) => {
+            console.error(err);
+            process.exit(1);
+          });
+          NODE
+
+      - name: 💬 PR에 리뷰 코멘트 달기
+        if: ${{ steps.diff.outputs.diff_len <= 80000 }}
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require("fs");
-            const { GoogleGenerativeAI } = await import("@google/generative-ai");
-
             const pr = context.payload.pull_request;
-
-            // 파일에서 diff 읽기 (백틱/특수문자 때문에 JS 파싱 깨지는 문제 방지)
-            const diff = fs.readFileSync("pr.diff", "utf8");
-
-            // ✅ Gemini에 보내는 양도 제한해서 비용/토큰 최소화
-            const MAX_CHARS = 60000;
-            const sliced = diff.length > MAX_CHARS ? diff.slice(0, MAX_CHARS) : diff;
-
-            const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-            const prompt =
-              "You are a senior frontend reviewer. Review this PR diff.\n" +
-              "Project: Next.js + TypeScript monorepo (apps/, packages/).\n\n" +
-              "Write in Korean.\n" +
-              "Return markdown with:\n" +
-              "1) 요약(1~3줄)\n" +
-              "2) 위험/버그 가능성(우선순위)\n" +
-              "3) 개선 제안(실행 가능한 것 위주)\n" +
-              "4) 테스트/엣지케이스 체크리스트\n\n" +
-              "No nitpicks about formatting.\n\n" +
-              "=== DIFF START ===\n" + sliced + "\n=== DIFF END ===\n";
-
-            const result = await model.generateContent(prompt);
-            const text = result.response.text();
-
-            const body =
-              "## 🤖 Gemini 자동 코드리뷰\n" +
-              "> 비용 최소화를 위해 diff 일부만 전달했어요.\n\n" +
-              text;
-
+            const body = fs.readFileSync("gemini_review.md", "utf8");
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
