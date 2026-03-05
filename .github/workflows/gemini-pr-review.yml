@@ -85,23 +85,23 @@ jobs:
           const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
 
           const prompt =
-            "You are a senior frontend code reviewer.\n" +
-            "Project: Next.js + TypeScript monorepo (apps/, packages/).\n\n" +
-            "Write in Korean.\n" +
-            "Keep the review short and practical.\n\n" +
-            "Return markdown using this format:\n" +
-            "요약: 한 줄\n\n" +
-            "주요 문제:\n" +
-            "- 최대 3개 (각 1~2줄)\n\n" +
-            "개선 제안:\n" +
-            "- 최대 3개 (간단하게)\n\n" +
-            "Rules:\n" +
-            "- 전체 리뷰는 10줄 이내\n" +
-            "- 실제 버그나 구조적 문제만 언급\n" +
-            "- 사소한 스타일/포맷팅 지적 금지\n\n" +
-            "=== DIFF START ===\n" +
-            sliced +
-            "\n=== DIFF END ===";
+          "You are a senior frontend engineer reviewing a pull request.\n" +
+          "Stack: Next.js, React, TypeScript.\n\n" +
+          "Write the review in Korean.\n\n" +
+          "Focus only on:\n" +
+          "- real bugs\n" +
+          "- risky logic\n" +
+          "- architecture problems\n\n" +
+          "Ignore style or formatting comments.\n\n" +
+          "Return markdown in this exact format:\n\n" +
+          "요약\n" +
+          "한 줄 요약\n\n" +
+          "리뷰 포인트\n" +
+          "- 3개만 작성\n\n" +
+          "개선 제안\n" +
+          "- 3개만 작성\n\n" +
+          "Do not write more than 3 items in each section.\n\n" +
+          "=== DIFF ===\n" + sliced;
 
           model.generateContent(prompt).then((result) => {
             const text = result.response.text();
