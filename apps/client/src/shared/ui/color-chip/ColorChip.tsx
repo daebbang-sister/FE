@@ -8,7 +8,7 @@ export function ColorChip({ color }: ColorChipProps) {
   return (
     <span
       className={cn(
-        "inline-flex box-border w-2 h-2 rounded-full border border-border-default "
+        "border-border-default box-border inline-flex h-2 w-2 rounded-full border"
       )}
       style={{ backgroundColor: color }}
     ></span>

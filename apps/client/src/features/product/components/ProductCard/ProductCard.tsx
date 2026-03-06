@@ -23,15 +23,15 @@ export function ProductCard({
   return (
     <div className="group cursor-pointer">
       <ProductImage primaryImage={primaryImage} hoverImage={hoverImage} />
-      <h3 className="mb-4 mt-6">{title}</h3>
+      <h3 className="mt-6 mb-4">{title}</h3>
 
       <div className="mb-4">
         {salePrice ? (
           <div>
-            <p className="caption1 text-text-disabled line-through mb-1.5">
+            <p className="caption1 text-text-disabled mb-1.5 line-through">
               {originalPrice}
             </p>
-            <div className="flex gap-1.25 items-center">
+            <div className="flex items-center gap-1.25">
               <p className="caption1">{salePrice}</p>
               <Badge>{discount}</Badge>
             </div>
