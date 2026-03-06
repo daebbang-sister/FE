@@ -9,7 +9,7 @@ export default function Findpage() {
   const [tab, setTab] = useState(0);
 
   return (
-    <section className="w-97.5 max-97.5 page-y">
+    <section className="max-97.5 page-y w-97.5">
       <h1 className="title2 mb-12 text-center">아이디 / 비밀번호 찾기</h1>
 
       <div className="mb-9">

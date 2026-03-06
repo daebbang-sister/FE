@@ -34,7 +34,7 @@ export type CheckboxProps = Omit<
 
 export function CheckBox({ id, className, ...props }: CheckboxProps) {
   return (
-    <div className="relative flex items-center justify-center w-fit">
+    <div className="relative flex w-fit items-center justify-center">
       <input
         type="checkbox"
         id={id}
@@ -45,14 +45,7 @@ export function CheckBox({ id, className, ...props }: CheckboxProps) {
         width="10"
         height="8"
         viewBox="0 0 10 8"
-        className="
-          absolute 
-          left-1/2 top-1/2 z-1
-          -translate-x-1/2 -translate-y-1/2 
-          hidden peer-checked:block peer-disabled:opacity-50 pointer-events-none 
-        stroke-brand-700 fill-brand-700
-          peer-disabled:stroke-neutral-400 peer-disabled:fill-neutral-400
-        "
+        className="stroke-brand-700 fill-brand-700 pointer-events-none absolute top-1/2 left-1/2 z-1 hidden -translate-x-1/2 -translate-y-1/2 peer-checked:block peer-disabled:fill-neutral-400 peer-disabled:stroke-neutral-400 peer-disabled:opacity-50"
       >
         <path d="M3.08714 6.46521L1.01611 4.25765C0.783348 4.00954 0.407341 4.00954 0.174575 4.25765C-0.0581916 4.50576 -0.0581916 4.90656 0.174575 5.15467L2.66935 7.81392C2.90212 8.06203 3.27813 8.06203 3.51089 7.81392L9.82543 1.0831C10.0582 0.83499 10.0582 0.434195 9.82543 0.186083C9.59266 -0.0620278 9.21665 -0.0620278 8.98388 0.186083L3.08714 6.46521Z" />
       </svg>

@@ -7,9 +7,9 @@ export default function SearchBar() {
   if (!isSearchOpen) return null;
 
   return (
-    <div className="fixed t-25 z-50 bg-neutral-100 w-full py-6 px-10 flex items-center justify-between">
+    <div className="t-25 fixed z-50 flex w-full items-center justify-between bg-neutral-100 px-10 py-6">
       <div className="w-18"></div>
-      <div className="w-97.5 p-4 border-b border-text-primary flex items-center justify-between">
+      <div className="border-text-primary flex w-97.5 items-center justify-between border-b p-4">
         <input
           className="flex-1 pr-4 focus:outline-none"
           placeholder="검색어 입력"

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="h-[var(--size-footer-h)] w-full bg-neutral-900 py-15 text-neutral-0 flex justify-around">
+    <footer className="text-neutral-0 flex h-[var(--size-footer-h)] w-full justify-around bg-neutral-900 py-15">
       <section>
         <div className="font-logo text-title2 mb-6">DAEBBANGSISTER</div>
         <ul className="text-body2 text-weight-regular flex flex-col gap-1.25 font-thin">
@@ -16,7 +16,7 @@ export default function Footer() {
       <section className="flex gap-15">
         <article>
           <p className="text-body1 mb-4">고객센터</p>
-          <div className="flex gap-2.5 mb-3">
+          <div className="mb-3 flex gap-2.5">
             <Link href="https://pf.kakao.com/_DHZxmG">
               <svg
                 width="19"
