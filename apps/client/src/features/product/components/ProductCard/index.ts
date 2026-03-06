@@ -1,0 +1,1 @@
+export { ProductColorChips } from "./ProductColorChips";
