@@ -1,15 +1,17 @@
 "use client";
-import { loginSchema } from "apps/client/src/features/auth/schemas/login.schema";
-import { CheckBox, Input, Button } from "packages/ui/src";
+
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import type { ChangeEvent } from "react";
 import { useEffect, useState } from "react";
-import { loginUser } from "apps/client/src/features/auth/api";
-import { ApiError } from "apps/client/src/shared/lib/error";
+
 import { useRouter } from "next/navigation";
+import { loginSchema } from "@/features/auth/schemas/login.schema";
+import { loginUser } from "@/features/auth/api";
+import { ApiError } from "@/shared/lib/error";
+import { Button, CheckBox, Input } from "@repo/ui";
 
 type FormData = z.infer<typeof loginSchema>;
 

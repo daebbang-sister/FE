@@ -1,5 +1,4 @@
-import request from "../../shared/lib/request";
-import { ApiResponse } from "packages/types/src";
+import request from "@/shared/lib/request";
 import {
   UserFindId,
   UserFindPw,
@@ -9,6 +8,7 @@ import {
   PhoneVerify,
   FindIdResponse,
 } from "./model";
+import { ApiResponse } from "@repo/types";
 
 export const loginUser = (userData: UserLogin): Promise<ApiResponse<null>> =>
   request<null>(
