@@ -1,6 +1,6 @@
 import { ApiError } from "./error";
 import { isApiResponse } from "./api-response.guard";
-import { ApiResponse } from "packages/types/src";
+import { ApiResponse } from "@repo/types";
 
 async function handleResponse<T>(
   response: Response,

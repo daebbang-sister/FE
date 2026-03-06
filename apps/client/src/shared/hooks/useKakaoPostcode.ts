@@ -1,6 +1,6 @@
 "use client";
 
-import { PostcodeData } from "packages/types/src";
+import { PostcodeData } from "@repo/types";
 import { useCallback } from "react";
 
 /** window.kakao 타입 안전 정의 */

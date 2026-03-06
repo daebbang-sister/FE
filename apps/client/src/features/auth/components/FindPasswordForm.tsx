@@ -2,13 +2,12 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "packages/ui/src";
 import { z } from "zod";
-
-import { findPasswordSchema } from "apps/client/src/features/auth/schemas/find-password.schema";
-import { userFindPw } from "../api";
-import { ApiError } from "apps/client/src/shared/lib/error";
 import { useRouter } from "next/navigation";
+import { findPasswordSchema } from "@/features/auth/schemas/find-password.schema";
+import { userFindPw } from "@/features/auth/api";
+import { ApiError } from "@/shared/lib/error";
+import { Button, Input } from "@repo/ui";
 
 type PasswordFormData = z.infer<typeof findPasswordSchema>;
 

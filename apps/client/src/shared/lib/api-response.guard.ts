@@ -1,4 +1,4 @@
-import { ApiResponse } from "packages/types/src";
+import { ApiResponse } from "@repo/types";
 
 export function isApiResponse<T>(data: unknown): data is ApiResponse<T> {
   return (

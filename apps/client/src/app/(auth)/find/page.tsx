@@ -1,10 +1,9 @@
 "use client";
 
+import FindIdForm from "@/features/auth/components/FindIdForm";
+import FindPasswordForm from "@/features/auth/components/FindPasswordForm";
+import { TabButton } from "@repo/ui";
 import { useState } from "react";
-import { TabButton } from "packages/ui/src";
-
-import FindIdForm from "apps/client/src/features/auth/components/FindIdForm";
-import FindPasswordForm from "apps/client/src/features/auth/components/FindPasswordForm";
 
 export default function Findpage() {
   const [tab, setTab] = useState(0);

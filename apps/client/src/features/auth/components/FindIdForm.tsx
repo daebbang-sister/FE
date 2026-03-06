@@ -2,12 +2,11 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "packages/ui/src";
 import { z } from "zod";
-
-import { findIdSchema } from "apps/client/src/features/auth/schemas/find-id.schema";
-import { userFindId } from "../api";
-import { ApiError } from "apps/client/src/shared/lib/error";
+import { findIdSchema } from "@/features/auth/schemas/find-id.schema";
+import { userFindId } from "@/features/auth/api";
+import { ApiError } from "@/shared/lib/error";
+import { Button, Input } from "@repo/ui";
 
 type IdFormData = z.infer<typeof findIdSchema>;
 

@@ -1,4 +1,4 @@
-import { Address } from "packages/types/src";
+import { Address } from "@repo/types";
 
 export type UserLogin = {
   id: string;
