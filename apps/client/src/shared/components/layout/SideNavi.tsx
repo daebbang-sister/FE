@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutUI } from "apps/client/src/shared/context/layout-ui.context";
+import { useLayoutUI } from "@/shared/context/layout-ui.context";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";

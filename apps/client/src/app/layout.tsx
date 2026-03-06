@@ -1,9 +1,9 @@
 import "@repo/styles/src/globals.css";
-import Header from "../shared/components/layout/Header";
-import Footer from "../shared/components/layout/Footer";
-import SideNavi from "apps/client/src/shared/components/layout/SideNavi";
-import SearchBar from "apps/client/src/shared/components/layout/SearchBar";
-import { LayoutUIProvider } from "apps/client/src/shared/context/layout-ui.context";
+import { LayoutUIProvider } from "@/shared/context/layout-ui.context";
+import Header from "@/shared/components/layout/Header";
+import SearchBar from "@/shared/components/layout/SearchBar";
+import SideNavi from "@/shared/components/layout/SideNavi";
+import Footer from "@/shared/components/layout/Footer";
 
 export const metadata = {
   title: {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutUI } from "apps/client/src/shared/context/layout-ui.context";
+import { useLayoutUI } from "@/shared/context/layout-ui.context";
 
 export default function SearchBar() {
   const { isSearchOpen, closeSearch } = useLayoutUI();
