@@ -23,8 +23,7 @@
     "erasableSyntaxOnly": true,
 
     "paths": {
-      "@/*": ["./src/*"],
-      "@root/*": ["../../*"]
+      "@/*": ["./src/*"]
     }
   },
 

@@ -3,23 +3,23 @@
 import { useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { Button, CheckBox, Dropdown, Input } from "packages/ui/src";
-import { useKakaoPostcode } from "apps/client/src/shared/hooks/useKakaoPostcode";
-import AuthInputLabel from "apps/client/src/features/auth/components/AuthInputLabel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   SignUpFormValues,
   signUpSchema,
-} from "apps/client/src/features/auth/schemas/sign-up.schema";
+} from "@/features/auth/schemas/sign-up.schema";
 import {
   createUser,
   duplicationCheckId,
   smsSend,
   smsVerify,
-} from "apps/client/src/features/auth/api";
-import { PhoneNumber, PhoneVerify } from "apps/client/src/features/auth/model";
-import { ApiError } from "apps/client/src/shared/lib/error";
-import { toUserSignUpRequest } from "apps/client/src/features/auth/mapper/user.mapper";
+} from "@/features/auth/api";
+import { ApiError } from "@/shared/lib/error";
+import { useKakaoPostcode } from "@/shared/hooks/useKakaoPostcode";
+import { PhoneNumber, PhoneVerify } from "@/features/auth/model";
+import { toUserSignUpRequest } from "@/features/auth/mapper/user.mapper";
+import AuthInputLabel from "@/features/auth/components/AuthInputLabel";
+import { Button, CheckBox, Dropdown, Input } from "@repo/ui";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -215,7 +215,7 @@ export default function SignUpPage() {
             <Button
               type="button"
               variant="black"
-              className="max-w-[90px] h-13.5"
+              className="max-w-22.5 h-13.5"
               onClick={idCheck}
             >
               중복 확인
@@ -353,7 +353,7 @@ export default function SignUpPage() {
             />
             <Button
               type="button"
-              className="max-w-[90px]"
+              className="max-w-22.5"
               variant="black"
               onClick={handleSearchAddress}
             >

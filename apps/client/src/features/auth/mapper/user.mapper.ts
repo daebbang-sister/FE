@@ -1,5 +1,5 @@
-import { UserSignUp } from "../model";
-import { SignUpFormValues } from "../schemas/sign-up.schema";
+import { UserSignUp } from "@/features/auth/model";
+import { SignUpFormValues } from "@/features/auth/schemas/sign-up.schema";
 
 export function toUserSignUpRequest(data: SignUpFormValues): UserSignUp {
   return {

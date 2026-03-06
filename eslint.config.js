@@ -109,6 +109,13 @@ export default [
       "@next/next/no-img-element": "warn",
       "@next/next/no-head-element": "warn",
       "@next/next/next-script-for-ga": "warn",
+
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: ["../*", "../../*", "../../../*", "../../../../*"],
+        },
+      ],
     },
   },
 ];
