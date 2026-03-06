@@ -55,7 +55,7 @@ export function Input({
 
       <div>
         {helperMessage && (
-          <p id={helperId} className="mt-1.5 caption1 text-text-disabled">
+          <p id={helperId} className="caption1 text-text-disabled mt-1.5">
             {helperMessage}
           </p>
         )}

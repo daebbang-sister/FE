@@ -175,8 +175,8 @@ export default function SignUpPage() {
   };
 
   return (
-    <section className="w-97.5 max-97.5 page-y">
-      <p className="mb-12 text-center title2">회원가입</p>
+    <section className="max-97.5 page-y w-97.5">
+      <p className="title2 mb-12 text-center">회원가입</p>
       <form className="space-y-6" onSubmit={handleSubmit(onSubmitt)}>
         {/* 이름 */}
         <div>
@@ -215,14 +215,14 @@ export default function SignUpPage() {
             <Button
               type="button"
               variant="black"
-              className="max-w-22.5 h-13.5"
+              className="h-13.5 max-w-22.5"
               onClick={idCheck}
             >
               중복 확인
             </Button>
           </div>
           {isIdVerified && (
-            <p className="caption1 text-green-200 mt-1.5">
+            <p className="caption1 mt-1.5 text-green-200">
               중복 확인이 완료되었습니다.
             </p>
           )}
@@ -266,7 +266,7 @@ export default function SignUpPage() {
           <AuthInputLabel htmlFor="phoen-number" required>
             연락처
           </AuthInputLabel>
-          <div className="grid grid-cols-4 gap-2.5 mb-3">
+          <div className="mb-3 grid grid-cols-4 gap-2.5">
             <Controller
               name="phone1"
               control={control}
@@ -345,7 +345,7 @@ export default function SignUpPage() {
         {/* 주소 */}
         <div>
           <AuthInputLabel htmlFor="readonly-id">주소</AuthInputLabel>
-          <div className="flex gap-2.5 mb-3">
+          <div className="mb-3 flex gap-2.5">
             <Input
               id="readonly-id"
               status="disabled"
@@ -377,7 +377,7 @@ export default function SignUpPage() {
         <div>
           <div className="flex items-center justify-between">
             <AuthInputLabel htmlFor="agreement">약관 동의</AuthInputLabel>
-            <div className="flex items-center gap-1.25 mb-3">
+            <div className="mb-3 flex items-center gap-1.25">
               <CheckBox
                 id="agree-all"
                 checked={!!isAllChecked}

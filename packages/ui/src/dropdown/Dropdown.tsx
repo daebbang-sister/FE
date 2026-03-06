@@ -117,7 +117,7 @@ export function Dropdown({
         {!isDisabled && (
           <MenuItems
             className={cn(
-              "absolute right-0 top-full z-10 bg-neutral-0 shadow-[0_2px_4px_rgba(0,0,0,0.08)] outline-none focus:outline-none",
+              "bg-neutral-0 absolute top-full right-0 z-10 shadow-[0_2px_4px_rgba(0,0,0,0.08)] outline-none focus:outline-none",
               menuWidth ?? "w-full"
             )}
           >

@@ -85,7 +85,7 @@ export default function LoginPage() {
   }
 
   return (
-    <section className="w-97.5 max-97.5 page-y">
+    <section className="max-97.5 page-y w-97.5">
       <h1 className="title2 mb-12 text-center">로그인</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
@@ -111,7 +111,7 @@ export default function LoginPage() {
               />
             </div>
           </div>
-          <div className="text-text-disabled flex justify-between body2 mt-3">
+          <div className="text-text-disabled body2 mt-3 flex justify-between">
             <div className="flex gap-1.25">
               <CheckBox
                 id="rememberId"
@@ -128,13 +128,13 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-9 mt-9">
+        <div className="mt-9 flex flex-col gap-9">
           <Button disabled={!isValid} variant="gray">
             로그인
           </Button>
           <div className="flex items-center gap-4">
             <div className="h-px flex-1 bg-neutral-300" />
-            <span className="text-sm text-neutral-300 body2">또는</span>
+            <span className="body2 text-sm text-neutral-300">또는</span>
             <div className="h-px flex-1 bg-neutral-300" />
           </div>
           <button
@@ -142,12 +142,7 @@ export default function LoginPage() {
             onClick={() => {
               window.location.href = "/api/proxy/oauth2/authorization/kakao";
             }}
-            className="
-    flex w-full items-center justify-center gap-2
-    rounded-xl bg-[#FEE500] px-4 py-3
-    font-bold text-black h-12.75
-    hover:brightness-95 active:brightness-90
-  "
+            className="flex h-12.75 w-full items-center justify-center gap-2 rounded-xl bg-[#FEE500] px-4 py-3 font-bold text-black hover:brightness-95 active:brightness-90"
           >
             <svg
               width="20"

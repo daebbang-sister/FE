@@ -11,7 +11,7 @@ export default function AuthInputLabel({
 }: AuthInputLabelProps) {
   return (
     <label
-      className={cn("block body1 text-text-primary mb-3", className)}
+      className={cn("body1 text-text-primary mb-3 block", className)}
       {...props}
     >
       {children}{" "}
