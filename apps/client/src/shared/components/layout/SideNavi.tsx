@@ -35,15 +35,12 @@ export default function SideNavi() {
       {/* overlay */}
       <div
         onClick={closeSide}
-        className={`fixed inset-0 bg-neutral-1000/65 transition-opacity z-[909]
-        ${isSideOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
+        className={`bg-neutral-1000/65 fixed inset-0 z-[909] transition-opacity ${isSideOpen ? "visible opacity-100" : "invisible opacity-0"}`}
       />
 
       {/* side panel */}
       <aside
-        className={`fixed top-0 left-0 h-full w-116.25 bg-white px-10 py-12.5 
-        transition-transform duration-300 z-[910]
-        ${isSideOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed top-0 left-0 z-[910] h-full w-116.25 bg-white px-10 py-12.5 transition-transform duration-300 ${isSideOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <button className="mb-12" onClick={closeSide}>
           <svg
@@ -63,7 +60,7 @@ export default function SideNavi() {
         <article className="flex flex-col gap-9">
           <div>
             <p className="title3 mb-6">SHOP</p>
-            <ul className="flex flex-col gap-4 text-text-disabled [&_a:hover]:text-text-primary">
+            <ul className="text-text-disabled [&_a:hover]:text-text-primary flex flex-col gap-4">
               {categories.map((category) => (
                 <li key={category.id}>
                   <Link href={`/category/${category.name}`}>
@@ -75,7 +72,7 @@ export default function SideNavi() {
           </div>
           <div>
             <p className="title3 mb-6">COMMUNITY</p>
-            <ul className="flex flex-col gap-4 text-text-disabled [&_a:hover]:text-text-primary">
+            <ul className="text-text-disabled [&_a:hover]:text-text-primary flex flex-col gap-4">
               <li>
                 <Link href={"/"}>자주 묻는 질문</Link>
               </li>

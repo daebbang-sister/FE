@@ -27,7 +27,7 @@ export default function RootLayout({
           <Header></Header>
           <SideNavi></SideNavi>
           <SearchBar></SearchBar>
-          <main className="flex justify-center header-m min-h-[calc(100vh-var(--size-header-h)-var(--size-footer-h))]">
+          <main className="header-m flex min-h-[calc(100vh-var(--size-header-h)-var(--size-footer-h))] justify-center">
             {children}
           </main>
           <Footer></Footer>

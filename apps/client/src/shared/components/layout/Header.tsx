@@ -7,7 +7,7 @@ export default function Header() {
   const { openSide, openSearch } = useLayoutUI();
 
   return (
-    <header className="z-[900] h-[var(--size-header-h)] w-full fixed top-0 bg-neutral-900 flex justify-between items-center px-10 py-7">
+    <header className="fixed top-0 z-[900] flex h-[var(--size-header-h)] w-full items-center justify-between bg-neutral-900 px-10 py-7">
       <div className="cursor-pointer pr-13.5" onClick={openSide}>
         <svg
           width="25"
@@ -22,7 +22,7 @@ export default function Header() {
           />
         </svg>
       </div>
-      <div className="cursor-pointer text-brand-700 font-logo text-logo">
+      <div className="text-brand-700 font-logo text-logo cursor-pointer">
         <Link href={"/"}>DAEBBANGSISTER</Link>
       </div>
       <ul className="flex gap-3">
