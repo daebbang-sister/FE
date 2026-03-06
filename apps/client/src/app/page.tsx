@@ -1,4 +1,4 @@
-import { ProductCard } from "@/features/product/components/ProductCard/ProductCard";
+import ProductCard from "@/features/product/components/ProductCard/ProductCard";
 export const banners = [
   {
     id: 1,

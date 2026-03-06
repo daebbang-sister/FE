@@ -1,5 +1,5 @@
 import { Badge, ProductImage } from "@/shared/ui";
-import { ProductColorChips } from "./ProductColorChips";
+import ProductColorChips from "./ProductColorChips";
 
 type ProductCardProps = {
   colors: string[];
@@ -11,7 +11,7 @@ type ProductCardProps = {
   hoverImage: string;
 };
 
-export function ProductCard({
+export default function ProductCard({
   colors,
   title,
   originalPrice,
