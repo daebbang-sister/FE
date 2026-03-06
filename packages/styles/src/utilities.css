@@ -58,3 +58,15 @@
 @utility page-y {
   margin-block: var(--space-page-y);
 }
+
+@utility container-wide {
+  width: 92%;
+  max-width: 1440px;
+  margin-inline: auto;
+}
+
+@utility container {
+  width: 92%;
+  max-width: 1240px;
+  margin-inline: auto;
+}
