@@ -43,7 +43,7 @@ export default function Header() {
           </svg>
         </li>
         <li>
-          <Link href={"/mypage"}>
+          <Link href={"/login"}>
             <svg
               width="20"
               height="20"
