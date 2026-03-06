@@ -87,3 +87,13 @@ http://scripts.sil.org/OFL
     local("Pretendard Thin"),
     url(./fonts/Pretendard-Thin.woff2) format("woff2");
 }
+
+@font-face {
+  font-family: "Poppins";
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  src:
+    local("Poppins BoldItalic"),
+    url("./fonts/Poppins-BoldItalic.ttf") format("truetype");
+}

@@ -3,12 +3,16 @@
   --font-base:
     "Pretendard", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+  --font-logo:
+    "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 
   --font-weight-regular: 400;
   --font-weight-bold: 700;
 
   --tracking-tight-2: -0.02em;
 
+  --text-logo: 36px;
   --text-title2: 24px;
   --text-title3: 20px;
   --text-body1: 16px;
@@ -54,6 +58,7 @@
 
   /* space */
   --size-header-h: 99px;
+  --size-footer-h: 298px;
   --space-page-y: 64px;
 
   /* breakpoint */
