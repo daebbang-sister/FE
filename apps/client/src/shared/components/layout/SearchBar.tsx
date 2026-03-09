@@ -1,20 +1,38 @@
 "use client";
 
 import { useLayoutUI } from "@/shared/context/layout-ui.context";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SearchBar() {
   const { isSearchOpen, closeSearch } = useLayoutUI();
+  const router = useRouter();
+  const [search, setSearch] = useState<string>("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (search.trim() === "") {
+      return;
+    }
+    router.push(`/production?=${encodeURIComponent(search)}`);
+  };
+
   if (!isSearchOpen) return null;
 
   return (
     <div className="t-25 fixed z-50 flex w-full items-center justify-between bg-neutral-100 px-10 py-6">
       <div className="w-18"></div>
-      <div className="border-text-primary flex w-97.5 items-center justify-between border-b p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="border-text-primary flex w-97.5 items-center justify-between border-b p-4"
+      >
         <input
           className="flex-1 pr-4 focus:outline-none"
           placeholder="검색어 입력"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
-        <div className="cursor-pointer">
+        <div className="cursor-pointer" onClick={handleSubmit}>
           <svg
             width="24"
             height="24"
@@ -38,7 +56,7 @@ export default function SearchBar() {
             />
           </svg>
         </div>
-      </div>
+      </form>
       <button onClick={closeSearch}>
         <svg
           width="18"
