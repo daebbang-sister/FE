@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="text-neutral-0 flex h-[var(--size-footer-h)] w-full justify-around bg-neutral-900 py-15">
+    <footer className="text-neutral-0 flex min-h-[var(--size-footer-h)] w-full flex-col-reverse gap-10 bg-neutral-900 px-10 py-15 md:flex-row md:justify-around md:gap-0">
       <section>
         <div className="font-logo text-title2 mb-6">DAEBBANGSISTER</div>
         <ul className="text-body2 text-weight-regular flex flex-col gap-1.25 font-thin">
