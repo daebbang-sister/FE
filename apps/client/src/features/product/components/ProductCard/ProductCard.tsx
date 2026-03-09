@@ -1,7 +1,10 @@
 import { Badge, ProductImage } from "@/shared/ui";
 import ProductColorChips from "./ProductColorChips";
+import Link from "next/link";
 
 type ProductCardProps = {
+  id: string;
+  category: string;
   colors: string[];
   title: string;
   originalPrice: string;
@@ -12,6 +15,8 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({
+  id,
+  category,
   colors,
   title,
   originalPrice,
@@ -21,7 +26,10 @@ export default function ProductCard({
   hoverImage,
 }: ProductCardProps) {
   return (
-    <div className="group cursor-pointer">
+    <Link
+      href={`/products/${category}/${id}`}
+      className="group block cursor-pointer"
+    >
       <ProductImage primaryImage={primaryImage} hoverImage={hoverImage} />
       <h3 className="mt-6 mb-4">{title}</h3>
 
@@ -43,6 +51,6 @@ export default function ProductCard({
         )}
       </div>
       <ProductColorChips colors={colors} />
-    </div>
+    </Link>
   );
 }

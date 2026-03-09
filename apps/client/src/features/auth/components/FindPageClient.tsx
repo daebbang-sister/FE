@@ -5,7 +5,7 @@ import FindPasswordForm from "@/features/auth/components/FindPasswordForm";
 import { TabButton } from "@repo/ui";
 import { useState } from "react";
 
-export default function FindPageClinet() {
+export default function FindPageClient() {
   const [tab, setTab] = useState(0);
 
   return (
