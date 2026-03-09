@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="text-neutral-0 flex min-h-[var(--size-footer-h)] w-full flex-col-reverse gap-10 bg-neutral-900 px-10 py-15 md:flex-row md:justify-around md:gap-0">
       <section>
-        <div className="font-logo text-title2 mb-6">DAEBBANGSISTER</div>
+        <div className="font-poppins text-title2 mb-6">DAEBBANGSISTER</div>
         <ul className="text-body2 text-weight-regular flex flex-col gap-1.25 font-thin">
           <li>상호 : (주)대빵언니: 000</li>
           <li>주소 : 대구 달성군 현풍읍 테크노상업로 20 (테크노타워1) 107호</li>
