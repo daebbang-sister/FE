@@ -1,14 +1,14 @@
 import { cn } from "@repo/ui";
-type AuthInputLabelProps = React.ComponentProps<"label"> & {
+type SignUpInputLabelProps = React.ComponentProps<"label"> & {
   required?: boolean;
 };
 
-export default function AuthInputLabel({
+export default function SignUpInputLabel({
   children,
   className,
   required = false,
   ...props
-}: AuthInputLabelProps) {
+}: SignUpInputLabelProps) {
   return (
     <label
       className={cn("body1 text-text-primary mb-3 block", className)}
