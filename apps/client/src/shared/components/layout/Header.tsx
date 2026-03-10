@@ -22,7 +22,7 @@ export default function Header() {
           />
         </svg>
       </div>
-      <div className="text-brand-700 font-logo text-logo cursor-pointer">
+      <div className="text-brand-700 font-poppins text-title2 md:text-logo cursor-pointer">
         <Link href={"/"}>DAEBBANGSISTER</Link>
       </div>
       <ul className="flex gap-3">
