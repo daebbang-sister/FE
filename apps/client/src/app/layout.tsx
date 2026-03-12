@@ -4,6 +4,7 @@ import Header from "@/shared/components/layout/Header";
 import SearchBar from "@/shared/components/layout/SearchBar";
 import SideNavi from "@/shared/components/layout/SideNavi";
 import Footer from "@/shared/components/layout/Footer";
+import QuickBanner from "@/shared/components/floating/QuickBanner";
 
 export const metadata = {
   title: {
@@ -24,13 +25,14 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <body suppressHydrationWarning>
         <LayoutUIProvider>
-          <Header></Header>
-          <SideNavi></SideNavi>
-          <SearchBar></SearchBar>
+          <QuickBanner />
+          <Header />
+          <SideNavi />
+          <SearchBar />
           <main className="header-m flex min-h-[calc(100vh-var(--size-header-h)-var(--size-footer-h))] justify-center">
             {children}
           </main>
-          <Footer></Footer>
+          <Footer />
         </LayoutUIProvider>
       </body>
     </html>

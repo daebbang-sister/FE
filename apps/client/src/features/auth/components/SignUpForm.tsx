@@ -54,7 +54,7 @@ export default function SignUpForm() {
     }
     const payload = toUserSignUpRequest(data);
     try {
-      console.log("폼 데이터", payload);
+      // console.log("폼 데이터", payload);
       await createUser(payload);
       alert("회원가입이 완료되었습니다.");
       router.push("/");
