@@ -17,7 +17,7 @@ import { ApiError } from "@/shared/lib/error";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@repo/ui";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 export default function SignUpForm() {
@@ -39,32 +39,36 @@ export default function SignUpForm() {
 
   const [isIdVerified, setIsIdVerified] = useState(false);
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+
   // 데이터 폼(회원가입) 제출
-  const onSubmitt = async (data: SignUpFormValues) => {
-    if (!isIdVerified) {
-      setError("userId", {
-        type: "manual",
-        message: "아이디 중복 확인을 해주세요.",
-      });
-      return;
-    }
-    if (!isPhoneVerified) {
-      alert("전화번호 인증을 완료해주세요.");
-      return;
-    }
-    const payload = toUserSignUpRequest(data);
-    try {
-      // console.log("폼 데이터", payload);
-      await createUser(payload);
-      alert("회원가입이 완료되었습니다.");
-      router.push("/");
-    } catch (err) {
-      if (err instanceof ApiError) {
-        alert(err.message);
-      } else {
-        alert("알 수 없는 오류가 발생했습니다.");
+  const [isPending, startTransition] = useTransition();
+  const onSubmitt = (data: SignUpFormValues) => {
+    startTransition(async () => {
+      if (!isIdVerified) {
+        setError("userId", {
+          type: "manual",
+          message: "아이디 중복 확인을 해주세요.",
+        });
+        return;
       }
-    }
+      if (!isPhoneVerified) {
+        alert("전화번호 인증을 완료해주세요.");
+        return;
+      }
+      const payload = toUserSignUpRequest(data);
+      try {
+        // console.log("폼 데이터", payload);
+        await createUser(payload);
+        alert("회원가입이 완료되었습니다.");
+        router.push("/");
+      } catch (err) {
+        if (err instanceof ApiError) {
+          alert(err.message);
+        } else {
+          alert("알 수 없는 오류가 발생했습니다.");
+        }
+      }
+    });
   };
 
   return (
@@ -118,7 +122,7 @@ export default function SignUpForm() {
         />
 
         <Button type="submit" variant="gray" className="mt-12">
-          회원가입
+          {isPending ? "회원가입 중" : "회원가입"}
         </Button>
       </form>
     </section>
