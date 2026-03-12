@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 
-interface PaginationProps {
+type PaginationProps = {
   totalItems: number;
   limit: number;
   pageGroupSize?: number;
   onPageChange?: (page: number) => void;
   scrollToTop?: boolean;
-}
+};
 
-export default function PageButton({
+export function PageButton({
   totalItems,
   limit,
   pageGroupSize = 5,
