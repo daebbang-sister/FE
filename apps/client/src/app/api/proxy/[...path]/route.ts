@@ -101,7 +101,9 @@ async function handler(req: NextRequest, { params }: Ctx) {
     }
 
     return response;
-  } catch (_error) {
+  } catch (error) {
+    console.error("Proxy Error:", error);
+
     return NextResponse.json(
       {
         message: "프록시 요청 중 오류가 발생했습니다.",
