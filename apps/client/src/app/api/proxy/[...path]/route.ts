@@ -8,6 +8,17 @@ type Ctx = {
 
 const ALLOWED_PREFIX = ["/v1/", "/oauth2/"];
 
+const hopByHopHeaders = new Set([
+  "connection",
+  "keep-alive",
+  "proxy-authenticate",
+  "proxy-authorization",
+  "te",
+  "trailer",
+  "transfer-encoding",
+  "upgrade",
+]);
+
 async function handler(req: NextRequest, { params }: Ctx) {
   try {
     if (!API_ORIGIN) {
@@ -17,7 +28,6 @@ async function handler(req: NextRequest, { params }: Ctx) {
       );
     }
     const { path } = await params;
-
     const pathname = `/${path.join("/")}`;
 
     const isAllowed = ALLOWED_PREFIX.some((prefix) =>
@@ -32,51 +42,63 @@ async function handler(req: NextRequest, { params }: Ctx) {
     }
 
     const targetUrl = new URL(pathname, API_ORIGIN);
-
     targetUrl.search = req.nextUrl.search;
 
-    const authorization = req.headers.get("authorization");
-    const contentType = req.headers.get("content-type");
-    const cookie = req.headers.get("cookie");
+    const hasBody = !["GET", "HEAD", "OPTIONS"].includes(req.method);
+    const body = hasBody ? await req.arrayBuffer() : undefined;
 
-    const body =
-      req.method === "GET" || req.method === "HEAD"
-        ? undefined
-        : await req.text();
-
-    const res = await fetch(targetUrl, {
+    const headers = new Headers(req.headers);
+    const upstream = await fetch(targetUrl, {
       method: req.method,
-      headers: {
-        accept: "application/json",
-        ...(authorization && { authorization }),
-        ...(contentType && { "content-type": contentType }),
-        ...(cookie && { cookie }),
-      },
+      headers,
       body,
       cache: "no-store",
-      credentials: "include",
+      redirect: "manual",
     });
 
-    const data = await res.json();
-    const response = NextResponse.json(data, {
-      status: res.status,
+    if (upstream.status >= 300 && upstream.status < 400) {
+      const location = upstream.headers.get("location");
+
+      if (location) {
+        if (location.startsWith("http")) {
+          return NextResponse.redirect(location, upstream.status);
+        }
+
+        const redirectUrl = new URL(location, API_ORIGIN);
+
+        return NextResponse.redirect(
+          new URL(
+            `/api/proxy${redirectUrl.pathname}${redirectUrl.search}`,
+            req.url
+          ),
+          upstream.status
+        );
+      }
+    }
+
+    const response = new NextResponse(upstream.body, {
+      status: upstream.status,
     });
 
-    const setCookieHeader = res.headers.get("set-cookie");
+    upstream.headers.forEach((value, key) => {
+      if (!hopByHopHeaders.has(key.toLowerCase()) && key !== "set-cookie") {
+        response.headers.set(key, value);
+      }
+    });
+
+    const setCookieHeader = upstream.headers.get("set-cookie");
+
     if (setCookieHeader) {
       if (process.env.NODE_ENV === "development") {
         const cleanCookie = setCookieHeader
           .replace(/Domain=[^;]+;?/gi, "")
           .replace(/Secure;?/gi, "");
+
         response.headers.set("set-cookie", cleanCookie);
       } else {
         response.headers.set("set-cookie", setCookieHeader);
       }
     }
-
-    const origin = req.headers.get("origin") || "*";
-    response.headers.set("Access-Control-Allow-Credentials", "true");
-    response.headers.set("Access-Control-Allow-Origin", origin);
 
     return response;
   } catch (_error) {
@@ -90,9 +112,11 @@ async function handler(req: NextRequest, { params }: Ctx) {
     );
   }
 }
+
 export const GET = handler;
 export const POST = handler;
 export const PUT = handler;
 export const PATCH = handler;
 export const DELETE = handler;
 export const HEAD = handler;
+export const OPTIONS = handler;
