@@ -52,15 +52,17 @@ export default function SignUpForm() {
         return;
       }
       if (!isPhoneVerified) {
-        alert("전화번호 인증을 완료해주세요.");
-        return;
+        setError("phone1", {
+          type: "manual",
+          message: "전화번호 인증을 완료해주세요.",
+        });
       }
       const payload = toUserSignUpRequest(data);
       try {
         // console.log("폼 데이터", payload);
         await createUser(payload);
         alert("회원가입이 완료되었습니다.");
-        router.push("/");
+        router.replace("/");
       } catch (err) {
         if (err instanceof ApiError) {
           alert(err.message);
