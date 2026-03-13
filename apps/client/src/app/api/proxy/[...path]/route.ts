@@ -2,42 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 const API_ORIGIN = process.env.API_ORIGIN;
 
-type Ctx = { params: { path: string[] } | Promise<{ path: string[] }> };
-
-export const GET = handler;
-export const POST = handler;
-export const PUT = handler;
-export const PATCH = handler;
-export const DELETE = handler;
-export const HEAD = handler;
-export const OPTIONS = handler;
+type Ctx = {
+  params: Promise<{ path: string[] }>;
+};
 
 const ALLOWED_PREFIX = ["/v1/", "/oauth2/"];
-
-function pickHeaders(req: NextRequest) {
-  const h = new Headers();
-
-  const ct = req.headers.get("content-type");
-  if (ct) h.set("content-type", ct);
-
-  const accept = req.headers.get("accept");
-  if (accept) h.set("accept", accept);
-
-  const auth = req.headers.get("authorization");
-  if (auth) h.set("authorization", auth);
-
-  const cookie = req.headers.get("cookie");
-  if (cookie) h.set("cookie", cookie);
-
-  const xff = req.headers.get("x-forwarded-for");
-  if (xff) h.set("x-forwarded-for", xff);
-
-  return h;
-}
-
-function isAllowedPath(path: string) {
-  return ALLOWED_PREFIX.some((p) => path.startsWith(p));
-}
 
 const hopByHopHeaders = new Set([
   "connection",
@@ -48,97 +17,108 @@ const hopByHopHeaders = new Set([
   "trailer",
   "transfer-encoding",
   "upgrade",
-  "content-length",
 ]);
 
-export async function handler(req: NextRequest, ctx: Ctx) {
-  if (!API_ORIGIN) {
-    console.error("[proxy] API_ORIGIN is missing");
-    return NextResponse.json(
-      { message: "API_ORIGIN is missing" },
-      { status: 500 }
-    );
-  }
-
-  const { path } = await Promise.resolve(ctx.params);
-  const pathname = `/${path.join("/")}`;
-
-  if (!isAllowedPath(pathname)) {
-    console.error("[proxy] blocked proxy path:", pathname);
-    return NextResponse.json(
-      { message: "blocked proxy path" },
-      { status: 403 }
-    );
-  }
-
-  const targetUrl = new URL(pathname, API_ORIGIN);
-  targetUrl.search = req.nextUrl.search;
-
-  const method = req.method.toUpperCase();
-  const hasBody = !["GET", "HEAD", "OPTIONS"].includes(method);
-  const body = hasBody ? await req.arrayBuffer() : undefined;
-
-  let upstream: Response;
-
+async function handler(req: NextRequest, { params }: Ctx) {
   try {
-    upstream = await fetch(targetUrl, {
-      method,
-      headers: pickHeaders(req),
+    if (!API_ORIGIN) {
+      return NextResponse.json(
+        { message: "환경 변수가 없습니다." },
+        { status: 500 }
+      );
+    }
+    const { path } = await params;
+    const pathname = `/${path.join("/")}`;
+
+    const isAllowed = ALLOWED_PREFIX.some((prefix) =>
+      pathname.startsWith(prefix)
+    );
+
+    if (!isAllowed) {
+      return NextResponse.json(
+        { message: "허용되지 않는 API 경로입니다." },
+        { status: 403 }
+      );
+    }
+
+    const targetUrl = new URL(pathname, API_ORIGIN);
+    targetUrl.search = req.nextUrl.search;
+
+    const hasBody = !["GET", "HEAD", "OPTIONS"].includes(req.method);
+    const body = hasBody ? await req.arrayBuffer() : undefined;
+
+    const headers = new Headers(req.headers);
+    const upstream = await fetch(targetUrl, {
+      method: req.method,
+      headers,
       body,
-      redirect: "manual",
       cache: "no-store",
+      redirect: "manual",
     });
-  } catch (e) {
-    console.error("[proxy] upstream fetch failed:", e);
-    return NextResponse.json(
-      { message: "proxy upstream failed" },
-      { status: 502 }
-    );
-  }
 
-  console.warn(
-    `[proxy] ${method} ${req.nextUrl.pathname}${req.nextUrl.search} -> ${targetUrl} (${upstream.status})`
-  );
+    if (upstream.status >= 300 && upstream.status < 400) {
+      const location = upstream.headers.get("location");
 
-  const location = upstream.headers.get("location");
-  if (location && [301, 302, 303, 307, 308].includes(upstream.status)) {
-    let nextLocation = location;
+      if (location) {
+        if (location.startsWith("http")) {
+          return NextResponse.redirect(location, upstream.status);
+        }
 
-    const api = new URL(API_ORIGIN);
+        const redirectUrl = new URL(location, API_ORIGIN);
 
-    try {
-      const loc = new URL(location, api);
-
-      if (loc.host === api.host && isAllowedPath(loc.pathname)) {
-        nextLocation = `/api/proxy${loc.pathname}${loc.search}`;
+        return NextResponse.redirect(
+          new URL(
+            `/api/proxy${redirectUrl.pathname}${redirectUrl.search}`,
+            req.url
+          ),
+          upstream.status
+        );
       }
-    } catch {
-      nextLocation = location;
     }
 
-    const redirectUrl = nextLocation.startsWith("/")
-      ? new URL(nextLocation, req.nextUrl.origin)
-      : nextLocation;
+    const response = new NextResponse(upstream.body, {
+      status: upstream.status,
+    });
 
-    return NextResponse.redirect(
-      redirectUrl,
-      upstream.status as 301 | 302 | 303 | 307 | 308
+    upstream.headers.forEach((value, key) => {
+      if (!hopByHopHeaders.has(key.toLowerCase()) && key !== "set-cookie") {
+        response.headers.set(key, value);
+      }
+    });
+
+    const setCookieHeader = upstream.headers.get("set-cookie");
+
+    if (setCookieHeader) {
+      if (process.env.NODE_ENV === "development") {
+        const cleanCookie = setCookieHeader
+          .replace(/Domain=[^;]+;?/gi, "")
+          .replace(/Secure;?/gi, "");
+
+        response.headers.set("set-cookie", cleanCookie);
+      } else {
+        response.headers.set("set-cookie", setCookieHeader);
+      }
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Proxy Error:", error);
+
+    return NextResponse.json(
+      {
+        message: "프록시 요청 중 오류가 발생했습니다.",
+      },
+      {
+        status: 500,
+      }
     );
   }
-
-  const data = await upstream.arrayBuffer();
-  const res = new NextResponse(data, { status: upstream.status });
-
-  upstream.headers.forEach((value, key) => {
-    const k = key.toLowerCase();
-    if (hopByHopHeaders.has(k)) return;
-
-    if (k === "set-cookie") {
-      res.headers.append("set-cookie", value);
-    } else {
-      res.headers.set(key, value);
-    }
-  });
-
-  return res;
 }
+
+export const GET = handler;
+export const POST = handler;
+export const PUT = handler;
+export const PATCH = handler;
+export const DELETE = handler;
+export const HEAD = handler;
+export const OPTIONS = handler;
