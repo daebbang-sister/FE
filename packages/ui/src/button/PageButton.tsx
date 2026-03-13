@@ -7,18 +7,23 @@ type PaginationProps = {
   limit: number;
   pageGroupSize?: number;
   onPageChange?: (page: number) => void;
-  scrollToTop?: boolean;
 };
 
 export function PageButton({
   totalItems,
   limit,
   pageGroupSize = 5,
-  scrollToTop,
   onPageChange,
 }: PaginationProps) {
-  const totalPage = Math.ceil(totalItems / limit);
   const [currentPage, setCurrentPage] = useState(1);
+  const isInvalid =
+    !Number.isFinite(totalItems) ||
+    !Number.isFinite(limit) ||
+    totalItems <= 0 ||
+    limit <= 0;
+  if (isInvalid) return null;
+  const totalPage = Math.ceil(totalItems / limit);
+  if (totalPage <= 1) return null;
 
   const currentGroup = Math.ceil(currentPage / pageGroupSize);
   const startPage = (currentGroup - 1) * pageGroupSize + 1;
@@ -33,9 +38,6 @@ export function PageButton({
     if (page < 1 || page > totalPage) return;
     setCurrentPage(page);
     onPageChange?.(page);
-    if (scrollToTop) {
-      window.scrollTo(0, 0);
-    }
   };
 
   return (
@@ -118,7 +120,6 @@ export function PageButton({
         totalItems={150}  // 전체 아이템 수
         limit={5}  // 한 페이지에 보여줄 아이템 수
         pageGroupSize={5} // 한 화면에 보여줄 페이지 버튼 수 (기본 5)
-        scrollToTop={true}  // 페이지 이동시 스크롤 맨위로 할꺼면
         onPageChange={(page) => console.log(page)}  // 페이지 선택 시 호출
     /> 
   */
