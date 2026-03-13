@@ -4,7 +4,7 @@ import { duplicationCheckId } from "@/features/auth/api";
 import SignUpInputLabel from "@/features/auth/components/SignUpInputLabel";
 import { SignUpFormValues } from "@/features/auth/schemas/sign-up.schema";
 import { Button, Input } from "@repo/ui";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import {
   FieldErrors,
   UseFormRegister,
@@ -46,29 +46,32 @@ export default function SignUpId({
     setIsIdVerified(false);
   }, [watchedUserId]);
 
-  const idCheck = async () => {
+  const [isPending, startTransition] = useTransition();
+  const idCheck = () => {
     const userId = getValues("userId");
-    const isValid = await trigger("userId");
-    if (!isValid) return;
+    startTransition(async () => {
+      const isValid = await trigger("userId");
+      if (!isValid) return;
 
-    try {
-      const res = await duplicationCheckId(userId);
-      alert(res.message);
-      clearErrors("userId");
-      setVerifiedUserId(userId);
-      setIsIdVerified(true);
-    } catch (err) {
-      setVerifiedUserId(null);
-      setIsIdVerified(false);
-      if (err instanceof ApiError) {
-        setError("userId", {
-          type: "manual",
-          message: err.message,
-        });
-      } else {
-        alert("알 수 없는 오류가 발생했습니다.");
+      try {
+        const res = await duplicationCheckId(userId);
+        alert(res.message);
+        clearErrors("userId");
+        setVerifiedUserId(userId);
+        setIsIdVerified(true);
+      } catch (err) {
+        setVerifiedUserId(null);
+        setIsIdVerified(false);
+        if (err instanceof ApiError) {
+          setError("userId", {
+            type: "manual",
+            message: err.message,
+          });
+        } else {
+          alert("알 수 없는 오류가 발생했습니다.");
+        }
       }
-    }
+    });
   };
 
   return (
@@ -96,7 +99,7 @@ export default function SignUpId({
           className="h-13.5 max-w-22.5"
           onClick={idCheck}
         >
-          중복 확인
+          {isPending ? "확인 대기" : "중복 확인"}
         </Button>
       </div>
       {isIdVerified && (
