@@ -7,7 +7,7 @@ export default function QuickBanner() {
   // const { isMobile } = useBreakpoint();
 
   return (
-    <section className="fixed right-10 bottom-20 z-[800] flex flex-col gap-3">
+    <section className="fixed right-10 bottom-20 z-999 flex flex-col gap-1.5">
       <Link href="https://pf.kakao.com/_DHZxmG" className="relative">
         <p className="bg-neutral-0 title3 my-2 hidden h-12.5 w-45 items-center rounded-full px-5 shadow-[0_0_8px_rgba(0,0,0,0.16)] md:flex">
           카톡 문의
