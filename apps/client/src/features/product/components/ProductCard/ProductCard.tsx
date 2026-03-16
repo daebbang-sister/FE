@@ -3,7 +3,7 @@ import ProductColorChips from "./ProductColorChips";
 import Link from "next/link";
 
 type ProductCardProps = {
-  id: string;
+  id: number;
   category: string;
   colors: string[];
   title: string;
