@@ -59,9 +59,12 @@ export default async function request<T>(
 
   if (typeof url === "string" && !url.startsWith("http")) {
     const path = url.startsWith("/") ? url : `/${url}`;
+
+    const API_ORIGIN = process.env.API_ORIGIN ?? "";
+
     absoluteUrl =
       typeof window === "undefined"
-        ? `${process.env.API_ORIGIN}${path}`
+        ? `${API_ORIGIN}${path}`
         : `/api/proxy${path}`;
   }
 
