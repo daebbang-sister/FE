@@ -16,7 +16,7 @@ export const realtimeBest = {
         {
           id: 1,
           category: "outer",
-          title: "오버핏 울 코트",
+          title: "오버핏 울 코트 오버핏 울 코트 오버핏 울 코트 오버핏 울 코트",
           originalPrice: "129,000원",
           salePrice: "89,000원",
           discount: "31%",
@@ -101,7 +101,7 @@ export const realtimeBest = {
   ],
 };
 
-export default function BestProducts() {
+export default function ProductBest() {
   const [tab, setTab] = useState(0);
   const activeTab = realtimeBest.tabs[tab];
 
@@ -120,7 +120,7 @@ export default function BestProducts() {
         />
       </div>
 
-      <div className="grid grid-cols-4 gap-x-5 gap-y-12">
+      <div className="grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
         {activeTab.products.map((product) => (
           <ProductCard key={product.id} {...product} />
         ))}

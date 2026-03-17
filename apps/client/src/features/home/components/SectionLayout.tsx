@@ -26,7 +26,7 @@ export default function SectionLayout({
 
       {children}
 
-      <div className="mt-30 flex justify-center">
+      <div className="mt-18 flex justify-center">
         <Link href={moreLink}>
           <Button variant="stroke" className="w-67.5">
             전체 보러 가기

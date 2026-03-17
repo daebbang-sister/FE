@@ -23,7 +23,7 @@ export const banners = [
 
 export default function MainBanner() {
   return (
-    <div className="grid grid-cols-4 gap-x-5">
+    <div className="grid grid-cols-2 gap-0 md:grid-cols-4 md:gap-5">
       {banners.map((banner) => (
         <div key={banner.id} className="relative">
           <div className="aspect-3/3.5 overflow-hidden bg-neutral-200">

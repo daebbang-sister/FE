@@ -59,7 +59,10 @@ export default async function request<T>(
 
   if (typeof url === "string" && !url.startsWith("http")) {
     const path = url.startsWith("/") ? url : `/${url}`;
-    absoluteUrl = `/api/proxy${path}`;
+    absoluteUrl =
+      typeof window === "undefined"
+        ? `${process.env.API_ORIGIN}${path}`
+        : `/api/proxy${path}`;
   }
 
   const mergedHeaders = new Headers(options?.headers);
