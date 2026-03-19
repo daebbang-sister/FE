@@ -2,6 +2,18 @@ import { ApiError } from "./error";
 import { isApiResponse } from "./api-response.guard";
 import { ApiResponse } from "@repo/types";
 
+function getBaseUrl() {
+  if (typeof window !== "undefined") {
+    return "";
+  }
+
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+
+  return "http://localhost:3000";
+}
+
 async function handleResponse<T>(
   response: Response,
   mode: "data" | "full" = "data"
@@ -57,15 +69,16 @@ export default async function request<T>(
 ): Promise<T | ApiResponse<T>> {
   let absoluteUrl: string | URL = url;
 
+  if (!absoluteUrl) {
+    throw new Error("잘못된 요청 URL입니다.");
+  }
+
   if (typeof url === "string" && !url.startsWith("http")) {
     const path = url.startsWith("/") ? url : `/${url}`;
 
-    const API_ORIGIN = process.env.API_ORIGIN ?? "";
+    const base = getBaseUrl();
 
-    absoluteUrl =
-      typeof window === "undefined"
-        ? `${API_ORIGIN}${path}`
-        : `/api/proxy${path}`;
+    absoluteUrl = `${base}/api/proxy${path}`;
   }
 
   const mergedHeaders = new Headers(options?.headers);

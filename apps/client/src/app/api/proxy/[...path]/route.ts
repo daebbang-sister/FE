@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_ORIGIN = process.env.API_ORIGIN;
+function getApiOrigin() {
+  const origin = process.env.API_ORIGIN;
+
+  if (!origin) {
+    throw new Error("API_ORIGIN 환경 변수가 설정되지 않았습니다.");
+  }
+
+  return origin;
+}
 
 type Ctx = {
   params: Promise<{ path: string[] }>;
@@ -21,14 +29,16 @@ const hopByHopHeaders = new Set([
 
 async function handler(req: NextRequest, { params }: Ctx) {
   try {
+    const API_ORIGIN = getApiOrigin();
+
+    const { path } = await params;
+    const pathname = `/${path.join("/")}`;
     if (!API_ORIGIN) {
       return NextResponse.json(
         { message: "환경 변수가 없습니다." },
         { status: 500 }
       );
     }
-    const { path } = await params;
-    const pathname = `/${path.join("/")}`;
 
     const isAllowed = ALLOWED_PREFIX.some((prefix) =>
       pathname.startsWith(prefix)
