@@ -3,6 +3,8 @@ import ProductBest from "@/features/home/components/ProductBest";
 import MainBanner from "@/features/home/components/MainBanner";
 import ProductSection from "@/features/home/components/ProductSection";
 
+export const dynamic = "force-dynamic";
+
 async function getProductsData() {
   const [newProducts, topProducts, bottomProducts] = await Promise.all([
     getMainNewProducts(8),
