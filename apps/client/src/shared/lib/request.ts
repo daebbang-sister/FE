@@ -3,15 +3,13 @@ import { isApiResponse } from "./api-response.guard";
 import { ApiResponse } from "@repo/types";
 
 function getBaseUrl() {
-  if (typeof window !== "undefined") {
-    return "";
+  if (typeof window !== "undefined") return "";
+
+  if (!process.env.NEXT_PUBLIC_SITE_URL) {
+    throw new Error("환경 변수가 없습니다");
   }
 
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL;
-  }
-
-  return "http://localhost:3000";
+  return process.env.NEXT_PUBLIC_SITE_URL;
 }
 
 async function handleResponse<T>(
