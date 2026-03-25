@@ -1,4 +1,7 @@
+"use client";
+
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { useEffect } from "react";
 type QuantityProps = {
   value: number;
   onChange: (value: number) => void;
@@ -7,14 +10,23 @@ type QuantityProps = {
 };
 
 export function Quantity({ value, onChange, min, max }: QuantityProps) {
+  const intValue = Math.round(value);
+  const intMin = Math.round(min);
+  const intMax = Math.round(max);
+
+  useEffect(() => {
+    if (intValue < intMin) onChange(intMin);
+    else if (intValue > intMax) onChange(intMax);
+  }, [intValue, intMin, intMax, onChange]);
+
   const handleDecrease = () => {
-    if (value > min) {
-      onChange(value - 1);
+    if (intValue > intMin) {
+      onChange(intValue - 1);
     }
   };
   const handleIncrease = () => {
-    if (value < max) {
-      onChange(value + 1);
+    if (intValue < intMax) {
+      onChange(intValue + 1);
     }
   };
 
@@ -22,16 +34,16 @@ export function Quantity({ value, onChange, min, max }: QuantityProps) {
     <div className="flex items-center gap-0.5">
       <button
         onClick={handleDecrease}
-        disabled={value === min}
+        disabled={intValue === intMin}
         className="text-text-primary disabled:text-text-disabled p-2.5"
       >
         <MinusIcon className="h-3 w-3" />
       </button>
       <span className="caption1 leading-none">
-        {value.toString().padStart(2, "0")}
+        {intValue.toString().padStart(2, "0")}
       </span>
       <button
-        disabled={value === max}
+        disabled={intValue === intMax}
         onClick={handleIncrease}
         className="text-text-primary disabled:text-text-disabled p-2.5"
       >
