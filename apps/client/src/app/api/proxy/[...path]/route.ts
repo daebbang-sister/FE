@@ -33,6 +33,7 @@ async function handler(req: NextRequest, { params }: Ctx) {
 
     const { path } = await params;
     const pathname = `/${path.join("/")}`;
+
     if (!API_ORIGIN) {
       return NextResponse.json(
         { message: "환경 변수가 없습니다." },
@@ -58,6 +59,7 @@ async function handler(req: NextRequest, { params }: Ctx) {
     const body = hasBody ? await req.arrayBuffer() : undefined;
 
     const headers = new Headers(req.headers);
+
     const upstream = await fetch(targetUrl, {
       method: req.method,
       headers,

@@ -1,6 +1,7 @@
 import { ApiError } from "./error";
 import { isApiResponse } from "./api-response.guard";
 import { ApiResponse } from "@repo/types";
+import { useAuthStore } from "@/shared/store/auth.store";
 
 function getBaseUrl() {
   if (typeof window !== "undefined") return "";
@@ -48,6 +49,29 @@ async function handleResponse<T>(
   return mode === "data" ? resData.data : resData;
 }
 
+async function refreshToken(): Promise<string> {
+  const res = await fetch(`${getBaseUrl()}/api/proxy/v1/tokens/reissues`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    useAuthStore.getState().logout();
+    throw new ApiError({
+      message: "로그인이 만료 되었습니다",
+      status: "401",
+      code: "UNAUTHORIZED",
+    });
+  }
+
+  const data = await res.json();
+  const newAccessToken = data.data.accessToken;
+
+  useAuthStore.getState().login(newAccessToken);
+
+  return newAccessToken;
+}
+
 export default function request<T>(
   url: string | URL,
   options?: RequestInit,
@@ -88,11 +112,31 @@ export default async function request<T>(
     mergedHeaders.set("Content-Type", "application/json");
   }
 
+  const accessToken = useAuthStore.getState().accessToken;
+  if (accessToken) {
+    mergedHeaders.set("Authorization", `Bearer ${accessToken}`);
+  } else {
+    console.warn("accessToken 없음. 로그인 필요");
+  }
   const response = await fetch(absoluteUrl, {
     ...options,
     credentials: "include",
     headers: mergedHeaders,
   });
+
+  if (response.status === 401) {
+    const newAccessToken = await refreshToken();
+
+    mergedHeaders.set("Authorization", `Bearer ${newAccessToken}`);
+
+    const retryResponse = await fetch(absoluteUrl, {
+      ...options,
+      credentials: "include",
+      headers: mergedHeaders,
+    });
+
+    return handleResponse<T>(retryResponse, mode);
+  }
 
   return handleResponse<T>(response, mode);
 }

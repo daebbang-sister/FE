@@ -7,11 +7,14 @@ import {
   PhoneNumber,
   PhoneVerify,
   FindIdResponse,
+  LoginResPonse,
 } from "./model";
 import { ApiResponse } from "@repo/types";
 
-export const loginUser = (userData: UserLogin): Promise<ApiResponse<null>> =>
-  request<null>(
+export const loginUser = (
+  userData: UserLogin
+): Promise<ApiResponse<LoginResPonse>> =>
+  request<LoginResPonse>(
     "/v1/auth/login",
     {
       method: "POST",
