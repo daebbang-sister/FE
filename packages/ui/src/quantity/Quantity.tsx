@@ -15,7 +15,7 @@ export function Quantity() {
   };
 
   return (
-    <div>
+    <div className="flex gap-3 p-2.5">
       <button
         onClick={handleDecrease}
         disabled={quantity === 1}
