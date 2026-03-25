@@ -21,13 +21,13 @@ export default function SideNavi() {
   }, [pathname, closeAll]);
 
   const categories = [
-    { id: 1, name: "신상품" },
-    { id: 2, name: "베스트" },
-    { id: 3, name: "탑" },
-    { id: 4, name: "팬츠" },
-    { id: 5, name: "트레이닝" },
-    { id: 6, name: "아우터" },
-    { id: 7, name: "신발 & 가방" },
+    { id: 1, name: "신상품", value: "신상품" },
+    { id: 2, name: "베스트", value: "실시간 베스트" },
+    { id: 3, name: "TOP", value: "TOP" },
+    { id: 4, name: "BOTTOM", value: "BOTTOM" },
+    { id: 5, name: "트레이닝", value: "트레이닝" },
+    { id: 6, name: "아우터", value: "아우터" },
+    { id: 7, name: "신발 & 가방", value: "신발 & 가방" },
   ];
 
   return (
@@ -63,7 +63,7 @@ export default function SideNavi() {
             <ul className="text-text-disabled [&_a:hover]:text-text-primary flex flex-col gap-4">
               {categories.map((category) => (
                 <li key={category.id}>
-                  <Link href={`/category/${category.name}`}>
+                  <Link href={`/products/${category.value}`}>
                     {category.name}
                   </Link>
                 </li>
