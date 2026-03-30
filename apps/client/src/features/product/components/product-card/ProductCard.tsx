@@ -1,7 +1,7 @@
 import { ProductImage } from "@/features/product/ui/product-image/ProductImage";
 import ProductColorChips from "./ProductColorChips";
 import Link from "next/link";
-import { Badge } from "@/features/product/ui/badge/Badge";
+import { DiscountRate } from "@/shared/ui/discount-rate/DiscountRate";
 
 type ProductCardProps = {
   id: number;
@@ -45,7 +45,7 @@ export default function ProductCard({
           </p>
           <div className="flex items-center gap-1.25">
             <p className="caption1">{salePrice}</p>
-            <Badge>{discount}</Badge>
+            <DiscountRate>{discount}</DiscountRate>
           </div>
         </div>
       ) : (
