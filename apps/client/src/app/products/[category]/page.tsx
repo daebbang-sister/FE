@@ -19,7 +19,7 @@ export default async function CategoryPage({ params }: Props) {
   const products = await getMainProducts(currentPage, limit);
 
   const shouldShowBestSlide =
-    decodedCategory !== "실시간 베스트" && decodedCategory !== "신상품";
+    decodedCategory !== "best" && decodedCategory !== "new";
   // 베스트 상품 api추가 되면 아래코드 형식으로 변경 예정
   // const bestProducts = shouldShowBestSlide ? await getBestProducts() : [];
 
