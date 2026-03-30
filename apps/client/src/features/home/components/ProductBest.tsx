@@ -1,7 +1,7 @@
 "use client";
 
 import SectionLayout from "@/features/home/components/SectionLayout";
-import ProductCard from "@/features/product/components/ProductCard/ProductCard";
+import ProductCard from "@/features/product/components/product-card/ProductCard";
 import { TabButton } from "@repo/ui";
 import { useState } from "react";
 

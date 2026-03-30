@@ -7,4 +7,5 @@ export type MainProduct = {
   originalPrice: number;
   sellingPrice: number;
   discountRate: number | null;
+  colorCodes: string[];
 };

@@ -1,6 +1,7 @@
-import { Badge, ProductBestImage } from "@/shared/ui";
+import { ProductBestImage } from "@/features/product/ui/product-image/ProductBestImage";
 import ProductColorChips from "./ProductColorChips";
 import Link from "next/link";
+import { Badge } from "@/features/product/ui/badge/Badge";
 
 type ProductBestCardProps = {
   id: number;
@@ -25,10 +26,10 @@ export default function ProductBestCard({
 }: ProductBestCardProps) {
   return (
     <Link
-      href={`/products/${category}/${id}`}
+      href={`/products/${category.toLowerCase()}/${id}`}
       className="group block cursor-pointer"
     >
-      <ProductBestImage primaryImage={primaryImage} />
+      <ProductBestImage primaryImage={primaryImage} title={title} />
       <h3 className="mt-6 mb-4 truncate">{title}</h3>
 
       {salePrice ? (
