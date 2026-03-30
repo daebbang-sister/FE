@@ -1,6 +1,7 @@
-import { Badge, ProductImage } from "@/shared/ui";
+import { ProductImage } from "@/features/product/ui/product-image/ProductImage";
 import ProductColorChips from "./ProductColorChips";
 import Link from "next/link";
+import { Badge } from "@/features/product/ui/badge/Badge";
 
 type ProductCardProps = {
   id: number;
@@ -27,10 +28,14 @@ export default function ProductCard({
 }: ProductCardProps) {
   return (
     <Link
-      href={`/products/${category}/${id}`}
+      href={`/products/${category.toLowerCase()}/${id}`}
       className="group block cursor-pointer"
     >
-      <ProductImage primaryImage={primaryImage} hoverImage={hoverImage} />
+      <ProductImage
+        primaryImage={primaryImage}
+        hoverImage={hoverImage}
+        title={title}
+      />
       <h3 className="mt-6 mb-4 truncate">{title}</h3>
 
       {salePrice ? (

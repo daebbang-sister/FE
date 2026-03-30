@@ -1,7 +1,7 @@
 "use client";
 
 import { MainProduct } from "@/features/home/model";
-import ProductBestCard from "@/features/product/components/ProductCard/ProductBestCard";
+import ProductBestCard from "@/features/product/components/product-card/ProductBestCard";
 import useEmblaCarousel from "embla-carousel-react";
 
 type Props = {
