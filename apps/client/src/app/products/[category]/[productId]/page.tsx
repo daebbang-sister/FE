@@ -9,9 +9,9 @@ export default async function ProductDetailPage({ params }: Props) {
   const { category, productId } = await params;
 
   return (
-    <div>
+    <section className="container">
       <p>category: {category}</p>
       <p>productId: {productId}</p>
-    </div>
+    </section>
   );
 }
