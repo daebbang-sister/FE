@@ -24,7 +24,7 @@ export default async function CategoryPage({ params }: Props) {
   // const bestProducts = shouldShowBestSlide ? await getBestProducts() : [];
 
   return (
-    <section className="w-full">
+    <section className="container-wide">
       <article className="w-full">
         <ProductListTitle title={decodedCategory} />
         {shouldShowBestSlide && <ProductSlide products={products} />}

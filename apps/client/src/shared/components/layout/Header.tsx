@@ -7,7 +7,7 @@ export default function Header() {
   const { openSide, openSearch } = useLayoutUI();
 
   return (
-    <header className="fixed top-0 z-[900] flex h-[var(--size-header-h)] w-full items-center justify-between bg-neutral-900 px-10 py-7">
+    <header className="fixed top-0 z-900 flex h-[var(--size-header-h)] w-full items-center justify-between bg-neutral-900 px-10 py-7">
       <div className="cursor-pointer pr-13.5" onClick={openSide}>
         <svg
           width="25"
