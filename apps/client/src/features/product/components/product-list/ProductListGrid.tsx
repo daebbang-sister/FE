@@ -1,5 +1,5 @@
 import { MainProduct } from "@/features/home/model";
-import ProductCard from "@/features/product/components/ProductCard/ProductCard";
+import ProductCard from "@/features/product/components/product-card/ProductCard";
 import { Dropdown } from "@repo/ui";
 
 type Props = {

@@ -5,3 +5,4 @@ export { TabButton } from "./button/TabButton";
 export { PageButton } from "./button/PageButton";
 export { CheckBox } from "./checkbox/CheckBox";
 export { Dropdown } from "./dropdown/Dropdown";
+export { Quantity } from "./quantity/Quantity";

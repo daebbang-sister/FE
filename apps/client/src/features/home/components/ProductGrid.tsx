@@ -1,5 +1,5 @@
 import { MainProduct } from "@/features/home/model";
-import ProductCard from "@/features/product/components/ProductCard/ProductCard";
+import ProductCard from "@/features/product/components/product-card/ProductCard";
 
 type Props = {
   products: MainProduct[];
@@ -25,7 +25,7 @@ export default function ProductGrid({ products }: Props) {
           discount={
             product.discountRate ? `${product.discountRate}%` : undefined
           }
-          colors={[]}
+          colors={product.colorCodes}
         />
       ))}
     </div>

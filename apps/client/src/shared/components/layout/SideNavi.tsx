@@ -21,13 +21,13 @@ export default function SideNavi() {
   }, [pathname, closeAll]);
 
   const categories = [
-    { id: 1, name: "신상품", value: "신상품" },
-    { id: 2, name: "베스트", value: "실시간 베스트" },
-    { id: 3, name: "TOP", value: "TOP" },
-    { id: 4, name: "BOTTOM", value: "BOTTOM" },
-    { id: 5, name: "트레이닝", value: "트레이닝" },
-    { id: 6, name: "아우터", value: "아우터" },
-    { id: 7, name: "신발 & 가방", value: "신발 & 가방" },
+    { id: 1, name: "신상품", value: "new" },
+    { id: 2, name: "베스트", value: "best" },
+    { id: 3, name: "TOP", value: "top" },
+    { id: 4, name: "BOTTOM", value: "bottom" },
+    { id: 5, name: "트레이닝", value: "training" },
+    { id: 6, name: "아우터", value: "outer" },
+    { id: 7, name: "악세서리", value: "accessories" },
   ];
 
   return (
