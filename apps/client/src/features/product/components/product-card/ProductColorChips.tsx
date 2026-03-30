@@ -1,4 +1,4 @@
-import { ColorChip } from "@/shared/ui/color-chip/ColorChip";
+import { ColorChip } from "@/features/product/ui/color-chip/ColorChip";
 
 type PropductColorChipProps = {
   colors: string[];
