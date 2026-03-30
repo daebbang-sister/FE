@@ -34,7 +34,7 @@ export type CheckboxProps = Omit<
 
 export function CheckBox({ id, className, ...props }: CheckboxProps) {
   return (
-    <div className="relative flex w-fit items-center justify-center">
+    <div className="bg-neutral-0 relative flex w-fit items-center justify-center">
       <input
         type="checkbox"
         id={id}
