@@ -3,3 +3,4 @@ export { Badge } from "./badge/Badge";
 export { ColorChip } from "./color-chip/ColorChip";
 export { ProductImage } from "./product-image/ProductImage";
 export { ProductBestImage } from "./product-image/ProductBestImage";
+export { PageLinkButton } from "./button/PageLinkButton";
