@@ -8,7 +8,7 @@ type Props = {
   images: string[];
 };
 
-export default function ProductImageGallery({ images }: Props) {
+export default function ProdcutCarousel({ images }: Props) {
   const validImages = useMemo(() => images.filter(Boolean), [images]);
   const [selectedIndex, setSelectedIndex] = useState(0);
 

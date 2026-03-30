@@ -58,6 +58,7 @@ export default function ProductReview({ rating }: Props) {
                 const isActive = i < rating;
                 return (
                   <svg
+                    key={i}
                     width="14"
                     height="14"
                     viewBox="0 0 14 14"
