@@ -1,22 +1,46 @@
-import { getMainProducts } from "@/features/home/api";
+// import { getMainProducts } from "@/features/home/api";
+import { getCategoryProducts } from "@/features/product/api";
 import ProductListGrid from "@/features/product/components/product-list/ProductListGrid";
 import ProductListTitle from "@/features/product/components/product-list/ProductListTitle";
 import ProductSlide from "@/features/product/components/product-list/ProductSlide";
+import { getCategoryId, getCategoryName } from "@/shared/hooks/category";
 import { PageLinkButton } from "@/shared/ui/button/PageLinkButton";
 
 type Props = {
   params: Promise<{ category: string }>;
+  searchParams: Promise<{
+    sortType?: string;
+    direction?: string;
+    page?: string;
+    size?: string;
+  }>;
 };
 
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({ params, searchParams }: Props) {
   const { category } = await params;
+  const query = await searchParams;
   const decodedCategory = decodeURIComponent(category);
-  const page = 1;
-  const limit = 1;
-  const currentPage = Number(page) > 0 ? Number(page) : 1;
 
-  // 임시 api
-  const products = await getMainProducts(currentPage, limit);
+  const categoryId = getCategoryId(decodedCategory);
+  const categoryName = getCategoryName(decodedCategory);
+  if (!categoryId || !categoryName) {
+    return;
+    // notFound(); 404 추가 대기
+  }
+
+  const sortType = query.sortType ?? "NEW";
+  const direction = query.direction ?? "DESC";
+  const apiPage = Number(query.page ?? "0");
+  const pageSize = Number(query.size ?? "1");
+  const currentPage = apiPage + 1;
+
+  const products = await getCategoryProducts(
+    categoryId,
+    sortType,
+    direction,
+    apiPage,
+    pageSize
+  );
 
   const shouldShowBestSlide =
     decodedCategory !== "best" && decodedCategory !== "new";
@@ -26,8 +50,8 @@ export default async function CategoryPage({ params }: Props) {
   return (
     <section className="w-full">
       <article className="w-full">
-        <ProductListTitle title={decodedCategory} />
-        {shouldShowBestSlide && <ProductSlide products={products} />}
+        <ProductListTitle title={categoryName} />
+        {shouldShowBestSlide && <ProductSlide products={products.content} />}
       </article>
 
       <article className="container-wide">
@@ -36,11 +60,12 @@ export default async function CategoryPage({ params }: Props) {
 
       <article className="flex justify-center pb-10">
         <PageLinkButton
-          totalItems={10} // 전체 아이템 수
-          limit={limit} // 한 페이지에 보여줄 아이템 수
+          totalItems={products.totalElements}
+          limit={pageSize}
           currentPage={currentPage}
-          pageGroupSize={5} // 한 화면에 보여줄 페이지 버튼 수 (기본 5)
-          basePath={`/category/${category}`} // 페이지 선택 시 호출
+          pageGroupSize={5}
+          basePath={`/products/${category}`}
+          searchParams={query}
         />
       </article>
     </section>
