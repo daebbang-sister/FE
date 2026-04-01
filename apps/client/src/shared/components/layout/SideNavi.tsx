@@ -35,12 +35,12 @@ export default function SideNavi() {
       {/* overlay */}
       <div
         onClick={closeSide}
-        className={`bg-neutral-1000/65 fixed inset-0 z-[909] transition-opacity ${isSideOpen ? "visible opacity-100" : "invisible opacity-0"}`}
+        className={`bg-neutral-1000/65 fixed inset-0 z-909 transition-opacity ${isSideOpen ? "visible opacity-100" : "invisible opacity-0"}`}
       />
 
       {/* side panel */}
       <aside
-        className={`fixed top-0 left-0 z-[910] h-full w-full bg-white px-10 py-12.5 transition-transform duration-300 md:w-116.25 ${isSideOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed top-0 left-0 z-910 h-full w-full bg-white px-10 py-12.5 transition-transform duration-300 md:w-116.25 ${isSideOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <button className="mb-12" onClick={closeSide}>
           <svg

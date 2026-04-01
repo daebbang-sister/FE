@@ -2,7 +2,7 @@ import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@repo/ui";
 
-const badgeVariants = cva(
+const discountRateVariants = cva(
   "bg-text-primary text-brand-700 rounded-xl inline-flex items-center",
   {
     variants: {
@@ -16,12 +16,17 @@ const badgeVariants = cva(
   }
 );
 
-type BadgeProps = React.HTMLAttributes<HTMLSpanElement> &
-  VariantProps<typeof badgeVariants>;
+type DiscountRateProps = React.HTMLAttributes<HTMLSpanElement> &
+  VariantProps<typeof discountRateVariants>;
 
-export function Badge({ children, className, size, ...props }: BadgeProps) {
+export function DiscountRate({
+  children,
+  className,
+  size,
+  ...props
+}: DiscountRateProps) {
   return (
-    <span className={cn(badgeVariants({ size }), className)} {...props}>
+    <span className={cn(discountRateVariants({ size }), className)} {...props}>
       {children}
     </span>
   );
