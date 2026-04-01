@@ -66,15 +66,15 @@ export default function CartItem({
           </div>
           {discountRate ? (
             <p className="caption1 text-text-disabled line-through">
-              {originalPrice * quantity}won
+              {originalPrice}won
             </p>
           ) : (
-            <p className="caption1">{originalPrice * quantity}won</p>
+            <p className="caption1">{originalPrice}won</p>
           )}
           {discountRate ? (
             <div className="mt-1.5 flex items-center gap-1.25">
-              <p className="caption1">{sellingPrice * quantity}won</p>
-              <DiscountRate>{discountRate * quantity}%</DiscountRate>
+              <p className="caption1">{sellingPrice}won</p>
+              <DiscountRate>{discountRate}%</DiscountRate>
             </div>
           ) : (
             <></>
