@@ -7,3 +7,5 @@ export { CheckBox } from "./checkbox/CheckBox";
 export { Dropdown } from "./dropdown/Dropdown";
 export { Quantity } from "./quantity/Quantity";
 export { XButton } from "./button/XButton";
+export { Modal } from "./modal/Modal";
+export { useModalContext } from "./modal/ModalContext";
