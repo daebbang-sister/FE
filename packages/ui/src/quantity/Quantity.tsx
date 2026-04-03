@@ -31,7 +31,7 @@ export function Quantity({ value, onChange, min, max }: QuantityProps) {
   };
 
   return (
-    <div className="flex items-center gap-0.5">
+    <div className="bg-neutral-0 flex items-center gap-0.5">
       <button
         onClick={handleDecrease}
         disabled={intValue === intMin}
