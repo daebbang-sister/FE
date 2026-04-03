@@ -17,7 +17,8 @@ export default function TestPage() {
             <h1>바디</h1>
           </Modal.Body>
           <Modal.Footer>
-            <p>푸터</p>
+            <button onClick={() => setIsOpen(false)}>취소</button>
+            <button onClick={() => setIsOpen(false)}>확인</button>
           </Modal.Footer>
         </Modal.Content>
       </Modal>
