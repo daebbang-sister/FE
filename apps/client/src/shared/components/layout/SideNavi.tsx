@@ -4,10 +4,12 @@ import { useLayoutUI } from "@/shared/context/layout-ui.context";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { CATEGORIES } from "@/shared/hooks/category";
 
 export default function SideNavi() {
   const { isSideOpen, closeSide, closeAll } = useLayoutUI();
   const pathname = usePathname();
+  const categories = CATEGORIES;
 
   useEffect(() => {
     if (isSideOpen) {
@@ -19,16 +21,6 @@ export default function SideNavi() {
   useEffect(() => {
     closeAll();
   }, [pathname, closeAll]);
-
-  const categories = [
-    { id: 1, name: "신상품", value: "new" },
-    { id: 2, name: "베스트", value: "best" },
-    { id: 3, name: "TOP", value: "top" },
-    { id: 4, name: "BOTTOM", value: "bottom" },
-    { id: 5, name: "트레이닝", value: "training" },
-    { id: 6, name: "아우터", value: "outer" },
-    { id: 7, name: "악세서리", value: "accessories" },
-  ];
 
   return (
     <>

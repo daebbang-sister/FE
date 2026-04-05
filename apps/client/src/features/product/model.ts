@@ -1,4 +1,13 @@
-export type MainProduct = {
+export type PageResponse<T> = {
+  content: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+};
+
+export type CategoryProduct = {
   id: number;
   categoryName: string;
   productName: string;
@@ -8,10 +17,4 @@ export type MainProduct = {
   sellingPrice: number;
   discountRate: number | null;
   colorCodes: string[];
-};
-export type PageResponse<T> = {
-  success: boolean;
-  status: number;
-  message: string;
-  data: T;
 };
