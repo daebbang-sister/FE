@@ -5,17 +5,44 @@ import { Button, CheckBox, Quantity, XButton } from "@repo/ui";
 import Image from "next/image";
 
 type CartItemProps = {
+  id: string;
   quantity: number;
   setQuantity: (value: number) => void;
+  name: string;
+  option: string;
+  sellingPrice: number;
+  originalPrice: number;
+  discountRate: number | null;
+  imageUrl?: string;
+  checked: boolean;
+  onCheckedChange: (id: string, checked: boolean) => void;
+  onDeleteItem: () => void;
 };
 
-export default function CartItem({ quantity, setQuantity }: CartItemProps) {
+export default function CartItem({
+  id,
+  quantity,
+  setQuantity,
+  name,
+  option,
+  sellingPrice,
+  originalPrice,
+  discountRate,
+  checked,
+  // imageUrl,
+  onCheckedChange,
+  onDeleteItem,
+}: CartItemProps) {
   return (
     <div className="border-border-default first:border-border-default flex gap-6 border-b pt-6 pb-6 first:border-t last:border-b-0 last:pb-0">
       {/* 왼쪽 */}
       <div className="relative w-full max-w-37.5">
         <div className="absolute top-2.5 left-2.5 z-9">
-          <CheckBox id="1" />
+          <CheckBox
+            id={id}
+            checked={checked}
+            onChange={(e) => onCheckedChange(id, e.target.checked)}
+          />
         </div>
         <Image
           alt="상품 이미지"
@@ -29,18 +56,33 @@ export default function CartItem({ quantity, setQuantity }: CartItemProps) {
       <div className="w-full">
         <div className="mb-9">
           <div className="mb-3 flex items-center justify-between">
-            <h6>이번 주 가장 사랑 받은 인기 아이템</h6>
-            <XButton iconSize={15} buttonSize={19} className="" />
+            <h6>{name}</h6>
+            <XButton
+              onClick={onDeleteItem}
+              iconSize={15}
+              buttonSize={19}
+              className=""
+            />
           </div>
-          <p className="caption1 text-text-disabled line-through">46,000won</p>
-          <div className="mt-1.5 flex items-center gap-1.25">
-            <p className="caption1">21,300won</p>
-            <DiscountRate>32%</DiscountRate>
-          </div>
+          {discountRate ? (
+            <p className="caption1 text-text-disabled line-through">
+              {originalPrice}won
+            </p>
+          ) : (
+            <p className="caption1">{originalPrice}won</p>
+          )}
+          {discountRate ? (
+            <div className="mt-1.5 flex items-center gap-1.25">
+              <p className="caption1">{sellingPrice}won</p>
+              <DiscountRate>{discountRate}%</DiscountRate>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
 
         <div>
-          <p className="caption1">[옵션: 화이트/SMALL]</p>
+          <p className="caption1">{option}</p>
           <div className="mt-3 flex gap-1.75">
             <Quantity
               value={quantity}
