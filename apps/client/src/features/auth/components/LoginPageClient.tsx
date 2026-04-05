@@ -48,8 +48,6 @@ export default function LoginPageClient() {
       alert(res.message);
 
       router.replace("/");
-      console.log("isLoggedIn", useAuthStore.getState().isLoggedIn);
-      console.log("accessToken", useAuthStore.getState().accessToken);
     } catch (err) {
       if (err instanceof ApiError) {
         alert(err.message);

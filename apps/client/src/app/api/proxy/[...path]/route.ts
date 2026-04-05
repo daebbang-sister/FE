@@ -59,6 +59,10 @@ async function handler(req: NextRequest, { params }: Ctx) {
     const body = hasBody ? await req.arrayBuffer() : undefined;
 
     const headers = new Headers(req.headers);
+    if (process.env.NODE_ENV === "development") {
+      headers.delete("host");
+      headers.delete("origin");
+    }
 
     const upstream = await fetch(targetUrl, {
       method: req.method,
