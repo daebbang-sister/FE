@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchCart } from "@/features/cart/api";
 import CartItem from "@/features/cart/ui/cart-item/CartItem";
 import { Button, CheckBox } from "@repo/ui";
 import { useRouter } from "next/navigation";
@@ -44,6 +45,7 @@ const dummyCartItems = [
 ];
 
 export default function CartPage() {
+  console.log("카트 데이터", fetchCart({ cursor: 1, size: 8 }));
   const [items, setItems] = useState<CartItems>(
     dummyCartItems.map((item) => ({ ...item, checked: true }))
   );
