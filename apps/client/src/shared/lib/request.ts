@@ -115,9 +115,8 @@ export default async function request<T>(
   const accessToken = useAuthStore.getState().accessToken;
   if (accessToken) {
     mergedHeaders.set("Authorization", `Bearer ${accessToken}`);
-  } else {
-    console.warn("accessToken 없음. 로그인 필요");
   }
+
   const response = await fetch(absoluteUrl, {
     ...options,
     credentials: "include",

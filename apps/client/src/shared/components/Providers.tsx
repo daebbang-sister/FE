@@ -3,15 +3,14 @@
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuthStore } from "@/shared/store/auth.store";
-import { useRouter } from "next/navigation";
 
 type ProvidersProps = {
   children: React.ReactNode;
 };
 
 export default function Providers({ children }: ProvidersProps) {
+  const [isReady, setIsReady] = useState(false);
   const { login, logout } = useAuthStore();
-  const router = useRouter();
 
   const [queryClient] = useState(
     () =>
@@ -35,7 +34,6 @@ export default function Providers({ children }: ProvidersProps) {
 
         if (!res.ok) {
           logout();
-          router.replace("/login");
           return;
         }
 
@@ -43,12 +41,15 @@ export default function Providers({ children }: ProvidersProps) {
         login(data.data.accessToken);
       } catch {
         logout();
-        router.replace("/login");
+      } finally {
+        setIsReady(true);
       }
     };
 
     refresh();
   }, []);
+
+  if (!isReady) return null;
 
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
