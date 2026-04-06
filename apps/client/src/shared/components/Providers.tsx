@@ -6,9 +6,13 @@ import { useAuthStore } from "@/shared/store/auth.store";
 
 type ProvidersProps = {
   children: React.ReactNode;
+  initialLoggedIn: boolean;
 };
 
-export default function Providers({ children }: ProvidersProps) {
+export default function Providers({
+  children,
+  initialLoggedIn,
+}: ProvidersProps) {
   const [isReady, setIsReady] = useState(false);
   const { login, logout } = useAuthStore();
 
@@ -25,6 +29,10 @@ export default function Providers({ children }: ProvidersProps) {
   );
 
   useEffect(() => {
+    if (!initialLoggedIn) {
+      setIsReady(true);
+      return;
+    }
     const refresh = async () => {
       try {
         const res = await fetch("/api/proxy/v1/tokens/reissues", {
