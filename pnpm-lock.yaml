@@ -157,9 +157,6 @@ importers:
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      embla-carousel-react:
-        specifier: ^8.6.0
-        version: 8.6.0(react@19.2.3)
       '@tanstack/react-query':
         specifier: ^5.95.2
         version: 5.95.2(react@19.2.3)
