@@ -14,6 +14,7 @@ export type CartItem = {
   color: string;
   size: string;
   mainImageUrl: "string";
+  checked: boolean;
 };
 export type CartQuery = {
   cursor?: number;

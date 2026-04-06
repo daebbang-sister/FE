@@ -8,3 +8,24 @@ export const fetchCart = (params?: CartQuery) =>
     { method: "GET" },
     "full"
   );
+
+export const fetchDeleteAllCarts = () =>
+  request<null>("/v1/carts/all", { method: "DELETE" }, "full");
+
+export const fetchDeleteCarts = (ids: number[]) =>
+  request<null>(
+    `/v1/carts?${ids.map((id) => `ids=${id}`).join("&")}`,
+    { method: "DELETE" },
+    "full"
+  );
+
+export const fetchUpdateCart = (cartId: number, quantity: number) => {
+  request<null>(
+    `/v1/carts/${cartId}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ quantity }),
+    },
+    "full"
+  );
+};
