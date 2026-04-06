@@ -14,6 +14,8 @@ export function middleware(req: NextRequest) {
   if (PROTECTED_PAGES.some((page) => pathname.startsWith(page)) && !isLogin) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
