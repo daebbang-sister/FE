@@ -5,6 +5,7 @@ import SearchBar from "@/shared/components/layout/SearchBar";
 import SideNavi from "@/shared/components/layout/SideNavi";
 import Footer from "@/shared/components/layout/Footer";
 import QuickBanner from "@/shared/components/floating/QuickBanner";
+import Providers from "@/shared/components/Providers";
 
 export const metadata = {
   title: {
@@ -24,16 +25,18 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <LayoutUIProvider>
-          <QuickBanner />
-          <Header />
-          <SideNavi />
-          <SearchBar />
-          <main className="header-m flex min-h-[calc(100vh-var(--size-header-h)-var(--size-footer-h))] justify-center">
-            {children}
-          </main>
-          <Footer />
-        </LayoutUIProvider>
+        <Providers>
+          <LayoutUIProvider>
+            <QuickBanner />
+            <Header />
+            <SideNavi />
+            <SearchBar />
+            <main className="header-m flex min-h-[calc(100vh-var(--size-header-h)-var(--size-footer-h))] justify-center">
+              {children}
+            </main>
+            <Footer />
+          </LayoutUIProvider>
+        </Providers>
       </body>
     </html>
   );

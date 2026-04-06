@@ -11,10 +11,12 @@ import { ApiError } from "@/shared/lib/error";
 import { Button, CheckBox, Input } from "@repo/ui";
 import LoginKaKaoBtn from "@/features/auth/components/LoginKaKaoBtn";
 import { useRememberId } from "@/features/auth/hook/useRememberId";
+import { useAuthStore } from "@/shared/store/auth.store";
 
 type FormData = z.infer<typeof loginSchema>;
 
 export default function LoginPageClient() {
+  const { login: setLogin } = useAuthStore();
   const router = useRouter();
 
   const {
@@ -38,6 +40,8 @@ export default function LoginPageClient() {
   const onSubmit = async (data: FormData) => {
     try {
       const res = await loginUser(data);
+      const { accessToken } = res.data;
+      setLogin(accessToken);
 
       saveId(data.id);
 

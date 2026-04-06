@@ -5,6 +5,12 @@ export type UserLogin = {
   password: string;
 };
 
+export type LoginResPonse = {
+  grantType: string;
+  accessToken: string;
+  refreshToken: null;
+};
+
 export type UserSignUp = {
   name: string;
   loginId: string;

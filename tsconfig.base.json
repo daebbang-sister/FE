@@ -6,7 +6,6 @@
     "noEmit": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-
     "baseUrl": ".",
     "paths": {
       "@repo/ui": ["packages/ui/src"],
