@@ -19,12 +19,16 @@ export const fetchDeleteCarts = (ids: number[]) =>
     "full"
   );
 
-export const fetchUpdateCart = (cartId: number, quantity: number) => {
+export const fetchUpdateCart = (
+  cartId: number,
+  quantity: number,
+  productDetailsId: number
+) => {
   request<null>(
     `/v1/carts/${cartId}`,
     {
       method: "PATCH",
-      body: JSON.stringify({ quantity }),
+      body: JSON.stringify({ quantity, productDetailsId }),
     },
     "full"
   );

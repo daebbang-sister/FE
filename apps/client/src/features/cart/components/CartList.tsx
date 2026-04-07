@@ -3,7 +3,11 @@ import CartItem from "@/features/cart/ui/cart-item/CartItem";
 type CartListType = {
   items: CartItemType[];
   onCheckItem: (id: string, checked: boolean) => void;
-  onUpdateCart: (id: number, quantity: number) => void;
+  onUpdateCart: (
+    id: number,
+    quantity: number,
+    productDetailsId: number
+  ) => void;
   onDeleteItem: (id: number) => void;
 };
 export default function CartList({
@@ -18,6 +22,7 @@ export default function CartList({
         return (
           <CartItem
             key={item.cartId}
+            imageUrl={item.mainImageUrl}
             id={String(item.cartId)}
             name={item.productName}
             option={item.size}
@@ -25,7 +30,7 @@ export default function CartList({
             quantity={item.quantity}
             originalPrice={item.originalPrice}
             discountRate={item.discountRate}
-            setQuantity={(q) => onUpdateCart(item.cartId, q)}
+            setQuantity={(q) => onUpdateCart(item.cartId, q, item.productId)}
             checked={item.checked}
             onCheckedChange={onCheckItem}
             onDeleteItem={() => onDeleteItem(item.cartId)}
