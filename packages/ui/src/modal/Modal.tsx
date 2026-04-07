@@ -2,11 +2,6 @@
 import React from "react";
 import { Portal } from "./Portal";
 import ModalContext from "./ModalContext";
-import { Overlay } from "./Overlay";
-import { Content } from "./Content";
-import { Header } from "./Header";
-import { Body } from "./Body";
-import { Footer } from "./Footer";
 
 type ModalProps = {
   children: React.ReactNode;
@@ -21,9 +16,3 @@ export function Modal({ children, onClose, isOpen }: ModalProps) {
     </ModalContext.Provider>
   );
 }
-
-Modal.Overlay = Overlay;
-Modal.Content = Content;
-Modal.Header = Header;
-Modal.Body = Body;
-Modal.Footer = Footer;
