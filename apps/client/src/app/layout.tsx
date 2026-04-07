@@ -5,8 +5,7 @@ import SearchBar from "@/shared/components/layout/SearchBar";
 import SideNavi from "@/shared/components/layout/SideNavi";
 import Footer from "@/shared/components/layout/Footer";
 import QuickBanner from "@/shared/components/floating/QuickBanner";
-import { cookies } from "next/headers";
-import Providers from "@/shared/components/Providers";
+import AppProvider from "@/shared/providers/AppProvider";
 
 export const metadata = {
   title: {
@@ -23,13 +22,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const hasSession = cookieStore.has("refresh");
-
   return (
     <html lang="ko" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <Providers initialLoggedIn={hasSession}>
+        <AppProvider>
           <LayoutUIProvider>
             <QuickBanner />
             <Header />
@@ -40,7 +36,7 @@ export default async function RootLayout({
             </main>
             <Footer />
           </LayoutUIProvider>
-        </Providers>
+        </AppProvider>
       </body>
     </html>
   );

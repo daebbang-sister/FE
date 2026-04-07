@@ -3,18 +3,15 @@
 import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAuthStore } from "@/shared/store/auth.store";
+import { refreshToken } from "@/shared/lib/request";
 
 type ProvidersProps = {
   children: React.ReactNode;
-  initialLoggedIn: boolean;
 };
 
-export default function Providers({
-  children,
-  initialLoggedIn,
-}: ProvidersProps) {
+export default function AppProvider({ children }: ProvidersProps) {
   const [isReady, setIsReady] = useState(false);
-  const { login, logout } = useAuthStore();
+  const { logout } = useAuthStore();
 
   const [queryClient] = useState(
     () =>
@@ -29,24 +26,9 @@ export default function Providers({
   );
 
   useEffect(() => {
-    if (!initialLoggedIn) {
-      setIsReady(true);
-      return;
-    }
-    const refresh = async () => {
+    const initAuth = async () => {
       try {
-        const res = await fetch("/api/proxy/v1/tokens/reissues", {
-          method: "POST",
-          credentials: "include",
-        });
-
-        if (!res.ok) {
-          logout();
-          return;
-        }
-
-        const data = await res.json();
-        login(data.data.accessToken);
+        await refreshToken();
       } catch {
         logout();
       } finally {
@@ -54,7 +36,7 @@ export default function Providers({
       }
     };
 
-    refresh();
+    initAuth();
   }, []);
 
   if (!isReady) return null;
