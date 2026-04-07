@@ -9,3 +9,8 @@ export { Quantity } from "./quantity/Quantity";
 export { XButton } from "./button/XButton";
 export { Modal } from "./modal/Modal";
 export { useModalContext } from "./modal/ModalContext";
+export { Overlay as ModalOverlay } from "./modal/Overlay";
+export { Content as ModalContent } from "./modal/Content";
+export { Header as ModalHeader } from "./modal/Header";
+export { Body as ModalBody } from "./modal/Body";
+export { Footer as ModalFooter } from "./modal/Footer";
