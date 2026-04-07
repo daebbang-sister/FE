@@ -23,7 +23,7 @@ export const fetchUpdateCart = (
   cartId: number,
   quantity: number,
   productDetailsId: number
-) => {
+) =>
   request<null>(
     `/v1/carts/${cartId}`,
     {
@@ -32,4 +32,3 @@ export const fetchUpdateCart = (
     },
     "full"
   );
-};

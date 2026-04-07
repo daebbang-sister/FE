@@ -1,10 +1,13 @@
 "use client";
 
-import { calculateProductsPrice, calculateShipping } from "@/app/cart/utils";
 import CartHeader from "@/features/cart/components/CartHeader";
 import CartList from "@/features/cart/components/CartList";
 import CartSummary from "@/features/cart/components/CartSummary";
 import useCart from "@/features/cart/hooks/useCart";
+import {
+  calculateProductsPrice,
+  calculateShipping,
+} from "@/features/cart/utils";
 // import { useRouter } from "next/navigation";
 
 export default function CartContainer() {
