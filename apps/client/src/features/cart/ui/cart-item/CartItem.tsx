@@ -13,7 +13,7 @@ type CartItemProps = {
   sellingPrice: number;
   originalPrice: number;
   discountRate: number | null;
-  imageUrl?: string;
+  imageUrl: string;
   checked: boolean;
   onCheckedChange: (id: string, checked: boolean) => void;
   onDeleteItem: () => void;
@@ -29,7 +29,7 @@ export default function CartItem({
   originalPrice,
   discountRate,
   checked,
-  // imageUrl,
+  imageUrl,
   onCheckedChange,
   onDeleteItem,
 }: CartItemProps) {
@@ -46,7 +46,7 @@ export default function CartItem({
         </div>
         <Image
           alt="상품 이미지"
-          src="https://daebbang-sister-image.s3.amazonaws.com/상의1.jpg"
+          src={imageUrl}
           width={150}
           height={200}
           className="object-cover"
