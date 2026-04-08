@@ -2,6 +2,7 @@ import { getProductDetail } from "@/features/product/api";
 import ProdcutCarousel from "@/features/product/components/product-detail/ProdcutCarousel";
 import ProductDetailSummary from "@/features/product/components/product-detail/ProductDetailSummary";
 import ProductDetailTab from "@/features/product/components/product-detail/ProductDetailTab";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{
@@ -12,12 +13,13 @@ type Props = {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { category, productId } = await params;
-  const productDetail = await getProductDetail(Number(productId));
-  console.log("제품 정보", productDetail);
-  {
-    /* <p>category: {category}</p>
-  <p>productId: {productId}</p> */
+
+  const id = Number(productId);
+  if (!Number.isFinite(id)) {
+    notFound();
   }
+  const productDetail = await getProductDetail(id);
+  // console.log("제품 정보", productDetail);
 
   return (
     <section className="container my-15.5">
