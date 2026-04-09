@@ -24,8 +24,8 @@ export default function CartList({
   const [openCartId, setOpenCartId] = useState<number | null>(null);
   return (
     <div className="flex flex-col gap-4">
-      {items.map((item) => {
-        return (
+      {items.length > 0 &&
+        items.map((item) => (
           <CartItem
             key={item.cartId}
             productId={item.productId}
@@ -49,8 +49,7 @@ export default function CartList({
               onUpdateOption(item.cartId, productDetailId)
             }
           />
-        );
-      })}
+        ))}
     </div>
   );
 }
