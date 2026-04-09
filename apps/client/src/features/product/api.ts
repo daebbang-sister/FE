@@ -1,5 +1,9 @@
 import request from "@/shared/lib/request";
-import { CategoryProduct, PageResponse } from "@/features/product/model";
+import {
+  CategoryProduct,
+  PageResponse,
+  ProductDetail,
+} from "@/features/product/model";
 
 export const getCategoryProducts = (
   categoryId: number,
@@ -14,3 +18,8 @@ export const getCategoryProducts = (
       method: "GET",
     }
   );
+
+export const getProductDetail = (productId: number): Promise<ProductDetail> =>
+  request<ProductDetail>(`/v1/products/${productId}`, {
+    method: "GET",
+  });

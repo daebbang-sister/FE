@@ -93,35 +93,6 @@ export default function ProductReview({ rating }: Props) {
                   className="object-cover"
                 />
               </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="body1 mb-3 flex justify-between">
-              <p>아이디인데별표처리******</p>
-              <p className="text-text-disabled">2025.09.09</p>
-            </div>
-            <div>별점</div>
-            <div className="my-1">
-              <p className="body2">
-                털 부분이 복슬복슬하고 풍성해서 엄청 귀여워요! 핏도 168한테도
-                알맞게 예뻣구 생각보다 따뜻해서 한겨울 제외하고는 잘 입고
-                다녔어요~ 카키랑 고민했는데 블랙이 여기저기 잘 입고다닐 수 있는
-                것 같아요!
-              </p>
-              <p className="body2 text-text-disabled">
-                ㄴ예쁘게 잘 입어주세요^^
-              </p>
-            </div>
-            <div className="flex gap-1.25">
-              <div className="relative h-31.25 w-31.25 border border-black">
-                <Image
-                  src="/images/look1.jpg"
-                  alt="썸네일"
-                  fill
-                  className="object-cover"
-                />
-              </div>
               <div className="relative h-31.25 w-31.25 border border-black">
                 <Image
                   src="/images/look1.jpg"
@@ -141,6 +112,7 @@ export default function ProductReview({ rating }: Props) {
             </div>
           </div>
         </article>
+
         <article className="flex w-full justify-center py-18">
           <PageButton
             totalItems={150} // 전체 아이템 수
