@@ -20,6 +20,7 @@ export default function CartContainer() {
     handleDeleteItem,
     handleDeleteSelected,
     handleDeleteAll,
+    handleUpdateOption,
   } = useCart();
   // const router = useRouter();
 
@@ -53,6 +54,7 @@ export default function CartContainer() {
           onCheckItem={handleCheckItem}
           onUpdateCart={handleUpdateCart}
           onDeleteItem={handleDeleteItem}
+          onUpdateOption={handleUpdateOption}
         />
       </div>
 

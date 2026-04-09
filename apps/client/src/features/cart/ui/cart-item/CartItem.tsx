@@ -1,15 +1,30 @@
 "use client";
 
+import useProductOptionsQuery from "@/features/cart/hooks/useProductOptionsQuery";
 import { DiscountRate } from "@/shared/ui/discount-rate/DiscountRate";
-import { Button, CheckBox, Quantity, XButton } from "@repo/ui";
+import {
+  Button,
+  CheckBox,
+  Dropdown,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Quantity,
+  XButton,
+} from "@repo/ui";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 type CartItemProps = {
   id: string;
   quantity: number;
   setQuantity: (value: number) => void;
   name: string;
-  option: string;
+  size: string;
+  color: string;
   sellingPrice: number;
   originalPrice: number;
   discountRate: number | null;
@@ -17,6 +32,11 @@ type CartItemProps = {
   checked: boolean;
   onCheckedChange: (id: string, checked: boolean) => void;
   onDeleteItem: () => void;
+  onUpdateOption: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+  productId: number;
+  onConfirmOption: (productDetailId: number) => void;
 };
 
 export default function CartItem({
@@ -24,7 +44,8 @@ export default function CartItem({
   quantity,
   setQuantity,
   name,
-  option,
+  size,
+  color,
   sellingPrice,
   originalPrice,
   discountRate,
@@ -32,7 +53,70 @@ export default function CartItem({
   imageUrl,
   onCheckedChange,
   onDeleteItem,
+  onUpdateOption,
+  isOpen,
+  onClose,
+  productId,
+  onConfirmOption,
 }: CartItemProps) {
+  const [selectedColor, setSelectedColor] = useState(color);
+  const [selectedSize, setSelectedSize] = useState(size);
+  const [error, setError] = useState("");
+
+  const { data: productOptions = [], isLoading } = useProductOptionsQuery(
+    productId,
+    isOpen
+  );
+
+  const colorOptions = productOptions.map((opt) => ({
+    label: opt.color,
+    value: opt.color,
+  }));
+
+  const sizeOptions =
+    productOptions
+      .find((opt) => opt.color === selectedColor)
+      ?.sizes.map((s) => ({
+        label: s.soldOut ? `${s.size} (품절)` : s.size,
+        value: s.size,
+        disabled: s.soldOut,
+      })) ?? [];
+
+  const handleColorChange = (value: string) => {
+    setSelectedColor(value);
+    setSelectedSize("");
+    setError("");
+  };
+
+  const handleConfirm = () => {
+    if (!selectedColor) {
+      setError("컬러를 선택해주세요.");
+      return;
+    }
+    if (!selectedSize) {
+      setError("사이즈를 선택해주세요.");
+      return;
+    }
+
+    const productDetailId = productOptions
+      .find((opt) => opt.color === selectedColor)
+      ?.sizes.find((s) => s.size === selectedSize)?.productDetailId;
+
+    if (!productDetailId) {
+      return;
+    }
+
+    onConfirmOption(productDetailId);
+    onClose();
+  };
+
+  const handleClose = () => {
+    setSelectedColor(color);
+    setSelectedSize(size);
+    setError("");
+    onClose();
+  };
+
   return (
     <div className="border-border-default first:border-border-default flex gap-6 border-b pt-6 pb-6 first:border-t last:border-b-0 last:pb-0">
       {/* 왼쪽 */}
@@ -82,7 +166,9 @@ export default function CartItem({
         </div>
 
         <div>
-          <p className="caption1">{option}</p>
+          <p className="caption1">
+            [옵션: {color} / {size}]
+          </p>
           <div className="mt-3 flex gap-1.75">
             <Quantity
               value={quantity}
@@ -90,9 +176,64 @@ export default function CartItem({
               min={1}
               max={99}
             />
-            <Button variant="gray" className="caption1 w-auto px-4 py-2.5">
+            <Button
+              onClick={onUpdateOption}
+              variant="gray"
+              className="caption1 w-auto px-4 py-2.5"
+            >
               수정
             </Button>
+            <Modal isOpen={isOpen} onClose={handleClose}>
+              <ModalOverlay />
+              <ModalContent className="w-full max-w-97.5">
+                <ModalHeader title="옵션 변경" />
+                <ModalBody>
+                  {isLoading ? (
+                    <p>로딩중</p>
+                  ) : (
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center">
+                        <p className="w-17.5">컬러</p>
+                        <div className="w-full">
+                          <Dropdown
+                            options={colorOptions}
+                            value={selectedColor}
+                            onChange={handleColorChange}
+                            placeholder="[필수]컬러 선택"
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <p className="w-17.5">사이즈</p>
+                        <div className="w-full">
+                          <Dropdown
+                            options={sizeOptions}
+                            value={selectedSize}
+                            onChange={setSelectedSize}
+                            placeholder="[필수]사이즈 선택"
+                            disabled={!selectedColor}
+                          />
+                        </div>
+                      </div>
+                      {error && (
+                        <p className="caption1 text-danger-200">{error}</p>
+                      )}
+                    </div>
+                  )}
+                </ModalBody>
+                <ModalFooter>
+                  <div className="flex gap-2.5">
+                    <Button variant="stroke" onClick={handleClose}>
+                      취소
+                    </Button>
+                    <Button variant="gray" onClick={handleConfirm}>
+                      확인
+                    </Button>
+                  </div>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </div>
         </div>
       </div>

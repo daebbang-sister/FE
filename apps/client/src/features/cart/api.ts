@@ -1,5 +1,5 @@
 import { createQueryString } from "@/shared/lib/createQueryString";
-import { CartQuery, CartListData } from "./model";
+import { CartQuery, CartListData, ProductOptionsData } from "./model";
 import request from "@/shared/lib/request";
 
 export const fetchCart = (params?: CartQuery) =>
@@ -32,3 +32,8 @@ export const fetchUpdateCart = (
     },
     "full"
   );
+
+export const getProductOptions = (productId: number) =>
+  request<ProductOptionsData>(`/v1/products/${productId}/options`, {
+    method: "GET",
+  });
