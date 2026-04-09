@@ -4,12 +4,23 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 
+type ProductGallery = {
+  imageUrl: string;
+  imageOrder: number;
+};
 type Props = {
-  images: string[];
+  mainImages: string;
+  gallery: ProductGallery[];
 };
 
-export default function ProdcutCarousel({ images }: Props) {
-  const validImages = useMemo(() => images.filter(Boolean), [images]);
+export default function ProdcutCarousel({ mainImages, gallery }: Props) {
+  const validImages = useMemo(() => {
+    const galleryImages = [...gallery]
+      .sort((a, b) => a.imageOrder - b.imageOrder)
+      .map((item) => item.imageUrl);
+
+    return [mainImages, ...galleryImages].filter(Boolean);
+  }, [gallery, mainImages]);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const isSlide = validImages.length > 4;
@@ -44,10 +55,8 @@ export default function ProdcutCarousel({ images }: Props) {
                 key={`${image}-${index}`}
                 type="button"
                 onClick={() => setSelectedIndex(index)}
-                className={`relative shrink-0 basis-1/4 overflow-hidden border ${
-                  selectedIndex === index
-                    ? "border-black"
-                    : "border-neutral-200 opacity-40"
+                className={`relative shrink-0 basis-1/4 overflow-hidden ${
+                  selectedIndex === index ? "" : "border-neutral-200 opacity-40"
                 } aspect-[4/4]`}
               >
                 <Image
@@ -67,10 +76,8 @@ export default function ProdcutCarousel({ images }: Props) {
               key={`${image}-${index}`}
               type="button"
               onClick={() => setSelectedIndex(index)}
-              className={`relative overflow-hidden border ${
-                selectedIndex === index
-                  ? "border-black"
-                  : "border-neutral-200 opacity-40"
+              className={`relative overflow-hidden ${
+                selectedIndex === index ? "" : "border-neutral-200 opacity-40"
               } aspect-[4/4]`}
             >
               <Image
