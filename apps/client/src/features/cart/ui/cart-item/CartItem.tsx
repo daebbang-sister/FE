@@ -16,7 +16,7 @@ import {
   XButton,
 } from "@repo/ui";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type CartItemProps = {
   id: string;
@@ -110,6 +110,13 @@ export default function CartItem({
     onClose();
   };
 
+  const handleClose = () => {
+    setSelectedColor(color);
+    setSelectedSize(size);
+    setError("");
+    onClose();
+  };
+
   return (
     <div className="border-border-default first:border-border-default flex gap-6 border-b pt-6 pb-6 first:border-t last:border-b-0 last:pb-0">
       {/* 왼쪽 */}
@@ -176,7 +183,7 @@ export default function CartItem({
             >
               수정
             </Button>
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={handleClose}>
               <ModalOverlay />
               <ModalContent className="w-full max-w-97.5">
                 <ModalHeader title="옵션 변경" />
@@ -217,7 +224,7 @@ export default function CartItem({
                 </ModalBody>
                 <ModalFooter>
                   <div className="flex gap-2.5">
-                    <Button variant="stroke" onClick={onClose}>
+                    <Button variant="stroke" onClick={handleClose}>
                       취소
                     </Button>
                     <Button variant="gray" onClick={handleConfirm}>

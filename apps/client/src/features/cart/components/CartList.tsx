@@ -27,7 +27,7 @@ export default function CartList({
       {items.map((item) => {
         return (
           <CartItem
-            key={`${item.cartId}-${openCartId}`}
+            key={item.cartId}
             productId={item.productId}
             imageUrl={item.mainImageUrl}
             id={String(item.cartId)}
