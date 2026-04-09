@@ -42,6 +42,25 @@ export default function useCart() {
     }, 500);
   };
 
+  const handleUpdateOption = async (
+    cartId: number,
+    productDetailsId: number
+  ) => {
+    await fetchUpdateCart(
+      cartId,
+      items.find((i) => i.cartId === cartId)!.quantity,
+      productDetailsId
+    );
+
+    const updated = await fetchCart();
+    setItems(
+      updated.data.carts.map((item) => ({
+        ...item,
+        checked: items.find((i) => i.cartId === item.cartId)?.checked ?? true,
+      }))
+    );
+  };
+
   const handleToggleAll = () => {
     setItems((prev) =>
       prev.map((item) => ({ ...item, checked: !isAllChecked }))
@@ -78,6 +97,7 @@ export default function useCart() {
     items,
     isAllChecked,
     handleUpdateCart,
+    handleUpdateOption,
     handleToggleAll,
     handleCheckItem,
     handleDeleteItem,
