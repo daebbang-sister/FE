@@ -40,6 +40,8 @@ export default async function ProductDetailPage({ params }: Props) {
         </div>
         <aside className="lg:sticky lg:top-39.5 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
           <ProductDetailSummary
+            productId={productDetail.id}
+            mainImages={productDetail.mainImageUrl}
             productName={productDetail.productName}
             simpleDescription={productDetail.simpleDescription}
             originalPrice={productDetail.originalPrice}

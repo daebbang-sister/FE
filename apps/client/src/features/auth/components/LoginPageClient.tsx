@@ -12,6 +12,8 @@ import { Button, CheckBox, Input } from "@repo/ui";
 import LoginKaKaoBtn from "@/features/auth/components/LoginKaKaoBtn";
 import { useRememberId } from "@/features/auth/hook/useRememberId";
 import { useAuthStore } from "@/shared/store/auth.store";
+import { CartItem } from "@/features/cart/model";
+import { fetchAddCart } from "@/features/cart/api";
 
 type FormData = z.infer<typeof loginSchema>;
 
@@ -42,6 +44,19 @@ export default function LoginPageClient() {
       const res = await loginUser(data);
       const { accessToken } = res.data;
       setLogin(accessToken);
+
+      const baskets: CartItem[] = JSON.parse(
+        localStorage.getItem("baskets") ?? "[]"
+      );
+
+      if (baskets.length > 0) {
+        await Promise.all(
+          baskets.map((item) =>
+            fetchAddCart(item.productDetailsId, item.quantity)
+          )
+        );
+        localStorage.removeItem("baskets");
+      }
 
       saveId(data.id);
 
