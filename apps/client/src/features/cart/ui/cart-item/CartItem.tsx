@@ -36,7 +36,11 @@ type CartItemProps = {
   isOpen: boolean;
   onClose: () => void;
   productId: number;
-  onConfirmOption: (productDetailId: number) => void;
+  onConfirmOption: (
+    productDetailId: number,
+    color: string,
+    size: string
+  ) => void;
 };
 
 export default function CartItem({
@@ -106,7 +110,7 @@ export default function CartItem({
       return;
     }
 
-    onConfirmOption(productDetailId);
+    onConfirmOption(productDetailId, selectedColor, selectedSize);
     onClose();
   };
 
