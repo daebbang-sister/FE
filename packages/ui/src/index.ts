@@ -14,3 +14,4 @@ export { Content as ModalContent } from "./modal/Content";
 export { Header as ModalHeader } from "./modal/Header";
 export { Body as ModalBody } from "./modal/Body";
 export { Footer as ModalFooter } from "./modal/Footer";
+export { AlertModal } from "./modal/AlertModal";

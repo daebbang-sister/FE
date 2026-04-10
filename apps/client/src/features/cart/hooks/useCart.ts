@@ -6,6 +6,7 @@ import {
   fetchDeleteCarts,
   fetchUpdateCart,
 } from "@/features/cart/api";
+import { useUpdateCartOption } from "@/features/cart/hooks/updateOptionMutation ";
 import { CartItem } from "@/features/cart/model";
 import { useEffect, useRef, useState } from "react";
 
@@ -18,6 +19,7 @@ export default function useCart() {
     const { carts } = getCartData.data;
     setItems(carts.map((item) => ({ ...item, checked: true })));
   };
+  const updateOptionMutation = useUpdateCartOption(loadCart);
 
   useEffect(() => {
     const load = async () => {
@@ -40,6 +42,16 @@ export default function useCart() {
     debounceTimer.current = setTimeout(async () => {
       await fetchUpdateCart(id, quantity, productDetailsId);
     }, 500);
+  };
+
+  const handleUpdateOption = (cartId: number, productDetailsId: number) => {
+    const quantity = items.find((i) => i.cartId === cartId)!.quantity;
+
+    updateOptionMutation.mutate({
+      cartId,
+      quantity,
+      productDetailsId,
+    });
   };
 
   const handleToggleAll = () => {
@@ -78,6 +90,7 @@ export default function useCart() {
     items,
     isAllChecked,
     handleUpdateCart,
+    handleUpdateOption,
     handleToggleAll,
     handleCheckItem,
     handleDeleteItem,

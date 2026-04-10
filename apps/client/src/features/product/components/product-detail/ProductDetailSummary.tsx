@@ -1,8 +1,10 @@
 "use client";
 
+import { fetchAddCart } from "@/features/cart/api";
 import { ProductOption } from "@/features/product/model";
+import { useAuthStore } from "@/shared/store/auth.store";
 import { DiscountRate } from "@/shared/ui/discount-rate/DiscountRate";
-import { Button, Dropdown } from "@repo/ui";
+import { AlertModal, Button, Dropdown } from "@repo/ui";
 import { useMemo, useState } from "react";
 
 type Props = {
@@ -12,6 +14,17 @@ type Props = {
   sellingPrice: number;
   discountRate: number;
   options: ProductOption[];
+};
+
+type BasketItem = {
+  productDetailId: number;
+  productName: string;
+  originalPrice: number;
+  sellingPrice: number;
+  discountRate: number;
+  color: string;
+  size: string;
+  quantity: number;
 };
 
 export default function ProductDetailSummary({
@@ -26,6 +39,8 @@ export default function ProductDetailSummary({
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("");
   const isOptionSelected = Boolean(selectedColor && selectedSize);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const colorOptions = useMemo(() => {
     return options.map((item) => ({
@@ -97,21 +112,42 @@ export default function ProductDetailSummary({
   };
 
   // 장바구니 담기
-  const handleCartClick = () => {
+  const handleCartClick = async () => {
     if (!selectedColor || !selectedSize) {
-      alert("옵션을 선택해주세요.");
+      setModalMessage("옵션을 선택해주세요.");
+      setIsModalOpen(true);
       return;
     }
-    alert("장바구니 담기 연결");
+
+    if (!selectedProductDetailId) return;
+
+    const { isLoggedIn } = useAuthStore.getState();
+
+    try {
+      if (isLoggedIn) {
+        await fetchAddCart(selectedProductDetailId, quantity);
+      } else {
+        const baskets = JSON.parse(localStorage.getItem("baskets") ?? "[]");
+
+        localStorage.setItem("baskets", JSON.stringify(baskets));
+      }
+      setModalMessage("장바구니에 담겼습니다.");
+    } catch (error) {
+      setModalMessage("장바구니 담기에 실패했습니다.");
+    } finally {
+      setIsModalOpen(true);
+    }
+
     // alert(
-    //   `장바구니에 담기를 여기에 연결.\n\n디테일아이디 : ${selectedProductDetailId}\n수량 : ${quantity}`
+    //   `장바구니에 담기를 여기에 S연결.\n\n디테일아이디 : ${selectedProductDetailId}\n수량 : ${quantity}`
     // );
   };
 
   // 결제 이동
   const handleBuyClick = () => {
     if (!selectedColor || !selectedSize) {
-      alert("옵션을 선택해주세요.");
+      setModalMessage("옵션을 선택해주세요.");
+      setIsModalOpen(true);
       return;
     }
     alert("결제창으로 이동합니다.");
@@ -277,6 +313,12 @@ export default function ProductDetailSummary({
           구매하기
         </Button>
       </article>
+      <AlertModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="알림"
+        message={modalMessage}
+      />
     </section>
   );
 }
