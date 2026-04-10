@@ -2,6 +2,12 @@
 
 import { fetchAddCart } from "@/features/cart/api";
 import { ProductOption } from "@/features/product/model";
+import {
+  findProductDetailId,
+  getSelectedOption,
+  getSizeOption,
+} from "@/features/product/utils/productOptions";
+import { calculateOrderPrice } from "@/features/product/utils/productPrice";
 import { useAuthStore } from "@/shared/store/auth.store";
 import { DiscountRate } from "@/shared/ui/discount-rate/DiscountRate";
 import { AlertModal, Button, Dropdown } from "@repo/ui";
@@ -48,63 +54,49 @@ export default function ProductDetailSummary({
       value: item.color,
     }));
   }, [options]);
-
   const selectedOption = useMemo(() => {
-    return options.find((item) => item.color === selectedColor);
+    return getSelectedOption({ options, selectedColor });
   }, [options, selectedColor]);
-
   const sizeOptions = useMemo(() => {
-    if (!selectedOption) return [];
-    return selectedOption.sizes.map((item) => ({
-      label: item.soldOut ? `${item.size} (품절)` : item.size,
-      value: item.size,
-      disabled: item.soldOut,
-    }));
+    return getSizeOption(selectedOption);
   }, [selectedOption]);
 
   // 옵션으로 프로젝트 디테일 아이디 찾기
   const selectedProductDetailId = useMemo(() => {
-    if (!selectedColor || !selectedSize) return null;
-    const colorOption = options.find((item) => item.color === selectedColor);
-    if (!colorOption) return null;
-    const sizeOption = colorOption.sizes.find(
-      (item) => item.size === selectedSize
-    );
-    if (!sizeOption) return null;
-    return sizeOption.productDetailId;
+    return findProductDetailId({ options, selectedColor, selectedSize });
   }, [options, selectedColor, selectedSize]);
 
   const handleColorChange = (value: string) => {
     setSelectedColor(value);
     setSelectedSize("");
+    setQuantity(1);
   };
 
-  // 옵션 초기화
+  // 옵션 초기화(휴지통)
   const handleResetSelectedOption = () => {
     setSelectedColor("");
     setSelectedSize("");
     setQuantity(1);
   };
 
-  // 결제 가격 계산
-  const hasDiscount = discountRate > 0;
-  const [quantity, setQuantity] = useState(1);
-  const price = hasDiscount ? sellingPrice : originalPrice;
-  const salePrice = originalPrice - sellingPrice;
-  const totalSalePrice = salePrice * quantity;
-  const totalPrice = price * quantity;
-
-  // 적립금
-  const savingPer = 5;
-  const savingPoint = Math.floor(totalPrice / savingPer);
-
   // 수량 조절 함수
+  const [quantity, setQuantity] = useState(1);
   const handleIncrease = () => {
     setQuantity((prev) => prev + 1);
   };
   const handleDecrease = () => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
   };
+
+  // 결제 가격 계산 & 적립금
+  const savingPercent = 5; // 추후-적립금% api
+  const orderPrice = calculateOrderPrice({
+    originalPrice,
+    sellingPrice,
+    discountRate,
+    quantity,
+    savingPercent,
+  });
 
   // 찜하기
   const handleWishClick = () => {
@@ -161,16 +153,18 @@ export default function ProductDetailSummary({
       </article>
 
       <article className="flex flex-col gap-3">
-        {hasDiscount && (
+        {orderPrice.hasDiscount && (
           <div className="body1 text-text-disabled flex justify-between">
             <p>소비자가</p>
             <del>{originalPrice?.toLocaleString()}won</del>
           </div>
         )}
         <div className="body1 flex justify-between">
-          <p>{hasDiscount ? "판매가" : "소비자가"}</p>
+          <p>{orderPrice.hasDiscount ? "판매가" : "소비자가"}</p>
           <div className="flex gap-1">
-            {hasDiscount && <DiscountRate>{discountRate}%</DiscountRate>}
+            {orderPrice.hasDiscount && (
+              <DiscountRate>{discountRate}%</DiscountRate>
+            )}
             <p>{sellingPrice?.toLocaleString()}won</p>
           </div>
         </div>
@@ -238,7 +232,7 @@ export default function ProductDetailSummary({
           </ul>
 
           <div className="min-w-25 text-right">
-            {totalPrice.toLocaleString()}won
+            {orderPrice.totalPrice.toLocaleString()}won
           </div>
 
           <div className="cursor-pointer" onClick={handleResetSelectedOption}>
@@ -261,25 +255,25 @@ export default function ProductDetailSummary({
       <article className="flex flex-col gap-3">
         <div className="body1 flex justify-between">
           <p>총 상품 금액</p>
-          <p>{totalPrice.toLocaleString()}won</p>
+          <p>{orderPrice.totalPrice.toLocaleString()}won</p>
         </div>
-        {hasDiscount && (
+        {orderPrice.hasDiscount && (
           <div className="body1 flex justify-between">
             <p>할인 금액</p>
-            <p>{totalSalePrice.toLocaleString()}won</p>
+            <p>{orderPrice.totalSalePrice.toLocaleString()}won</p>
           </div>
         )}
         <div className="bg-text-primary my-3 h-0.25 w-full" />
         <div className="body1 flex justify-between">
           <p>결제 예상 금액</p>
           <p className="title3">
-            {totalPrice.toLocaleString()}won
+            {orderPrice.totalPrice.toLocaleString()}won
             <span>({quantity.toLocaleString()}개)</span>
           </p>
         </div>
         <div className="body1 text-text-disabled flex justify-between">
           <p>예상 적립 금액</p>
-          <p>{savingPoint.toLocaleString()}</p>
+          <p>{orderPrice.savingPoint.toLocaleString()}</p>
         </div>
       </article>
 

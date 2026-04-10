@@ -5,6 +5,7 @@ import ProductListTitle from "@/features/product/components/product-list/Product
 import ProductSlide from "@/features/product/components/product-list/ProductSlide";
 import { getCategoryId, getCategoryName } from "@/shared/hooks/category";
 import { PageLinkButton } from "@/shared/ui/button/PageLinkButton";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ category: string }>;
@@ -24,8 +25,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const categoryId = getCategoryId(decodedCategory);
   const categoryName = getCategoryName(decodedCategory);
   if (!categoryId || !categoryName) {
-    return;
-    // notFound(); 404 추가 대기
+    notFound();
   }
 
   const sortType = query.sortType ?? "NEW";
