@@ -2,6 +2,7 @@
 
 import { fetchAddCart } from "@/features/cart/api";
 import { ProductOption } from "@/features/product/model";
+import { useAuthStore } from "@/shared/store/auth.store";
 import { DiscountRate } from "@/shared/ui/discount-rate/DiscountRate";
 import { AlertModal, Button, Dropdown } from "@repo/ui";
 import { useMemo, useState } from "react";
@@ -13,6 +14,17 @@ type Props = {
   sellingPrice: number;
   discountRate: number;
   options: ProductOption[];
+};
+
+type BasketItem = {
+  productDetailId: number;
+  productName: string;
+  originalPrice: number;
+  sellingPrice: number;
+  discountRate: number;
+  color: string;
+  size: string;
+  quantity: number;
 };
 
 export default function ProductDetailSummary({
@@ -29,9 +41,6 @@ export default function ProductDetailSummary({
   const isOptionSelected = Boolean(selectedColor && selectedSize);
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [onConfirm, setOnConfirm] = useState<(() => void) | undefined>(
-    undefined
-  );
 
   const colorOptions = useMemo(() => {
     return options.map((item) => ({
@@ -106,18 +115,26 @@ export default function ProductDetailSummary({
   const handleCartClick = async () => {
     if (!selectedColor || !selectedSize) {
       setModalMessage("옵션을 선택해주세요.");
-      setOnConfirm(undefined);
+      setIsModalOpen(true);
       return;
     }
 
+    if (!selectedProductDetailId) return;
+
+    const { isLoggedIn } = useAuthStore.getState();
+
     try {
-      if (!selectedProductDetailId) return;
-      await fetchAddCart(selectedProductDetailId, quantity);
+      if (isLoggedIn) {
+        await fetchAddCart(selectedProductDetailId, quantity);
+      } else {
+        const baskets = JSON.parse(localStorage.getItem("baskets") ?? "[]");
+
+        localStorage.setItem("baskets", JSON.stringify(baskets));
+      }
       setModalMessage("장바구니에 담겼습니다.");
     } catch (error) {
       setModalMessage("장바구니 담기에 실패했습니다.");
     } finally {
-      setOnConfirm(undefined);
       setIsModalOpen(true);
     }
 
@@ -130,7 +147,6 @@ export default function ProductDetailSummary({
   const handleBuyClick = () => {
     if (!selectedColor || !selectedSize) {
       setModalMessage("옵션을 선택해주세요.");
-      setOnConfirm(undefined);
       setIsModalOpen(true);
       return;
     }
