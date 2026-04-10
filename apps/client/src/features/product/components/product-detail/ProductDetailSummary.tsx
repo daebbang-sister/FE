@@ -1,8 +1,9 @@
 "use client";
 
+import { fetchAddCart } from "@/features/cart/api";
 import { ProductOption } from "@/features/product/model";
 import { DiscountRate } from "@/shared/ui/discount-rate/DiscountRate";
-import { Button, Dropdown } from "@repo/ui";
+import { AlertModal, Button, Dropdown } from "@repo/ui";
 import { useMemo, useState } from "react";
 
 type Props = {
@@ -26,6 +27,11 @@ export default function ProductDetailSummary({
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("");
   const isOptionSelected = Boolean(selectedColor && selectedSize);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [onConfirm, setOnConfirm] = useState<(() => void) | undefined>(
+    undefined
+  );
 
   const colorOptions = useMemo(() => {
     return options.map((item) => ({
@@ -97,21 +103,35 @@ export default function ProductDetailSummary({
   };
 
   // 장바구니 담기
-  const handleCartClick = () => {
+  const handleCartClick = async () => {
     if (!selectedColor || !selectedSize) {
-      alert("옵션을 선택해주세요.");
+      setModalMessage("옵션을 선택해주세요.");
+      setOnConfirm(undefined);
       return;
     }
-    alert("장바구니 담기 연결");
+
+    try {
+      if (!selectedProductDetailId) return;
+      await fetchAddCart(selectedProductDetailId, quantity);
+      setModalMessage("장바구니에 담겼습니다.");
+    } catch (error) {
+      setModalMessage("장바구니 담기에 실패했습니다.");
+    } finally {
+      setOnConfirm(undefined);
+      setIsModalOpen(true);
+    }
+
     // alert(
-    //   `장바구니에 담기를 여기에 연결.\n\n디테일아이디 : ${selectedProductDetailId}\n수량 : ${quantity}`
+    //   `장바구니에 담기를 여기에 S연결.\n\n디테일아이디 : ${selectedProductDetailId}\n수량 : ${quantity}`
     // );
   };
 
   // 결제 이동
   const handleBuyClick = () => {
     if (!selectedColor || !selectedSize) {
-      alert("옵션을 선택해주세요.");
+      setModalMessage("옵션을 선택해주세요.");
+      setOnConfirm(undefined);
+      setIsModalOpen(true);
       return;
     }
     alert("결제창으로 이동합니다.");
@@ -278,6 +298,12 @@ export default function ProductDetailSummary({
           구매하기
         </Button>
       </article>
+      <AlertModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="알림"
+        message={modalMessage}
+      />
     </section>
   );
 }
