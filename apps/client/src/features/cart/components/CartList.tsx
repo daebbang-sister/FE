@@ -11,7 +11,12 @@ type CartListType = {
     productDetailsId: number
   ) => void;
   onDeleteItem: (id: number) => void;
-  onUpdateOption: (cartId: number, productDetailsId: number) => void;
+  onUpdateOption: (
+    cartId: number,
+    productDetailsId: number,
+    color: string,
+    size: string
+  ) => void;
 };
 
 export default function CartList({
@@ -45,8 +50,8 @@ export default function CartList({
             onUpdateOption={() => setOpenCartId(item.cartId)}
             isOpen={openCartId === item.cartId}
             onClose={() => setOpenCartId(null)}
-            onConfirmOption={(productDetailId) =>
-              onUpdateOption(item.cartId, productDetailId)
+            onConfirmOption={(productDetailId, color, size) =>
+              onUpdateOption(item.cartId, productDetailId, color, size)
             }
           />
         ))}

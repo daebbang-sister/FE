@@ -1,6 +1,7 @@
 "use client";
 
 import { fetchAddCart } from "@/features/cart/api";
+import { CartItem } from "@/features/cart/model";
 import { ProductOption } from "@/features/product/model";
 import {
   findProductDetailId,
@@ -14,31 +15,24 @@ import { AlertModal, Button, Dropdown } from "@repo/ui";
 import { useMemo, useState } from "react";
 
 type Props = {
+  productId: number;
   productName: string;
   simpleDescription: string;
   originalPrice: number;
   sellingPrice: number;
   discountRate: number;
+  mainImages: string;
   options: ProductOption[];
 };
 
-type BasketItem = {
-  productDetailId: number;
-  productName: string;
-  originalPrice: number;
-  sellingPrice: number;
-  discountRate: number;
-  color: string;
-  size: string;
-  quantity: number;
-};
-
 export default function ProductDetailSummary({
+  productId,
   productName,
   simpleDescription,
   originalPrice,
   sellingPrice,
   discountRate,
+  mainImages,
   options,
 }: Props) {
   // 옵션 선택
@@ -47,6 +41,7 @@ export default function ProductDetailSummary({
   const isOptionSelected = Boolean(selectedColor && selectedSize);
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isLoggedIn } = useAuthStore();
 
   const colorOptions = useMemo(() => {
     return options.map((item) => ({
@@ -113,14 +108,36 @@ export default function ProductDetailSummary({
 
     if (!selectedProductDetailId) return;
 
-    const { isLoggedIn } = useAuthStore.getState();
-
     try {
       if (isLoggedIn) {
         await fetchAddCart(selectedProductDetailId, quantity);
       } else {
         const baskets = JSON.parse(localStorage.getItem("baskets") ?? "[]");
+        const exisringIndex = baskets.findIndex(
+          (item: CartItem) =>
+            item.productId === selectedProductDetailId &&
+            item.color === selectedColor &&
+            item.size === selectedSize
+        );
 
+        if (exisringIndex !== -1) {
+          baskets[exisringIndex].quantity += quantity;
+        } else {
+          baskets.push({
+            cartId: Date.now(),
+            productId,
+            productDetailsId: selectedProductDetailId,
+            quantity,
+            productName,
+            originalPrice,
+            discountPrice: sellingPrice,
+            discountRate,
+            color: selectedColor,
+            size: selectedSize,
+            mainImageUrl: mainImages,
+            checked: true,
+          });
+        }
         localStorage.setItem("baskets", JSON.stringify(baskets));
       }
       setModalMessage("장바구니에 담겼습니다.");
