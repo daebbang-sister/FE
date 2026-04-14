@@ -43,7 +43,9 @@ export default function CartList({
             quantity={item.quantity}
             originalPrice={item.originalPrice}
             discountRate={item.discountRate}
-            setQuantity={(q) => onUpdateCart(item.cartId, q, item.productId)}
+            setQuantity={(q) =>
+              onUpdateCart(item.cartId, q, item.productDetailId)
+            }
             checked={item.checked}
             onCheckedChange={onCheckItem}
             onDeleteItem={() => onDeleteItem(item.cartId)}
