@@ -6,10 +6,10 @@ import {
   fetchDeleteCarts,
   fetchUpdateCart,
 } from "@/features/cart/api";
-import { useUpdateCartOption } from "@/features/cart/hooks/updateOptionMutation ";
+import { useUpdateCartOption } from "@/features/cart/hooks/updateOptionMutation";
 import { CartItem } from "@/features/cart/model";
 import { useAuthStore } from "@/shared/store/auth.store";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function useCart() {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -20,7 +20,7 @@ export default function useCart() {
   const setBaskets = (baskets: CartItem[]) =>
     localStorage.setItem("baskets", JSON.stringify(baskets));
 
-  const loadCart = async () => {
+  const loadCart = useCallback(async () => {
     if (isLoggedIn) {
       const getCartData = await fetchCart({ size: 8 });
       const { carts } = getCartData.data;
@@ -28,7 +28,7 @@ export default function useCart() {
     } else {
       setItems(getBaskets().map((item) => ({ ...item, checked: true })));
     }
-  };
+  }, [isLoggedIn]);
 
   const updateOptionMutation = useUpdateCartOption(loadCart);
 
