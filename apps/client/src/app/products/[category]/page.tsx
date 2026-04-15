@@ -24,7 +24,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const sortType = query.sortType ?? "NEW";
   const direction = query.direction ?? "DESC";
   const apiPage = Number(query.page ?? "0");
-  const pageSize = Number(query.size ?? "2");
+  const pageSize = 2;
   const currentPage = apiPage + 1;
 
   const isNewCategory = decodedCategory === "new";
