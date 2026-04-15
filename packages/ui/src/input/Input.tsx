@@ -8,6 +8,7 @@ export type InputProps = Omit<
 > &
   VariantProps<typeof inputVariants> & {
     id: string;
+    ref?: React.Ref<HTMLInputElement>;
     errorMessage?: string;
     helperMessage?: string;
   };
@@ -35,6 +36,7 @@ export function Input({
   status = "default",
   errorMessage,
   helperMessage,
+  ref,
   ...props
 }: InputProps) {
   const helperId = helperMessage ? `${id}-helper` : undefined;
@@ -45,6 +47,7 @@ export function Input({
   return (
     <div className="w-full">
       <input
+        ref={ref}
         id={id}
         className={cn(inputVariants({ status }), className)}
         disabled={status === "disabled"}
