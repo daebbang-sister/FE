@@ -1,3 +1,5 @@
+"use client";
+
 import PageError from "@/shared/components/layout/PageError";
 
 export default function Error({
