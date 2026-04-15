@@ -6,7 +6,7 @@ import { PageLinkButton } from "@/shared/ui/button/PageLinkButton";
 
 type Props = {
   searchParams: Promise<{
-    keyword?: string;
+    keyword: string;
     sortType?: string;
     direction?: string;
     page?: string;
@@ -80,7 +80,9 @@ export default async function ProductsSearchPage({ searchParams }: Props) {
         <ProductSearchInput value={keyword}></ProductSearchInput>
         {isEmpty && (
           <p className="text-text-disabled my-28 flex justify-center">
-            "{keyword}"에 대한 검색 결과가 없습니다.
+            {keyword
+              ? `"${keyword}"에 대한 검색 결과가 없습니다.`
+              : "검색 키워드를 입력해 주세요."}
           </p>
         )}
       </article>
