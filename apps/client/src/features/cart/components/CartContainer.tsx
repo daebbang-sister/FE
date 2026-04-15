@@ -8,6 +8,7 @@ import {
   calculateProductsPrice,
   calculateShipping,
 } from "@/features/cart/utils";
+import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
 import { Button } from "@repo/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,22 +24,35 @@ export default function CartContainer() {
     handleDeleteSelected,
     handleDeleteAll,
     handleUpdateOption,
+    isLoggedIn,
   } = useCart();
   const router = useRouter();
+
+  const setItem = useCheckoutStore((s) => s.setItems);
 
   const totalPrice = calculateProductsPrice(items);
   const shippingFee = calculateShipping(totalPrice);
   const totalPayment = totalPrice + shippingFee;
 
   const handleOrderSelected = () => {
+    if (!isLoggedIn) {
+      alert("로그인 후 결제가 가능합니다.");
+      router.push("/login");
+      return;
+    }
     const selectedItems = items.filter((item) => item.checked);
-    console.log("선택 상품 주문:", selectedItems);
-    router.push("/cart/checkout");
+    setItem(selectedItems);
+    router.push("/checkout");
   };
 
   const handleOrderAll = () => {
-    console.log("전체 상품 주문", items);
-    router.push("/cart/checkout");
+    if (!isLoggedIn) {
+      alert("로그인 후 결제가 가능합니다.");
+      router.push("/login");
+      return;
+    }
+    setItem(items);
+    router.push("/checkout");
   };
 
   return (

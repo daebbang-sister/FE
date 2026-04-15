@@ -1,5 +1,8 @@
 "use client";
 
+import { fetchAddresses } from "@/features/checkout/api";
+import { Address } from "@/features/checkout/model";
+import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
 import { Button, CheckBox, Dropdown, Input, TabButton } from "@repo/ui";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -27,16 +30,37 @@ export const bankOptions = [
 ];
 
 export default function CheckoutContainer() {
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+
   const [shipRequest, setShipRequest] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedBank, setSelectedBank] = useState("");
+  const checkoutItems = useCheckoutStore((s) => s.items);
+  console.log("주문목록", checkoutItems);
 
   useEffect(() => {
     if (shipRequest === "직접 입력") {
       inputRef.current?.focus();
     }
   }, [shipRequest]);
+
+  useEffect(() => {
+    const fetchAddressesData = async () => {
+      try {
+        const data = await fetchAddresses();
+        setAddresses(data);
+        const defaultAddress = data.find((a) => a.isDefault);
+        setSelectedAddress(defaultAddress || null);
+        console.log("주소 목록", data);
+        console.log("기본 주소", defaultAddress);
+      } catch (error) {
+        console.error("주소 조회 실패", error);
+      }
+    };
+    fetchAddressesData();
+  }, []);
 
   return (
     <div className="page-y container">
@@ -47,21 +71,32 @@ export default function CheckoutContainer() {
           <div>
             <h6 className="title3 mb-6">배송정보</h6>
             {/* 위 */}
-            <div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-0.5">
-                  <p>홍길동</p>
-                  <span>집</span>
+            {selectedAddress ? (
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-0.5">
+                    <p>{selectedAddress?.receiver}</p>
+                    <span>{selectedAddress?.alias}</span>
+                  </div>
+                  <Button variant="black" className="w-22.5">
+                    변경
+                  </Button>
                 </div>
+                <div className="body2 flex flex-col gap-1.5">
+                  <p>{selectedAddress?.address}</p>
+                  <p className="text-text-disabled">
+                    {selectedAddress?.receiverPhoneNumber}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <b> 기본 배송지를 등록해주세요</b>
                 <Button variant="black" className="w-22.5">
                   변경
                 </Button>
               </div>
-              <div className="body2 flex flex-col gap-1.5">
-                <p>주소</p>
-                <p className="text-text-disabled">010-1234-5678</p>
-              </div>
-            </div>
+            )}
             {/* 아래 */}
             <div className="mt-6">
               <h6 className="mb-3">요청사항</h6>
@@ -86,23 +121,32 @@ export default function CheckoutContainer() {
           <div>
             <h6 className="title3 mb-6">주문 상품 정보</h6>
             <div className="flex flex-col gap-3">
-              <div className="border-border-default flex gap-3 border p-4">
-                <div className="relative h-25 w-25 overflow-hidden">
-                  <Image
-                    className="object-cover object-center"
-                    fill
-                    alt="이미지"
-                    src="https://daebbang-sister-image.s3.amazonaws.com/상의3.jpg"
-                  />
+              {checkoutItems.map((item) => (
+                <div
+                  key={item.cartId}
+                  className="border-border-default flex gap-3 border p-4"
+                >
+                  <div className="relative h-25 w-25 overflow-hidden">
+                    <Image
+                      className="object-cover object-center"
+                      fill
+                      alt={item.productName}
+                      src={item.mainImageUrl}
+                    />
+                  </div>
+                  <div>
+                    <h2>{item.productName}</h2>
+                    <p className="text-text-disabled mt-3 mb-6">
+                      {item.color} / {item.size} {item.quantity}개
+                    </p>
+                    {item.discountRate ? (
+                      <b>{item.discountPrice}원</b>
+                    ) : (
+                      <b>{item.originalPrice}원</b>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <h2>이번 주 가장 사랑 받은 인기 아이템</h2>
-                  <p className="text-text-disabled mt-3 mb-6">
-                    화이트/SMALL 1개
-                  </p>
-                  <b>42,600won</b>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
           {/* 배송정보 */}
