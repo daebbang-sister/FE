@@ -10,7 +10,7 @@ import {
 } from "@/features/cart/utils";
 import { Button } from "@repo/ui";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function CartContainer() {
   const {
@@ -24,7 +24,7 @@ export default function CartContainer() {
     handleDeleteAll,
     handleUpdateOption,
   } = useCart();
-  // const router = useRouter();
+  const router = useRouter();
 
   const totalPrice = calculateProductsPrice(items);
   const shippingFee = calculateShipping(totalPrice);
@@ -33,12 +33,12 @@ export default function CartContainer() {
   const handleOrderSelected = () => {
     const selectedItems = items.filter((item) => item.checked);
     console.log("선택 상품 주문:", selectedItems);
-    // router.push("/cart/checkout");
+    router.push("/cart/checkout");
   };
 
   const handleOrderAll = () => {
     console.log("전체 상품 주문", items);
-    // router.push("/cart/checkout");
+    router.push("/cart/checkout");
   };
 
   return (
