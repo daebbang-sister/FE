@@ -14,7 +14,9 @@ export default function SearchBar() {
     if (search.trim() === "") {
       return;
     }
-    router.push(`/production?=${encodeURIComponent(search)}`);
+    setSearch("");
+    closeSearch();
+    router.push(`/products/search?keyword=${encodeURIComponent(search)}`);
   };
 
   if (!isSearchOpen) return null;
