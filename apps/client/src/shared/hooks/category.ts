@@ -1,20 +1,31 @@
-// 카테고리 api연결 이전 임시
-export const CATEGORIES = [
-  { id: 1, name: "신상품", value: "new" },
-  { id: 2, name: "실시간 베스트", value: "best" },
-  { id: 3, name: "TOP", value: "top" },
-  { id: 4, name: "BOTTOM", value: "bottom" },
-  //   { id: 5, name: "트레이닝", value: "training" },
-  //   { id: 6, name: "아우터", value: "outer" },
-  //   { id: 7, name: "악세서리", value: "accessories" },
+import request from "@/shared/lib/request";
+import { unstable_cache } from "next/cache";
+
+export const FIXED_CATEGORIES = [
+  { key: "new", label: "신상품" },
+  { key: "best", label: "실시간 베스트" },
 ];
 
-// value → id
-export const getCategoryId = (value: string) => {
-  return CATEGORIES.find((c) => c.value === value)?.id;
+export type Category = {
+  id: number;
+  categoryName: string;
+  children: Category[];
 };
 
-// value → name
-export const getCategoryName = (value: string) => {
-  return CATEGORIES.find((c) => c.value === value)?.name;
+export const getCategories = unstable_cache(
+  async () => {
+    // console.log("[getCategories] called");
+    return request<Category[]>("/v1/categories");
+  },
+  ["categories"],
+  { revalidate: 3600 }
+);
+
+export const findCategoryByName = (
+  categories: Category[],
+  name: string
+): Category | undefined => {
+  return categories.find(
+    (category) => category.categoryName.toLowerCase() === name.toLowerCase()
+  );
 };

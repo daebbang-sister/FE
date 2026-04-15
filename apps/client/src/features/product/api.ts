@@ -5,6 +5,18 @@ import {
   ProductDetail,
 } from "@/features/product/model";
 
+export const getNewProducts = (
+  direction?: string,
+  page?: number,
+  size?: number
+): Promise<PageResponse<CategoryProduct>> =>
+  request<PageResponse<CategoryProduct>>(
+    `/v1/products/new?direction=${direction}&page=${page}&size=${size}`,
+    {
+      method: "GET",
+    }
+  );
+
 export const getCategoryProducts = (
   categoryId: number,
   sortType: string,
