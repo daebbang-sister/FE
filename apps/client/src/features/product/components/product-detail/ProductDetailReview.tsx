@@ -85,7 +85,7 @@ export default function ProductReview({ rating }: Props) {
               </p>
             </div>
             <div className="flex gap-1.25">
-              <div className="relative h-31.25 w-31.25 border border-black">
+              {/* <div className="relative h-31.25 w-31.25 border border-black">
                 <Image
                   src="/images/look1.jpg"
                   alt="썸네일"
@@ -108,7 +108,7 @@ export default function ProductReview({ rating }: Props) {
                   fill
                   className="object-cover"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </article>

@@ -1,9 +1,6 @@
 import request from "@/shared/lib/request";
-import {
-  CategoryProduct,
-  PageResponse,
-  ProductDetail,
-} from "@/features/product/model";
+import { CategoryProduct, ProductDetail } from "@/features/product/model";
+import { PageResponse } from "@/shared/type/model";
 
 export const getNewProducts = (
   direction?: string,
