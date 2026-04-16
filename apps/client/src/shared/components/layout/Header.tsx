@@ -1,10 +1,12 @@
 "use client";
 
 import { useLayoutUI } from "@/shared/context/layout-ui.context";
+import { useAuthStore } from "@/shared/store/auth.store";
 import Link from "next/link";
 
 export default function Header() {
   const { openSide, openSearch } = useLayoutUI();
+  const auth = useAuthStore();
 
   return (
     <header className="fixed top-0 z-900 flex h-[var(--size-header-h)] w-full items-center justify-between bg-neutral-900 px-10 py-7">
@@ -43,7 +45,7 @@ export default function Header() {
           </svg>
         </li>
         <li>
-          <Link href={"/login"}>
+          <Link href={auth.isLoggedIn ? "/mypage" : "/login"}>
             <svg
               width="20"
               height="20"
