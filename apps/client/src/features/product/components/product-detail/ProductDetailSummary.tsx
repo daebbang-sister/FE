@@ -2,6 +2,7 @@
 
 import { fetchAddCart } from "@/features/cart/api";
 import { CartItem } from "@/features/cart/model";
+import { usePostWishlist } from "@/features/mypage/hook/useWishlist";
 import { ProductOption } from "@/features/product/model";
 import {
   findProductDetailId,
@@ -94,11 +95,18 @@ export default function ProductDetailSummary({
   });
 
   // 찜하기
-  const handleWishClick = () => {
-    alert("찜 ~~ ❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️");
+  const { addWishlist, isLoading, error } = usePostWishlist();
+  const handleWishClick = async () => {
+    try {
+      await addWishlist(productId);
+      alert(`${productId}번이 찜~`);
+    } catch {
+      console.error(error);
+    }
   };
 
   // 장바구니 담기
+  // 추후 찜 여부 구분값 생기면 수정 예정(리뷰달지마!)
   const handleCartClick = async () => {
     if (!selectedColor || !selectedSize) {
       setModalMessage("옵션을 선택해주세요.");
@@ -146,10 +154,6 @@ export default function ProductDetailSummary({
     } finally {
       setIsModalOpen(true);
     }
-
-    // alert(
-    //   `장바구니에 담기를 여기에 S연결.\n\n디테일아이디 : ${selectedProductDetailId}\n수량 : ${quantity}`
-    // );
   };
 
   // 결제 이동

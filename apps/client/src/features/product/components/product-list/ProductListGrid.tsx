@@ -59,7 +59,7 @@ export default function ProductListGrid({ products }: Props) {
 
   return (
     <section className="pb-40">
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between">
         <p className="caption1 text-text-disabled">
           total: {products.totalElements}개
         </p>
@@ -75,7 +75,7 @@ export default function ProductListGrid({ products }: Props) {
           />
         )}
       </div>
-      <div className="grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-2.5 grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
         {products.content.map((product) => (
           <ProductCard
             key={product.id}
