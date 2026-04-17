@@ -2,7 +2,7 @@
 
 import { MainProduct } from "@/features/home/model";
 import ProductCard from "@/features/product/components/product-card/ProductCard";
-import { PageResponse } from "@/features/product/model";
+import { PageResponse } from "@/shared/type/model";
 import { Dropdown } from "@repo/ui";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
