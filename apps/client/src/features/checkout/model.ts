@@ -1,5 +1,5 @@
 export type Address = {
-  addressId: number | null;
+  addressId: number;
   alias: string;
   receiver: string;
   receiverPhoneNumber: string;

@@ -31,10 +31,13 @@ export default function CartSummary({
         </div>
         <div className="flex flex-col gap-1.5">
           <span className="caption1 text-text-disabled">
-            ㄴ 기본택배비 3000 / 제주 산간·도서지역 6000
+            ㄴ 기본 배송비 3,000원 / 제주·도서산간 6,000원
           </span>
           <span className="caption1 text-text-disabled">
-            ㄴ 7만원 이상 배송비 무료, 14만원 이상 분리 배송 가능(카톡 문의)
+            ㄴ 무료배송 : 5만원 이상 / 제주·도서산간 10만원 이상
+          </span>
+          <span className="caption1 text-text-disabled">
+            ㄴ 14만원 이상 주문 시 분리 배송 가능(카카오톡 문의)
           </span>
         </div>
       </div>

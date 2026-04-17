@@ -12,6 +12,6 @@ export function calculateProductsPrice(items: CartItem[]) {
 
 export function calculateShipping(totalPrice: number) {
   if (totalPrice === 0) return 0;
-  if (totalPrice >= 70000) return 0;
+  if (totalPrice >= 50000) return 0;
   return 3000;
 }

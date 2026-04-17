@@ -2,7 +2,13 @@
 
 // import { fetchAddresses } from "@/features/checkout/api";
 import { Address } from "@/features/checkout/model";
+import { checkoutSchema } from "@/features/checkout/schemas/checkout.schema";
 import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
+import {
+  calculateCheckoutProductsPrice,
+  calculateCheckoutShipping,
+} from "@/features/checkout/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   CheckBox,
@@ -18,6 +24,10 @@ import {
 } from "@repo/ui";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
+
+type FormData = z.infer<typeof checkoutSchema>;
 
 const shipRequestOptions = [
   { label: "배송 전에 미리 연락주세요.", value: "배송 전에 미리 연락주세요." },
@@ -42,6 +52,25 @@ export const bankOptions = [
 ];
 
 export default function CheckoutContainer() {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    mode: "onChange",
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      selectedAddressId: 0,
+      shipRequest: "",
+      paymentMethod: "card",
+      usedPoints: 0,
+      agreePrivacy: false,
+      agreeOrder: false,
+    },
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addresses, setAddresses] = useState<Address[]>([
     {
@@ -59,37 +88,63 @@ export default function CheckoutContainer() {
       alias: "회사",
       receiver: "홍길동",
       receiverPhoneNumber: "01087654321",
-      zipCode: "67890",
-      address: "서울시 서초구 강남대로",
+      zipCode: "63534",
+      address: "제주특별자치도 서귀포시 가가로 14",
       detailAddress: "202호",
       isDefault: false,
     },
   ]);
   const defaultAddress = addresses.find((a) => a.isDefault);
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(
-    defaultAddress ?? null
-  );
+  const selectedAddressId = watch("selectedAddressId");
+  const selectedAddress =
+    addresses.find((address) => address.addressId === selectedAddressId) ??
+    defaultAddress ??
+    undefined;
   const [tempSelectedAddress, setTempSelectedAddress] =
-    useState<Address | null>(selectedAddress);
-
-  const [shipRequest, setShipRequest] = useState("");
+    useState<Address | null>(null);
+  const shipRequest = watch("shipRequest");
   const inputRef = useRef<HTMLInputElement>(null);
   const [tabIndex, setTabIndex] = useState(0);
-  const [selectedBank, setSelectedBank] = useState("");
   const checkoutItems = useCheckoutStore((s) => s.items);
-  const [availablePoints, setAvailablePoints] = useState(400);
-  const [usedPoints, setUsedPoints] = useState(0);
-  const [pointsInput, setPointsInput] = useState("");
-  const [agreePrivacy, setAgreePrivacy] = useState(false);
-  const [agreeOrder, setAgreeOrder] = useState(false);
+  const availablePoints = 400;
+  const usedPoints = watch("usedPoints");
+  const agreePrivacy = watch("agreePrivacy");
+  const agreeOrder = watch("agreeOrder");
   const allAgreeChecked = agreePrivacy && agreeOrder;
-  const [depositorName, setDepositorName] = useState("");
+  const totalPrice = calculateCheckoutProductsPrice(checkoutItems);
+  const shippingFee = calculateCheckoutShipping(
+    selectedAddress?.zipCode ?? "",
+    totalPrice
+  );
+  const totalPayment = totalPrice + shippingFee - usedPoints;
+  const savingPercent = 5;
+  const savingPoint = Math.floor(totalPrice * (savingPercent / 100));
+  const [selectedProvider, setSelectedProvider] = useState("");
 
   useEffect(() => {
     if (shipRequest === "직접 입력") {
       inputRef.current?.focus();
     }
   }, [shipRequest]);
+
+  useEffect(() => {
+    if (!selectedAddressId && defaultAddress) {
+      setValue("selectedAddressId", defaultAddress.addressId);
+    }
+  }, [selectedAddressId, defaultAddress, setValue]);
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+    setTempSelectedAddress(selectedAddress ?? null);
+  }, [isModalOpen, selectedAddress]);
+
+  useEffect(() => {
+    if (tabIndex === 0) {
+      setSelectedProvider("toss");
+    } else {
+      setSelectedProvider("");
+    }
+  }, [tabIndex]);
 
   // useEffect(() => {
   //   const fetchAddressesData = async () => {
@@ -110,28 +165,47 @@ export default function CheckoutContainer() {
   };
 
   const handleUseAllPoints = () => {
-    setUsedPoints(availablePoints);
-    setPointsInput(String(availablePoints));
+    setValue("usedPoints", availablePoints, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   const handlePointsInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (Number(value) > availablePoints) {
+    const numberValue = value === "" ? 0 : Number(value);
+
+    if (Number.isNaN(numberValue)) return;
+
+    if (numberValue > availablePoints) {
       alert("보유 적립금을 초과할 수 없습니다.");
       return;
     }
-    setUsedPoints(Number(value));
-    setPointsInput(value);
+
+    setValue("usedPoints", numberValue, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   const handleAllAgreeChecked = (checked: boolean) => {
-    setAgreeOrder(checked);
-    setAgreePrivacy(checked);
+    setValue("agreeOrder", checked);
+    setValue("agreePrivacy", checked);
   };
+
+  const onSubmit = (data: FormData) => {
+    console.log("🔥 SUBMIT:", data);
+  };
+
+  console.log("isValid:", isValid);
+  console.log("errors:", errors);
 
   return (
     <div className="page-y container">
-      <div className="flex min-h-screen items-start justify-between gap-13.5">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex min-h-screen items-start justify-between gap-13.5"
+      >
         {/* 왼쪽 */}
         <div className="flex flex-1 flex-col gap-12">
           {/* 배송정보 */}
@@ -148,10 +222,10 @@ export default function CheckoutContainer() {
                     </span>
                   </div>
                   <Button
+                    type="button"
                     variant="black"
                     className="w-22.5"
                     onClick={() => {
-                      setTempSelectedAddress(selectedAddress);
                       setIsModalOpen(true);
                     }}
                   >
@@ -171,6 +245,7 @@ export default function CheckoutContainer() {
               <div className="flex items-center justify-between">
                 <b> 기본 배송지를 등록해주세요</b>
                 <Button
+                  type="button"
                   variant="black"
                   className="w-22.5"
                   onClick={() => setIsModalOpen(true)}
@@ -187,10 +262,19 @@ export default function CheckoutContainer() {
                 placeholder="요청사항을 선택해주세요."
                 options={shipRequestOptions}
                 onChange={(value) => {
-                  setShipRequest(value);
+                  setValue("shipRequest", value, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
                 }}
               />
+              {errors.shipRequest?.message && (
+                <p className="caption1 text-danger-200 mt-1">
+                  {errors.shipRequest.message}
+                </p>
+              )}
               <Input
+                {...register("shipRequestCustom")}
                 ref={inputRef}
                 id="ship-request-custom"
                 disabled={shipRequest !== "직접 입력"}
@@ -222,9 +306,15 @@ export default function CheckoutContainer() {
                       {item.color} / {item.size} {item.quantity}개
                     </p>
                     {item.discountRate ? (
-                      <b>{item.discountPrice}원</b>
+                      <b>
+                        {(item.discountPrice * item.quantity).toLocaleString()}
+                        won
+                      </b>
                     ) : (
-                      <b>{item.originalPrice}원</b>
+                      <b>
+                        {(item.originalPrice * item.quantity).toLocaleString()}
+                        won
+                      </b>
                     )}
                   </div>
                 </div>
@@ -236,11 +326,13 @@ export default function CheckoutContainer() {
             <h6 className="title3 mb-6">적립금</h6>
             <div className="mb-2.5 flex gap-2.5">
               <Input
+                {...register("usedPoints", { valueAsNumber: true })}
                 id="points-to-use"
-                value={pointsInput}
+                value={usedPoints === 0 ? "" : String(usedPoints)}
                 onChange={handlePointsInput}
               />
               <Button
+                type="button"
                 variant="black"
                 className="w-22.5 shrink-0"
                 onClick={handleUseAllPoints}
@@ -259,11 +351,25 @@ export default function CheckoutContainer() {
               tabs={["카드 결제", "계좌이체"]}
               size="M"
               className="w-full"
-              onChange={(index) => setTabIndex(index)}
+              onChange={(index) => {
+                setTabIndex(index);
+                setValue("paymentMethod", index === 0 ? "card" : "bank");
+                if (index === 0) {
+                  setSelectedProvider("toss");
+                } else {
+                  setSelectedProvider("");
+                }
+              }}
             />
             {tabIndex === 0 && (
               <div className="mt-6 grid grid-cols-3 gap-2.5">
-                <Button variant="gray">토스페이</Button>
+                <Button
+                  type="button"
+                  variant={selectedProvider === "toss" ? "black" : "gray"}
+                  onClick={() => setSelectedProvider("toss")}
+                >
+                  토스페이
+                </Button>
               </div>
             )}
             {tabIndex === 1 && (
@@ -274,17 +380,22 @@ export default function CheckoutContainer() {
                     id="shipp-request"
                     placeholder="입금은행을 선택해주세요."
                     options={bankOptions}
-                    onChange={(value) => setSelectedBank(value)}
+                    onChange={(value) => {
+                      setValue("bank", value, {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+                    }}
                   />
                 </div>
                 <div className="flex flex-col gap-3">
                   <label htmlFor="depositor-name">입금자명</label>
                   <Input
+                    {...register("depositorName")}
                     id="depositor-name"
-                    value={depositorName}
-                    onChange={(e) => setDepositorName(e.target.value)}
                     placeholder="입금자명을 입력해주세요."
                     helperMessage="24시간 이내 미입금 시 자동 취소됩니다."
+                    errorMessage={errors.depositorName?.message}
                   />
                 </div>
               </div>
@@ -304,21 +415,36 @@ export default function CheckoutContainer() {
               </div>
             </div>
             <div>
-              <div className="flex items-center gap-0.75">
+              <div className="flex items-start gap-0.75">
                 <CheckBox
                   id="agree-privacy"
                   checked={agreePrivacy}
-                  onChange={(e) => setAgreePrivacy(e.target.checked)}
+                  onChange={(e) => {
+                    setValue("agreePrivacy", e.target.checked, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                  }}
                 />
                 <label htmlFor="agree-privacy">
                   개인정보처리방침 약관 동의 [필수]
+                  {errors.agreePrivacy?.message && (
+                    <p className="caption1 text-danger-200 mt-1">
+                      {errors.agreePrivacy.message}
+                    </p>
+                  )}
                 </label>
               </div>
               <div className="mt-3 flex items-start gap-0.75">
                 <CheckBox
                   id="agree-order"
                   checked={agreeOrder}
-                  onChange={(e) => setAgreeOrder(e.target.checked)}
+                  onChange={(e) => {
+                    setValue("agreeOrder", e.target.checked, {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    });
+                  }}
                 />
                 <div>
                   <label htmlFor="agree-order" className="leading-4">
@@ -329,6 +455,11 @@ export default function CheckoutContainer() {
                     사용 등 주문 정보를 확인하였으며, 결제 및 대빵언니에서
                     제공하는 이용 약관에 동의합니다.
                   </p>
+                  {errors.agreeOrder?.message && (
+                    <p className="caption1 text-danger-200 mt-1">
+                      {errors.agreeOrder.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -355,42 +486,45 @@ export default function CheckoutContainer() {
           <div className="flex flex-col gap-3">
             <div className="flex justify-between">
               <span>상품 합계 금액</span>
-              {/* <span>{totalPrice.toLocaleString()}won</span> */}
+              <span>{totalPrice.toLocaleString()}won</span>
             </div>
             <div className="flex justify-between">
               <span>배송비</span>
-              {/* <span>{shippingFee.toLocaleString()}won</span> */}
+              <span>{shippingFee.toLocaleString()}won</span>
             </div>
             <div className="flex flex-col gap-1.5">
               <span className="caption1 text-text-disabled">
-                ㄴ 기본택배비 3000 / 제주 산간·도서지역 6000
+                ㄴ 기본 배송비 3,000원 / 제주·도서산간 6,000원
               </span>
               <span className="caption1 text-text-disabled">
-                ㄴ 7만원 이상 배송비 무료, 14만원 이상 분리 배송 가능(카톡 문의)
+                ㄴ 무료배송 : 5만원 이상 / 제주·도서산간 10만원 이상
+              </span>
+              <span className="caption1 text-text-disabled">
+                ㄴ 14만원 이상 주문 시 분리 배송 가능(카카오톡 문의)
               </span>
             </div>
             <div className="flex justify-between">
               <span>적립금</span>
-              <span>{usedPoints}</span>
+              <span>{usedPoints || 0}</span>
             </div>
             <div className="flex flex-col gap-1.5">
               <span className="caption1 text-text-disabled">
-                ㄴ 주문 시 예상 적립금 : 300
+                ㄴ 주문 시 예상 적립금 : {savingPoint}
               </span>
             </div>
           </div>
           <div className="title3 border-text-primary mt-6 flex justify-between border-t pt-6">
-            <span>결제 예상 금액</span>
-            {/* <span>{totalPayment.toLocaleString()}won</span> */}
+            <span>총 결제 금액</span>
+            <span>{totalPayment.toLocaleString()}won</span>
           </div>
 
           <div className="mt-9">
-            <Button variant="gray" disabled={!allAgreeChecked}>
+            <Button variant="gray" type="submit">
               결제하기
             </Button>
           </div>
         </div>
-      </div>
+      </form>
       <Modal isOpen={isModalOpen} onClose={handleClose}>
         <ModalOverlay />
         <ModalContent className="w-full max-w-3xl">
@@ -399,7 +533,7 @@ export default function CheckoutContainer() {
             <div>
               <div className="mb-3 flex items-center justify-between">
                 <p>주소</p>
-                <Button variant="black" className="w-22.5">
+                <Button variant="black" type="button" className="w-22.5">
                   주소 등록
                 </Button>
               </div>
@@ -437,10 +571,10 @@ export default function CheckoutContainer() {
                       </p>
                     </div>
                     <div className="flex items-center justify-end gap-2.5">
-                      <Button variant="stroke" className="w-fit">
+                      <Button variant="stroke" type="button" className="w-fit">
                         수정
                       </Button>
-                      <Button variant="gray" className="w-fit">
+                      <Button variant="gray" type="button" className="w-fit">
                         삭제
                       </Button>
                     </div>
@@ -451,6 +585,7 @@ export default function CheckoutContainer() {
           </ModalBody>
           <ModalFooter className="flex items-center justify-end gap-2.5">
             <Button
+              type="button"
               onClick={() => setIsModalOpen(false)}
               variant="stroke"
               className="w-full max-w-38.75"
@@ -458,8 +593,11 @@ export default function CheckoutContainer() {
               취소
             </Button>
             <Button
+              type="button"
               onClick={() => {
-                setSelectedAddress(tempSelectedAddress);
+                if (!tempSelectedAddress) return;
+
+                setValue("selectedAddressId", tempSelectedAddress.addressId);
                 setIsModalOpen(false);
               }}
               variant="gray"
