@@ -9,7 +9,7 @@ export default function PageError({
   reset: () => void;
 }) {
   return (
-    <section className="container-wide flex flex-col items-center justify-center gap-8">
+    <section className="container-wide flex h-full flex-col items-center justify-center gap-8">
       <h2 className="body1">
         {error.message || "페이지에 잠시 오류가 발생했습니다."}
       </h2>

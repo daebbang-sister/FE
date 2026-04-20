@@ -9,7 +9,7 @@ export default async function MyPageLayout({
   //   console.log(user);
 
   return (
-    <section className="container grid grid-cols-[1fr_776px] gap-13.5 py-15.75">
+    <section className="container gap-13.5 py-15.75 md:grid md:grid-cols-[1fr_776px]">
       <MypageSideNav />
       <article>{children}</article>
     </section>

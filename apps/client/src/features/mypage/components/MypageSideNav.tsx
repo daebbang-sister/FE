@@ -22,7 +22,7 @@ export default function MypageSideNav() {
 
   return (
     <aside>
-      <div className="mb-12 flex items-center gap-2">
+      <div className="mb-6 flex items-center gap-2 md:mb-12">
         <p className="title2">000님</p>
         <div className="bg-text-primary flex items-center gap-1 rounded-full px-1.5 py-1">
           <svg
@@ -41,10 +41,15 @@ export default function MypageSideNav() {
         </div>
       </div>
 
-      <nav className="title3 flex flex-col gap-6">
+      <nav className="caption1 md:title3 mb-12 grid grid-cols-3 gap-x-1 gap-y-1 text-center md:mb-0 md:flex md:flex-col md:gap-6 md:text-left">
         {menus.map((menu, idx) => {
           if (menu.type === "divider") {
-            return <hr key={idx} className="border-t border-neutral-300" />;
+            return (
+              <hr
+                key={idx}
+                className="hidden border-t border-neutral-300 md:block"
+              />
+            );
           }
           const isActive = pathname === menu.href;
           return (
@@ -53,14 +58,14 @@ export default function MypageSideNav() {
               href={menu.href}
               className={`${
                 isActive ? "text-text-primary" : "text-text-disabled"
-              } hover:text-text-primary`}
+              } hover:text-text-primary bg-neutral-300 py-1.5 md:bg-transparent md:py-0`}
             >
               {menu.label}
             </Link>
           );
         })}
 
-        <p className="text-text-disabled hover:text-text-primary cursor-pointer">
+        <p className="text-text-disabled hover:text-text-primary cursor-pointer py-1.5 md:py-0">
           로그아웃
         </p>
       </nav>
