@@ -1,7 +1,13 @@
 import request from "@/shared/lib/request";
-import { WishListItem } from "./model";
+import { UserInfo, WishListItem } from "./model";
 import { PageResponse } from "@/shared/type/model";
 
+// userInfo API #####
+export const fetchGetUser = () => {
+  return request<UserInfo>(`/v1/users`, { method: "GET" });
+};
+
+// wishList API #####
 export const getWishListAPI = (
   page?: number,
   size?: number

@@ -1,12 +1,13 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { fetchGetUser } from "@/features/mypage/api";
+import { UserInfo } from "@/features/mypage/model";
 
 type MenuItem =
   | { type: "link"; href: string; label: string }
   | { type: "divider" };
-
 const menus: MenuItem[] = [
   { type: "link", href: "/mypage/orders", label: "주문조회" },
   { type: "link", href: "/mypage/wish-list", label: "위시리스트" },
@@ -19,11 +20,25 @@ const menus: MenuItem[] = [
 
 export default function MypageSideNav() {
   const pathname = usePathname();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await fetchGetUser();
+        setUserInfo(user);
+        // console.log("유저 데이터:", user);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <aside>
       <div className="mb-6 flex items-center gap-2 md:mb-12">
-        <p className="title2">000님</p>
+        <p className="title2">{userInfo?.userName}님</p>
         <div className="bg-text-primary flex items-center gap-1 rounded-full px-1.5 py-1">
           <svg
             width="10"
@@ -37,6 +52,7 @@ export default function MypageSideNav() {
               fill="#FEC300"
             />
           </svg>
+          {/* 적립금 추후 변경 예정 */}
           <p className="caption2 text-brand-700">2000</p>
         </div>
       </div>

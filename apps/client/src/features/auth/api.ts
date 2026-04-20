@@ -48,11 +48,6 @@ export const userFindId = (
   );
 };
 
-// 유저정보 가져오는 API
-// export const fetchGetUser = () => {
-//   return request<UserInfo>(`/v1/users`, { method: "GET" });
-// };
-
 export const userFindPw = (userData: UserFindPw): Promise<ApiResponse<null>> =>
   request<null>(
     "/v1/users/find/password",

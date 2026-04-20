@@ -11,7 +11,19 @@ import PageLoading from "@/shared/components/layout/PageLoading";
 import { useMemo, useState } from "react";
 import { PageLinkButton } from "@/shared/ui/button/PageLinkButton";
 import { useSearchParams } from "next/navigation";
-import { getProductOptions } from "@/features/cart/api";
+import { fetchAddCart, getProductOptions } from "@/features/cart/api";
+import CartOptionModal from "@/features/cart/components/CartOptionModal";
+
+type ProductOptionSize = {
+  size: string;
+  soldOut: boolean;
+  productDetailId: number;
+};
+
+type ProductOption = {
+  color: string;
+  sizes: ProductOptionSize[];
+};
 
 export default function WishlistGrid() {
   const query = useSearchParams();
@@ -28,11 +40,11 @@ export default function WishlistGrid() {
   } = useGetWishlist(apiPage, pageSize);
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
   const allWishListIds = useMemo(
     () => data?.content.map((item) => item.wishListId) ?? [],
     [data]
   );
-
   const isAllChecked =
     allWishListIds.length > 0 &&
     allWishListIds.every((id) => selectedIds.includes(id));
@@ -42,7 +54,6 @@ export default function WishlistGrid() {
       checked ? [...prev, wishListId] : prev.filter((id) => id !== wishListId)
     );
   };
-
   const handleAllCheckedChange = (checked: boolean) => {
     if (checked) {
       setSelectedIds(allWishListIds);
@@ -51,12 +62,7 @@ export default function WishlistGrid() {
     setSelectedIds([]);
   };
 
-  const {
-    deleteWishlist,
-    // isLoading: isDeleteLoading,
-    // error: deleteError,
-  } = useDeleteWishlist(selectedIds);
-
+  const { deleteWishlist } = useDeleteWishlist(selectedIds);
   const handleDelete = async () => {
     try {
       const deleted = await deleteWishlist();
@@ -69,12 +75,7 @@ export default function WishlistGrid() {
     }
   };
 
-  const {
-    allDeleteWishlist,
-    // isLoading: isAllDeleteLoading,
-    // error: allDeleteError,
-  } = useAllDeleteWishlist();
-
+  const { allDeleteWishlist } = useAllDeleteWishlist();
   const handleAllDelete = async () => {
     try {
       const allDeleted = await allDeleteWishlist();
@@ -87,14 +88,36 @@ export default function WishlistGrid() {
     }
   };
 
-  const handleProductOptions = async (id: number) => {
+  // options modal
+  const [isOptionModalOpen, setIsOptionModalOpen] = useState(false);
+  const [optionList, setOptionList] = useState<ProductOption[]>([]);
+  const [isOptionLoading, setIsOptionLoading] = useState(false);
+  const handleOpenOptionModal = async (productId: number) => {
     try {
-      const options = await getProductOptions(id);
-      console.log("옵션 데이터:", options);
+      setIsOptionLoading(true);
+      const options = await getProductOptions(productId);
+      setOptionList(options ?? []);
+      setIsOptionModalOpen(true);
     } catch (error) {
-      console.error("옵션 조회 실패:", error);
+      alert(`${error} 옵션 불러오기에 실패했습니다.`);
+    } finally {
+      setIsOptionLoading(false);
     }
   };
+  const handleCloseOptionModal = () => {
+    setIsOptionModalOpen(false);
+    setOptionList([]);
+  };
+  const handleConfirmOption = async (productDetailId: number) => {
+    try {
+      await fetchAddCart(productDetailId, 1);
+      alert("상품이 장바구니에 추가 되었습니다.");
+      handleCloseOptionModal();
+    } catch (error) {
+      alert(`${error} 장바구니 담기에 실패했습니다. `);
+    }
+  };
+  // ##########
 
   if (isWishlistLoading) return <PageLoading />;
   if (wishlistError) return <div>{wishlistError}</div>;
@@ -158,7 +181,7 @@ export default function WishlistGrid() {
               }
               checked={selectedIds.includes(product.wishListId)}
               onCheckedChange={handleCheckedChange}
-              onClickProduct={handleProductOptions}
+              onClickProduct={handleOpenOptionModal}
             />
           );
         })}
@@ -170,17 +193,18 @@ export default function WishlistGrid() {
           limit={pageSize}
           currentPage={currentPage}
           pageGroupSize={5}
-          basePath={`/mypage/wish-list`}
+          basePath="/mypage/wish-list"
           searchParams={searchParamsObj}
         />
       </article>
 
-      {/* <AlertModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="알림"
-        message={modalMessage}
-      /> */}
+      <CartOptionModal
+        isOpen={isOptionModalOpen}
+        onClose={handleCloseOptionModal}
+        options={optionList}
+        isLoading={isOptionLoading}
+        onConfirmOption={handleConfirmOption}
+      />
     </>
   );
 }
