@@ -1,9 +1,11 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchGetUser } from "@/features/mypage/api";
 import { UserInfo } from "@/features/mypage/model";
+import { logoutUser } from "@/features/auth/api";
+import { useAuthStore } from "@/shared/store/auth.store";
 
 type MenuItem =
   | { type: "link"; href: string; label: string }
@@ -19,7 +21,9 @@ const menus: MenuItem[] = [
 ];
 
 export default function MypageSideNav() {
+  const router = useRouter();
   const pathname = usePathname();
+  const { logout } = useAuthStore();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
@@ -35,10 +39,24 @@ export default function MypageSideNav() {
     fetchUser();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      alert("로그아웃 되었습니다.");
+      logout();
+      router.push("/");
+      router.refresh();
+      setUserInfo(null);
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+      alert("로그아웃 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <aside>
       <div className="mb-6 flex items-center gap-2 md:mb-12">
-        <p className="title2">{userInfo?.userName}님</p>
+        <p className="title2">{userInfo?.userName || "비회원"}님</p>
         <div className="bg-text-primary flex items-center gap-1 rounded-full px-1.5 py-1">
           <svg
             width="10"
@@ -81,7 +99,10 @@ export default function MypageSideNav() {
           );
         })}
 
-        <p className="text-text-disabled hover:text-text-primary cursor-pointer py-1.5 md:py-0">
+        <p
+          className="text-text-disabled hover:text-text-primary cursor-pointer py-1.5 md:py-0"
+          onClick={handleLogout}
+        >
           로그아웃
         </p>
       </nav>
