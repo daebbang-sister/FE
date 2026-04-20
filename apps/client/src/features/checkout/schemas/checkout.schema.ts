@@ -4,7 +4,7 @@ export const checkoutSchema = z
   .object({
     selectedAddressId: z.number().min(1, "배송지를 선택해주세요."),
 
-    shipRequest: z.string().min(1, "요청사항을 선택해주세요."),
+    shipRequest: z.string().optional(),
 
     shipRequestCustom: z.string().optional(),
 
@@ -24,15 +24,11 @@ export const checkoutSchema = z
       message: "주문 약관에 동의해주세요.",
     }),
   })
-  .refine(
-    (data) => {
-      if (data.paymentMethod === "bank") {
-        return data.bank && data.depositorName;
-      }
-      return true;
-    },
-    {
-      message: "계좌이체 정보를 입력해주세요.",
-      path: ["bank"],
-    }
-  );
+  .refine((data) => data.paymentMethod !== "bank" || !!data.bank, {
+    message: "입금은행을 선택해주세요.",
+    path: ["bank"],
+  })
+  .refine((data) => data.paymentMethod !== "bank" || !!data.depositorName, {
+    message: "입금자명을 입력해주세요.",
+    path: ["depositorName"],
+  });
