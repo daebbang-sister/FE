@@ -1,12 +1,3 @@
-export type PageResponse<T> = {
-  content: T[];
-  pageNumber: number;
-  pageSize: number;
-  totalElements: number;
-  totalPages: number;
-  last: boolean;
-};
-
 export type CategoryProduct = {
   id: number;
   categoryName: string;

@@ -2,9 +2,9 @@
 
 import { MainProduct } from "@/features/home/model";
 import ProductCard from "@/features/product/components/product-card/ProductCard";
-import { PageResponse } from "@/features/product/model";
+import { PageResponse } from "@/shared/type/model";
 import { Dropdown } from "@repo/ui";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
   products: PageResponse<MainProduct>;
@@ -13,6 +13,9 @@ type Props = {
 export default function ProductListGrid({ products }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const params = useParams();
+  const category = params.category as string;
 
   //   console.log(products);
   const filterOptions = [
@@ -56,21 +59,23 @@ export default function ProductListGrid({ products }: Props) {
 
   return (
     <section className="pb-40">
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between">
         <p className="caption1 text-text-disabled">
           total: {products.totalElements}개
         </p>
-        <Dropdown
-          id="phonePrefixPartialDisabled"
-          className="ml-auto w-auto"
-          menuWidth="w-30 "
-          defaultValue="정렬"
-          options={filterOptions}
-          size="M"
-          onChange={changeFilter}
-        />
+        {category !== "new" && (
+          <Dropdown
+            id="phonePrefixPartialDisabled"
+            className="ml-auto w-auto"
+            menuWidth="w-30 "
+            defaultValue="정렬"
+            options={filterOptions}
+            size="M"
+            onChange={changeFilter}
+          />
+        )}
       </div>
-      <div className="grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-2.5 grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
         {products.content.map((product) => (
           <ProductCard
             key={product.id}
