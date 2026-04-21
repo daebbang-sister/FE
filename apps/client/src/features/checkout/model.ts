@@ -23,3 +23,16 @@ export type PrepareOrderData = {
   orderNumber: string;
   paymentAmount: number;
 };
+
+export type CheckoutItem = {
+  productId: number;
+  productName: string;
+  mainImageUrl: string;
+  originalPrice: number;
+  discountRate: number | null;
+  discountPrice: number;
+  color: string;
+  size: string;
+  quantity: number;
+  productDetailId: number;
+};

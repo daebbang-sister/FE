@@ -1,12 +1,13 @@
-import { CartItem } from "@/features/cart/model";
+import { CheckoutItem } from "@/features/checkout/model";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type CheckoutStore = {
-  items: CartItem[];
-  setItems: (items: CartItem[]) => void;
+  items: CheckoutItem[];
+  setItems: (items: CheckoutItem[]) => void;
   clear: () => void;
 };
+
 export const useCheckoutStore = create<CheckoutStore>()(
   persist(
     (set) => ({

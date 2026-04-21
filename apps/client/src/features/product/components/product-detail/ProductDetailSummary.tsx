@@ -2,6 +2,8 @@
 
 import { fetchAddCart } from "@/features/cart/api";
 import { CartItem } from "@/features/cart/model";
+import { CheckoutItem } from "@/features/checkout/model";
+import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
 import { ProductOption } from "@/features/product/model";
 import {
   findProductDetailId,
@@ -12,6 +14,7 @@ import { calculateOrderPrice } from "@/features/product/utils/productPrice";
 import { useAuthStore } from "@/shared/store/auth.store";
 import { DiscountRate } from "@/shared/ui/discount-rate/DiscountRate";
 import { AlertModal, Button, Dropdown } from "@repo/ui";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 type Props = {
@@ -41,6 +44,8 @@ export default function ProductDetailSummary({
   const isOptionSelected = Boolean(selectedColor && selectedSize);
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+  const setItems = useCheckoutStore((s) => s.setItems);
   const { isLoggedIn } = useAuthStore();
 
   const colorOptions = useMemo(() => {
@@ -152,6 +157,25 @@ export default function ProductDetailSummary({
     // );
   };
 
+  const toCheckoutItem = (): CheckoutItem => {
+    if (!selectedProductDetailId) {
+      throw new Error("productDetailId is required");
+    }
+
+    return {
+      productId,
+      productName,
+      mainImageUrl: mainImages,
+      originalPrice,
+      discountPrice: sellingPrice,
+      discountRate,
+      color: selectedColor,
+      size: selectedSize,
+      quantity,
+      productDetailId: selectedProductDetailId,
+    };
+  };
+
   // 결제 이동
   const handleBuyClick = () => {
     if (!selectedColor || !selectedSize) {
@@ -159,7 +183,16 @@ export default function ProductDetailSummary({
       setIsModalOpen(true);
       return;
     }
-    alert("결제창으로 이동합니다.");
+    const checkoutItem = toCheckoutItem();
+
+    if (!isLoggedIn) {
+      setModalMessage("로그인 후 구매가 가능합니다.");
+      setIsModalOpen(true);
+      return;
+    }
+
+    setItems([checkoutItem]);
+    router.push("/checkout");
   };
 
   return (

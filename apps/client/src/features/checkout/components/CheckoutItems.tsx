@@ -12,13 +12,13 @@ export default function CheckoutItems() {
 
       <div className="flex flex-col gap-3">
         {checkoutItems.map((item) => {
-          const price =
-            (item.discountRate ? item.discountPrice : item.originalPrice) *
-            item.quantity;
+          const price = item.discountRate
+            ? item.discountPrice
+            : item.originalPrice;
 
           return (
             <div
-              key={item.cartId}
+              key={item.productDetailId}
               className="border-border-default flex gap-3 border p-4"
             >
               <div className="relative h-25 w-25 overflow-hidden">

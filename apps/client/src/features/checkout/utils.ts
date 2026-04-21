@@ -1,7 +1,7 @@
-import { CartItem } from "@/features/cart/model";
 import { ISLAND_ZIP_RANGES } from "@/features/checkout/constants/island";
+import { CheckoutItem } from "@/features/checkout/model";
 
-export function calculateCheckoutProductsPrice(items: CartItem[]) {
+export function calculateCheckoutProductsPrice(items: CheckoutItem[]) {
   return items.reduce((acc, item) => {
     const price =
       item.discountRate !== null ? item.discountPrice : item.originalPrice;

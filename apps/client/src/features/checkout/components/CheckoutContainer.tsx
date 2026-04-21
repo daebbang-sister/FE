@@ -59,6 +59,7 @@ export default function CheckoutContainer() {
     undefined;
   const shipRequest = watch("shipRequest");
   const usedPoints = watch("usedPoints");
+  const paymentMethod = watch("paymentMethod");
   const inputRef = useRef<HTMLInputElement>(null);
   const checkoutItems = useCheckoutStore((s) => s.items);
   const { totalPrice, shippingFee, totalPayment, savingPoint } =
@@ -68,7 +69,9 @@ export default function CheckoutContainer() {
       usedPoints,
     });
 
-  const { widgetsRef } = useTossWidgets(totalPayment);
+  console.log("checkoutItems", checkoutItems);
+
+  const { widgetsRef } = useTossWidgets(totalPayment, paymentMethod);
   const { requestPayment } = useCheckoutPayment({
     widgetsRef,
     totalPayment,

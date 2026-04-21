@@ -1,5 +1,4 @@
-import { CartItem } from "@/features/cart/model";
-import { Address } from "@/features/checkout/model";
+import { Address, CheckoutItem } from "@/features/checkout/model";
 import {
   calculateCheckoutProductsPrice,
   calculateCheckoutShipping,
@@ -7,7 +6,7 @@ import {
 import { useMemo } from "react";
 
 type CheckoutPriceProps = {
-  checkoutItems: CartItem[];
+  checkoutItems: CheckoutItem[];
   selectedAddress?: Address;
   usedPoints: number;
 };

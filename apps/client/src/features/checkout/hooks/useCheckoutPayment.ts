@@ -1,10 +1,9 @@
-import { CartItem } from "@/features/cart/model";
-import { Address } from "@/features/checkout/model";
+import { Address, CheckoutItem } from "@/features/checkout/model";
 
 type PropsCheckoutPayment = {
   totalPayment: number;
   widgetsRef: React.RefObject<any>;
-  checkoutItems: CartItem[];
+  checkoutItems: CheckoutItem[];
   selectedAddress?: Address;
 };
 
