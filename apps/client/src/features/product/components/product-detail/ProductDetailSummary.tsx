@@ -146,7 +146,7 @@ export default function ProductDetailSummary({
         localStorage.setItem("baskets", JSON.stringify(baskets));
       }
       setModalMessage("장바구니에 담겼습니다.");
-    } catch (error) {
+    } catch {
       setModalMessage("장바구니 담기에 실패했습니다.");
     } finally {
       setIsModalOpen(true);
@@ -313,7 +313,7 @@ export default function ProductDetailSummary({
             <p>{orderPrice.totalSalePrice.toLocaleString()}won</p>
           </div>
         )}
-        <div className="bg-text-primary my-3 h-0.25 w-full" />
+        <div className="bg-text-primary my-3 h-[1] w-full" />
         <div className="body1 flex justify-between">
           <p>결제 예상 금액</p>
           <p className="title3">
@@ -344,14 +344,14 @@ export default function ProductDetailSummary({
         </div>
         <Button
           variant="stroke"
-          className="flex-1 lg:min-w-[155px]"
+          className="flex-1 lg:min-w-38.75"
           onClick={handleCartClick}
         >
           장바구니
         </Button>
         <Button
           variant="gray"
-          className="flex-1 lg:min-w-[155px]"
+          className="flex-1 lg:min-w-38.75"
           onClick={handleBuyClick}
         >
           구매하기

@@ -1,8 +1,19 @@
 import { Address, CheckoutItem } from "@/features/checkout/model";
 
+type TossWidgets = {
+  setAmount: (args: { currency: "KRW"; value: number }) => void;
+  requestPayment: (args: {
+    orderId: string;
+    orderName: string;
+    customerName?: string;
+    successUrl: string;
+    failUrl: string;
+  }) => Promise<void>;
+};
+
 type PropsCheckoutPayment = {
   totalPayment: number;
-  widgetsRef: React.RefObject<any>;
+  widgetsRef: React.RefObject<TossWidgets | null>;
   checkoutItems: CheckoutItem[];
   selectedAddress?: Address;
 };
@@ -19,7 +30,8 @@ export const useCheckoutPayment = ({
         orderId: `order-${Date.now()}`,
         amount: totalPayment,
       };
-      // const order = await fetchPrepareOrder(items, data.usedPoints);
+
+      if (!widgetsRef.current) return;
 
       await widgetsRef.current.setAmount({
         currency: "KRW",

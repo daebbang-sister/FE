@@ -1,10 +1,14 @@
 // features/checkout/hooks/useAddresses.ts
 import { fetchAddresses } from "@/features/checkout/api";
 import { Address } from "@/features/checkout/model";
+import { checkoutSchema } from "@/features/checkout/schemas/checkout.schema";
 import { useEffect, useState } from "react";
 import { UseFormSetValue } from "react-hook-form";
+import { z } from "zod";
 
-export const useAddresses = (setValue: UseFormSetValue<any>) => {
+type FormData = z.infer<typeof checkoutSchema>;
+
+export const useAddresses = (setValue: UseFormSetValue<FormData>) => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tempSelectedAddress, setTempSelectedAddress] =

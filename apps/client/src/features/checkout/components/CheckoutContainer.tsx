@@ -6,7 +6,7 @@ import { checkoutSchema } from "@/features/checkout/schemas/checkout.schema";
 import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import z from "zod";
 import { useCheckoutPayment } from "@/features/checkout/hooks/useCheckoutPayment";
 import { useCheckoutPrice } from "@/features/checkout/hooks/useCheckoutPrice";
@@ -26,6 +26,7 @@ export default function CheckoutContainer() {
     register,
     handleSubmit,
     setValue,
+    control,
     watch,
     formState: { errors, isValid },
   } = useForm<FormData>({
@@ -50,9 +51,11 @@ export default function CheckoutContainer() {
     handleCloseModal,
     handleConfirmAddress,
   } = useAddresses(setValue);
-
+  const selectedAddressId = useWatch({
+    control,
+    name: "selectedAddressId",
+  });
   const defaultAddress = addresses.find((a) => a.isDefault);
-  const selectedAddressId = watch("selectedAddressId");
   const selectedAddress =
     addresses.find((address) => address.addressId === selectedAddressId) ??
     defaultAddress ??
@@ -69,9 +72,7 @@ export default function CheckoutContainer() {
       usedPoints,
     });
 
-  console.log("checkoutItems", checkoutItems);
-
-  const { widgetsRef } = useTossWidgets(totalPayment, paymentMethod);
+  const { widgetsRef } = useTossWidgets(totalPayment);
   const { requestPayment } = useCheckoutPayment({
     widgetsRef,
     totalPayment,
