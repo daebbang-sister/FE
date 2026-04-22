@@ -1,6 +1,7 @@
 import request from "@/shared/lib/request";
 import { CategoryProduct, ProductDetail } from "@/features/product/model";
 import { PageResponse } from "@/shared/type/model";
+import { headers } from "next/headers";
 
 export const getNewProducts = (
   direction?: string,
@@ -38,6 +39,22 @@ export const getProductDetail = (productId: number): Promise<ProductDetail> =>
   request<ProductDetail>(`/v1/products/${productId}`, {
     method: "GET",
   });
+
+// export const getProductDetail = async (
+//   productId: number
+// ): Promise<ProductDetail> => {
+//   const headerStore = await headers();
+//   const cookie = headerStore.get("cookie") ?? "";
+
+//   console.log("SSR cookie:", cookie);
+
+//   return request<ProductDetail>(`/v1/products/${productId}`, {
+//     method: "GET",
+//     headers: {
+//       cookie,
+//     },
+//   });
+// };
 
 export const getProductSearch = (
   keyword: string,

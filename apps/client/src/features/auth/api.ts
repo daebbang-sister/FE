@@ -23,6 +23,15 @@ export const loginUser = (
     "full"
   );
 
+export const logoutUser = (): Promise<ApiResponse<null>> =>
+  request<null>(
+    "/v1/logout",
+    {
+      method: "DELETE",
+    },
+    "full"
+  );
+
 export const createUser = (userData: UserSignUp): Promise<ApiResponse<null>> =>
   request<null>(
     "/v1/users",
@@ -47,11 +56,6 @@ export const userFindId = (
     "full"
   );
 };
-
-// 유저정보 가져오는 API
-// export const fetchGetUser = () => {
-//   return request<UserInfo>(`/v1/users`, { method: "GET" });
-// };
 
 export const userFindPw = (userData: UserFindPw): Promise<ApiResponse<null>> =>
   request<null>(

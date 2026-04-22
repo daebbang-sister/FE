@@ -4,7 +4,7 @@ import { fetchAddCart } from "@/features/cart/api";
 import { CartItem } from "@/features/cart/model";
 import { CheckoutItem } from "@/features/checkout/model";
 import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
-import { usePostWishlist } from "@/features/mypage/hook/useWishlist";
+import { deleteWishListAPI, postWishListAPI } from "@/features/mypage/api";
 import { ProductOption } from "@/features/product/model";
 import {
   findProductDetailId,
@@ -26,6 +26,7 @@ type Props = {
   sellingPrice: number;
   discountRate: number;
   mainImages: string;
+  isWished: boolean;
   options: ProductOption[];
 };
 
@@ -38,6 +39,7 @@ export default function ProductDetailSummary({
   discountRate,
   mainImages,
   options,
+  isWished,
 }: Props) {
   // 옵션 선택
   const [selectedColor, setSelectedColor] = useState<string>("");
@@ -73,7 +75,7 @@ export default function ProductDetailSummary({
     setQuantity(1);
   };
 
-  // 옵션 초기화(휴지통)
+  // 옵션 초기화
   const handleResetSelectedOption = () => {
     setSelectedColor("");
     setSelectedSize("");
@@ -100,18 +102,24 @@ export default function ProductDetailSummary({
   });
 
   // 찜하기
-  const { addWishlist, isLoading, error } = usePostWishlist();
+  // 추후 api 수정 후 변경 예정/ 리뷰 달지 말아주세요~!
+  const [isWish, setIsWish] = useState(isWished);
   const handleWishClick = async () => {
     try {
-      await addWishlist(productId);
-      alert(`${productId}번이 찜~`);
-    } catch {
-      console.error(error);
+      if (isWish) {
+        // console.log("찜하기에서 id는", productId);
+        await deleteWishListAPI([productId]);
+        setIsWish(false);
+      } else {
+        await postWishListAPI(productId);
+        setIsWish(true);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
   // 장바구니 담기
-  // 추후 찜 여부 구분값 생기면 수정 예정(리뷰달지마!)
   const handleCartClick = async () => {
     if (!selectedColor || !selectedSize) {
       setModalMessage("옵션을 선택해주세요.");
@@ -333,11 +341,11 @@ export default function ProductDetailSummary({
 
       <article className="flex items-center gap-2.5">
         <div
-          className="group bg-text-disabled flex h-8 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-neutral-900 lg:mx-3.5"
+          className={`${isWish ? "bg-neutral-900" : "bg-text-disabled"} group flex h-8 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-neutral-900 lg:mx-3.5`}
           onClick={handleWishClick}
         >
           <svg
-            className="fill-white group-hover:fill-[#FEC300]"
+            className={`${isWish ? "fill-[#FEC300]" : "fill-white"} group-hover:fill-[#FEC300]`}
             width="18"
             height="17"
             viewBox="0 0 18 17"
