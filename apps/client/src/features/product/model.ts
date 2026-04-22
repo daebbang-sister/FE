@@ -42,4 +42,5 @@ export type ProductDetail = {
   gallery: ProductGallery[];
   descriptionHtml: string;
   options: ProductOption[];
+  isWished: boolean;
 };

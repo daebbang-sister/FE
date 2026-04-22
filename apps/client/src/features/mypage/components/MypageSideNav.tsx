@@ -44,9 +44,8 @@ export default function MypageSideNav() {
       await logoutUser();
       alert("로그아웃 되었습니다.");
       logout();
-      router.push("/");
-      router.refresh();
       setUserInfo(null);
+      router.replace("/");
     } catch (error) {
       console.error("로그아웃 실패:", error);
       alert("로그아웃 중 오류가 발생했습니다.");

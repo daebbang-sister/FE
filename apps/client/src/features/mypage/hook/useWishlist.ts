@@ -21,6 +21,7 @@ export function useGetWishlist(page?: number, size?: number) {
       setError(null);
 
       const result = await getWishListAPI(page, size);
+      console.log(result);
       setData(result);
     } catch (err) {
       setError(
@@ -79,20 +80,9 @@ export function useDeleteWishlist(ids: number[]) {
   const [error, setError] = useState<string | null>(null);
 
   const deleteWishlist = async () => {
-    if (ids.length === 0) {
-      alert("선택된 상품이 없습니다.");
-      return;
-    }
-
-    const conf = confirm("위시리스트에서 선택한 상품을 삭제하시겠습니까?");
-    if (!conf) {
-      return;
-    }
-
     try {
       setIsLoading(true);
       setError(null);
-
       const response = await deleteWishListAPI(ids);
       return response;
     } catch (err) {
@@ -120,13 +110,6 @@ export function useAllDeleteWishlist() {
   const [error, setError] = useState<string | null>(null);
 
   const allDeleteWishlist = async () => {
-    const conf = confirm(
-      "위시리스트의 모든 상품을 삭제하시겠습니까?\n(모든 페이지의 상품이 삭제됩니다)"
-    );
-    if (!conf) {
-      return;
-    }
-
     try {
       setIsLoading(true);
       setError(null);

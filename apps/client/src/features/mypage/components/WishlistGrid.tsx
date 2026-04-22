@@ -13,17 +13,7 @@ import { PageLinkButton } from "@/shared/ui/button/PageLinkButton";
 import { useSearchParams } from "next/navigation";
 import { fetchAddCart, getProductOptions } from "@/features/cart/api";
 import CartOptionModal from "@/features/cart/components/CartOptionModal";
-
-type ProductOptionSize = {
-  size: string;
-  soldOut: boolean;
-  productDetailId: number;
-};
-
-type ProductOption = {
-  color: string;
-  sizes: ProductOptionSize[];
-};
+import { ProductOption } from "@/shared/type/model";
 
 export default function WishlistGrid() {
   const query = useSearchParams();
@@ -50,6 +40,7 @@ export default function WishlistGrid() {
     allWishListIds.every((id) => selectedIds.includes(id));
 
   const handleCheckedChange = (wishListId: number, checked: boolean) => {
+    // console.log("위시리스트id는", wishListId)
     setSelectedIds((prev) =>
       checked ? [...prev, wishListId] : prev.filter((id) => id !== wishListId)
     );
@@ -64,6 +55,14 @@ export default function WishlistGrid() {
 
   const { deleteWishlist } = useDeleteWishlist(selectedIds);
   const handleDelete = async () => {
+    if (selectedIds.length === 0) {
+      alert("선택된 상품이 없습니다.");
+      return;
+    }
+    const conf = confirm("위시리스트에서 선택한 상품을 삭제하시겠습니까?");
+    if (!conf) {
+      return;
+    }
     try {
       const deleted = await deleteWishlist();
       if (!deleted) return;
@@ -77,6 +76,12 @@ export default function WishlistGrid() {
 
   const { allDeleteWishlist } = useAllDeleteWishlist();
   const handleAllDelete = async () => {
+    const conf = confirm(
+      "위시리스트의 모든 상품을 삭제하시겠습니까?\n(모든 페이지의 상품이 삭제됩니다)"
+    );
+    if (!conf) {
+      return;
+    }
     try {
       const allDeleted = await allDeleteWishlist();
       if (!allDeleted) return;

@@ -1,5 +1,6 @@
 "use client";
 
+import { ProductOption } from "@/shared/type/model";
 import {
   Button,
   Dropdown,
@@ -12,15 +13,6 @@ import {
 } from "@repo/ui";
 import { useMemo, useState } from "react";
 
-type ProductOptionSize = {
-  size: string;
-  soldOut: boolean;
-  productDetailId: number;
-};
-type ProductOption = {
-  color: string;
-  sizes: ProductOptionSize[];
-};
 type CartOptionModalProps = {
   isLoading?: boolean;
   isOpen: boolean;
@@ -40,8 +32,8 @@ export default function CartOptionModal({
   onClose,
   onConfirmOption,
 }: CartOptionModalProps) {
-  const [selectedColor, setSelectedColor] = useState(size || "");
-  const [selectedSize, setSelectedSize] = useState(color || "");
+  const [selectedColor, setSelectedColor] = useState(color || "");
+  const [selectedSize, setSelectedSize] = useState(size || "");
   const [error, setError] = useState("");
 
   const colorOptions = useMemo(() => {
