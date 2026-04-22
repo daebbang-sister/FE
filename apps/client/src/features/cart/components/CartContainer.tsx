@@ -4,10 +4,13 @@ import CartHeader from "@/features/cart/components/CartHeader";
 import CartList from "@/features/cart/components/CartList";
 import CartSummary from "@/features/cart/components/CartSummary";
 import useCart from "@/features/cart/hooks/useCart";
+import { CartItem } from "@/features/cart/model";
 import {
   calculateProductsPrice,
   calculateShipping,
 } from "@/features/cart/utils";
+import { CheckoutItem } from "@/features/checkout/model";
+import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
 import { Button } from "@repo/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,22 +26,49 @@ export default function CartContainer() {
     handleDeleteSelected,
     handleDeleteAll,
     handleUpdateOption,
+    isLoggedIn,
   } = useCart();
   const router = useRouter();
+
+  const setItem = useCheckoutStore((s) => s.setItems);
 
   const totalPrice = calculateProductsPrice(items);
   const shippingFee = calculateShipping(totalPrice);
   const totalPayment = totalPrice + shippingFee;
 
+  const toCheckoutItems = (items: CartItem[]): CheckoutItem[] =>
+    items.map((item) => ({
+      productId: item.productId,
+      productName: item.productName,
+      mainImageUrl: item.mainImageUrl,
+      originalPrice: item.originalPrice,
+      discountPrice: item.discountPrice,
+      discountRate: item.discountRate,
+      color: item.color,
+      size: item.size,
+      quantity: item.quantity,
+      productDetailId: item.productDetailId,
+    }));
+
   const handleOrderSelected = () => {
+    if (!isLoggedIn) {
+      alert("로그인 후 결제가 가능합니다.");
+      router.push("/login");
+      return;
+    }
     const selectedItems = items.filter((item) => item.checked);
-    console.log("선택 상품 주문:", selectedItems);
-    router.push("/cart/checkout");
+    setItem(toCheckoutItems(selectedItems));
+    router.push("/checkout");
   };
 
   const handleOrderAll = () => {
-    console.log("전체 상품 주문", items);
-    router.push("/cart/checkout");
+    if (!isLoggedIn) {
+      alert("로그인 후 결제가 가능합니다.");
+      router.push("/login");
+      return;
+    }
+    setItem(toCheckoutItems(items));
+    router.push("/checkout");
   };
 
   return (

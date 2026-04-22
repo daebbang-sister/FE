@@ -86,7 +86,7 @@ export default function ProductCarousel({ mainImages, gallery }: Props) {
   return (
     <section className="w-full max-w-full lg:max-w-194">
       {/* 메인 이미지 */}
-      <div className="relative mb-2.5 aspect-[4/5] w-full overflow-hidden bg-neutral-100">
+      <div className="relative mb-2.5 aspect-4/5 w-full overflow-hidden bg-neutral-100">
         {mainImageLoading && (
           <div className="absolute inset-0 overflow-hidden">
             <div className="animate-shimmer h-full w-full bg-neutral-100" />
