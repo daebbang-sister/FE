@@ -70,7 +70,7 @@ export default function ProductDetailSummary({
     setQuantity(1);
   };
 
-  // 옵션 초기화(휴지통)
+  // 옵션 초기화
   const handleResetSelectedOption = () => {
     setSelectedColor("");
     setSelectedSize("");
