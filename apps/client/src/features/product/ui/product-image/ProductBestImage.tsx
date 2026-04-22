@@ -10,7 +10,7 @@ export function ProductBestImage({
   title,
 }: ProductBestImageProps) {
   return (
-    <div className="relative aspect-[3/4] w-full overflow-hidden">
+    <div className="relative aspect-3/4 w-full overflow-hidden">
       <Image
         src={primaryImage}
         fill

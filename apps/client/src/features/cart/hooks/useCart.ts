@@ -147,5 +147,6 @@ export default function useCart() {
     handleDeleteItem,
     handleDeleteSelected,
     handleDeleteAll,
+    isLoggedIn,
   };
 }

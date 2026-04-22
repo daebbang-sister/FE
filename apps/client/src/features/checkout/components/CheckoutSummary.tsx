@@ -1,20 +1,20 @@
 import { Button } from "@repo/ui";
 
-type CartSummaryProps = {
+type CheckoutSummaryProps = {
   totalPrice: number;
   shippingFee: number;
   totalPayment: number;
-  onOrderSelected: () => void;
-  onOrderAll: () => void;
+  savingPoint: number;
+  usedPoints: number;
 };
 
-export default function CartSummary({
+export default function CheckoutSummary({
   totalPrice,
   shippingFee,
   totalPayment,
-  onOrderSelected,
-  onOrderAll,
-}: CartSummaryProps) {
+  savingPoint,
+  usedPoints,
+}: CheckoutSummaryProps) {
   return (
     <div
       className="border-border-default sticky w-full max-w-112.5 self-start border px-7.5 py-10"
@@ -25,10 +25,12 @@ export default function CartSummary({
           <span>상품 합계 금액</span>
           <span>{totalPrice.toLocaleString()}won</span>
         </div>
+
         <div className="flex justify-between">
           <span>배송비</span>
           <span>{shippingFee.toLocaleString()}won</span>
         </div>
+
         <div className="flex flex-col gap-1.5">
           <span className="caption1 text-text-disabled">
             ㄴ 기본 배송비 3,000원 / 제주·도서산간 6,000원
@@ -40,18 +42,29 @@ export default function CartSummary({
             ㄴ 14만원 이상 주문 시 분리 배송 가능(카카오톡 문의)
           </span>
         </div>
+
+        {usedPoints > 0 && (
+          <div className="flex justify-between">
+            <span>적립금</span>
+            <span>-{usedPoints.toLocaleString()}원</span>
+          </div>
+        )}
+
+        <div className="flex flex-col gap-1.5">
+          <span className="caption1 text-text-disabled">
+            ㄴ 주문 시 예상 적립금 : {savingPoint}
+          </span>
+        </div>
       </div>
+
       <div className="title3 border-text-primary mt-6 flex justify-between border-t pt-6">
-        <span>결제 예상 금액</span>
+        <span>총 결제 금액</span>
         <span>{totalPayment.toLocaleString()}won</span>
       </div>
 
-      <div className="mt-9 flex gap-2.5">
-        <Button variant="stroke" onClick={onOrderSelected}>
-          선택 상품 주문
-        </Button>
-        <Button variant="gray" onClick={onOrderAll}>
-          전체 상품 주문
+      <div className="mt-9">
+        <Button variant="gray" type="submit">
+          결제하기
         </Button>
       </div>
     </div>
