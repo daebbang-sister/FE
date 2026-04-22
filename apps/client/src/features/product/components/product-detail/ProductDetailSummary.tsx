@@ -2,6 +2,8 @@
 
 import { fetchAddCart } from "@/features/cart/api";
 import { CartItem } from "@/features/cart/model";
+import { CheckoutItem } from "@/features/checkout/model";
+import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
 import { deleteWishListAPI, postWishListAPI } from "@/features/mypage/api";
 import { ProductOption } from "@/features/product/model";
 import {
