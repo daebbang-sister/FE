@@ -8,6 +8,7 @@ on:
       - "apps/**"
       - "packages/**"
       - ".github/**"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -70,6 +71,7 @@ jobs:
 
       - name: 🤖 Gemini 리뷰 생성 (node)
         if: ${{ steps.diff.outputs.diff_len <= 80000 }}
+        continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
@@ -81,39 +83,57 @@ jobs:
           const MAX_CHARS = 60000;
           const sliced = diff.length > MAX_CHARS ? diff.slice(0, MAX_CHARS) : diff;
 
-          const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-          const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
+          try {
+            const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+            const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
 
-          const prompt =
-          "You are a senior frontend engineer reviewing a pull request.\n" +
-          "Stack: Next.js, React, TypeScript.\n\n" +
-          "Write the review in Korean.\n\n" +
-          "Focus only on:\n" +
-          "- real bugs\n" +
-          "- risky logic\n" +
-          "- architecture problems\n\n" +
-          "Ignore style or formatting comments.\n\n" +
-          "Return markdown in this exact format:\n\n" +
-          "요약\n" +
-          "한 줄 요약\n\n" +
-          "리뷰 포인트\n" +
-          "- 3개만 작성\n\n" +
-          "개선 제안\n" +
-          "- 3개만 작성\n\n" +
-          "Do not write more than 3 items in each section.\n\n" +
-          "=== DIFF ===\n" + sliced;
+            const prompt =
+              "You are a senior frontend engineer reviewing a pull request.\n" +
+              "Stack: Next.js, React, TypeScript.\n\n" +
+              "Write the review in Korean.\n\n" +
+              "Focus only on:\n" +
+              "- real bugs\n" +
+              "- risky logic\n" +
+              "- architecture problems\n\n" +
+              "Ignore style or formatting comments.\n\n" +
+              "Return markdown in this exact format:\n\n" +
+              "요약\n" +
+              "한 줄 요약\n\n" +
+              "리뷰 포인트\n" +
+              "- 3개만 작성\n\n" +
+              "개선 제안\n" +
+              "- 3개만 작성\n\n" +
+              "Do not write more than 3 items in each section.\n\n" +
+              "=== DIFF ===\n" + sliced;
 
-          model.generateContent(prompt).then((result) => {
-            const text = result.response.text();
-            fs.writeFileSync("gemini_review.md", 
-              "## 🤖 Gemini 자동 코드리뷰\n" +
-              "> 비용 최소화를 위해 diff 일부만 전달했어요.\n\n" +
-              text
+            model.generateContent(prompt).then((result) => {
+              const text = result.response.text();
+              fs.writeFileSync(
+                "gemini_review.md",
+                "## 🤖 Gemini 자동 코드리뷰\n" +
+                  "> 비용 최소화를 위해 diff 일부만 전달했어요.\n\n" +
+                  text
+              );
+            }).catch((err) => {
+              console.error("Gemini 리뷰 생성 실패:", err);
+              fs.writeFileSync(
+                "gemini_review.md",
+                "## 🤖 Gemini 자동 코드리뷰\n\n" +
+                  "현재 AI 리뷰를 생성할 수 없습니다.\n\n" +
+                  "- Gemini API 오류 또는 일시적 과부하일 수 있어요.\n" +
+                  "- 필요하면 GitHub Actions에서 workflow를 다시 실행해 주세요.\n"
+              );
+            });
+          } catch (err) {
+            console.error("Gemini 초기화 실패:", err);
+            fs.writeFileSync(
+              "gemini_review.md",
+              "## 🤖 Gemini 자동 코드리뷰\n\n" +
+                "현재 AI 리뷰를 생성할 수 없습니다.\n\n" +
+                "- 초기화 중 오류가 발생했어요.\n" +
+                "- 필요하면 GitHub Actions에서 workflow를 다시 실행해 주세요.\n"
             );
-          }).catch((err) => {
-            console.error(err);
-            process.exit(1);
-          });
+          }
           NODE
 
       - name: 💬 PR에 리뷰 코멘트 달기
