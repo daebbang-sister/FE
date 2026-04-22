@@ -16,7 +16,7 @@ import {
   XButton,
 } from "@repo/ui";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 type CartItemProps = {
   id: string;
