@@ -74,9 +74,9 @@ export default function CartContainer() {
   return (
     <div className="page-y container">
       {items && items.length > 0 ? (
-        <div className="flex min-h-screen items-start justify-between gap-13.5">
+        <div className="flex min-h-screen flex-col items-start justify-between xl:flex-row xl:gap-13.5">
           {/* 왼쪽 */}
-          <div className="flex-1">
+          <div className="flex w-full flex-1 flex-col xl:min-w-0">
             <CartHeader
               isAllChecked={isAllChecked}
               onToggleAll={handleToggleAll}

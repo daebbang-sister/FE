@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchConfirmOrder } from "@/features/checkout/api";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
 
@@ -9,8 +9,11 @@ export default function CheckoutSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const clearCheckout = useCheckoutStore((s) => s.clear);
+  const isCalledRef = useRef(false);
 
   useEffect(() => {
+    if (isCalledRef.current) return;
+    isCalledRef.current = true;
     const paymentKey = searchParams.get("paymentKey");
     const orderId = searchParams.get("orderId");
     const amount = searchParams.get("amount");
@@ -29,6 +32,12 @@ export default function CheckoutSuccessPage() {
     };
 
     confirm();
+
+    console.log("인증확인", {
+      orderId,
+      paymentKey,
+      amount,
+    });
   }, []);
 
   return (

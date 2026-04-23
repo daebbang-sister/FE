@@ -62,7 +62,6 @@ export default function CheckoutContainer() {
     undefined;
   const shipRequest = watch("shipRequest");
   const usedPoints = watch("usedPoints");
-  const paymentMethod = watch("paymentMethod");
   const inputRef = useRef<HTMLInputElement>(null);
   const checkoutItems = useCheckoutStore((s) => s.items);
   const { totalPrice, shippingFee, totalPayment, savingPoint } =
@@ -75,9 +74,9 @@ export default function CheckoutContainer() {
   const { widgetsRef } = useTossWidgets(totalPayment);
   const { requestPayment } = useCheckoutPayment({
     widgetsRef,
-    totalPayment,
     checkoutItems,
     selectedAddress,
+    usedPoints,
   });
 
   useEffect(() => {
@@ -99,10 +98,6 @@ export default function CheckoutContainer() {
 
   const onSubmit = async (data: FormData) => {
     console.log("🔥 SUBMIT:", data);
-    // const items: PrepareOrderItem[] = checkoutItems.map((item) => ({
-    //   productDetailId: item.productDetailId,
-    //   quantity: item.quantity,
-    // }));
 
     if (data.paymentMethod === "card") {
       await requestPayment();
@@ -122,10 +117,10 @@ export default function CheckoutContainer() {
     <div className="page-y container">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex min-h-screen items-start justify-between gap-13.5"
+        className="flex min-h-screen flex-col items-start justify-between xl:flex-row xl:gap-13.5"
       >
         {/* 왼쪽 */}
-        <div className="flex flex-1 flex-col gap-12">
+        <div className="flex w-full flex-1 flex-col gap-12 xl:min-w-0">
           {/* 배송정보 */}
           <CheckoutShipping
             selectedAddress={selectedAddress}
@@ -148,8 +143,10 @@ export default function CheckoutContainer() {
           />
           {/* 약관동의 */}
           <CheckoutAgree setValue={setValue} watch={watch} errors={errors} />
-          {/* 유의사항 */}
-          <CheckoutNotice />
+          {/* pc 유의사항 */}
+          <div className="hidden xl:block">
+            <CheckoutNotice />
+          </div>
         </div>
 
         {/* 오른쪽 */}
@@ -160,6 +157,11 @@ export default function CheckoutContainer() {
           savingPoint={savingPoint}
           usedPoints={usedPoints}
         />
+
+        {/* 모바일 유의사항 */}
+        <div className="mt-12 block w-full xl:hidden">
+          <CheckoutNotice />
+        </div>
       </form>
       {/* 모달 */}
       <CheckoutAddressModal

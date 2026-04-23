@@ -30,8 +30,8 @@ export default function CheckoutItems() {
                 />
               </div>
 
-              <div>
-                <h2>{item.productName}</h2>
+              <div className="min-w-0 flex-1">
+                <h2 className="truncate">{item.productName} </h2>
 
                 <p className="text-text-disabled mt-3 mb-6">
                   {item.color} / {item.size} {item.quantity}개

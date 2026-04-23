@@ -1,4 +1,9 @@
-import { Address, CheckoutItem } from "@/features/checkout/model";
+import { fetchPrepareOrder } from "@/features/checkout/api";
+import {
+  Address,
+  CheckoutItem,
+  PrepareOrderItem,
+} from "@/features/checkout/model";
 
 type TossWidgets = {
   setAmount: (args: { currency: "KRW"; value: number }) => void;
@@ -12,34 +17,36 @@ type TossWidgets = {
 };
 
 type PropsCheckoutPayment = {
-  totalPayment: number;
   widgetsRef: React.RefObject<TossWidgets | null>;
   checkoutItems: CheckoutItem[];
   selectedAddress?: Address;
+  usedPoints: number;
 };
 
 export const useCheckoutPayment = ({
-  totalPayment,
   widgetsRef,
   checkoutItems,
   selectedAddress,
+  usedPoints,
 }: PropsCheckoutPayment) => {
   const requestPayment = async () => {
     try {
-      const order = {
-        orderId: `order-${Date.now()}`,
-        amount: totalPayment,
-      };
-
       if (!widgetsRef.current) return;
+      const items: PrepareOrderItem[] = checkoutItems.map((item) => ({
+        productDetailId: item.productDetailId,
+        quantity: item.quantity,
+      }));
+
+      const order = await fetchPrepareOrder(items, usedPoints);
+      localStorage.setItem("order_debug", JSON.stringify(order));
 
       await widgetsRef.current.setAmount({
         currency: "KRW",
-        value: order.amount,
+        value: order.paymentAmount,
       });
 
       await widgetsRef.current.requestPayment({
-        orderId: order.orderId,
+        orderId: order.orderNumber,
         orderName:
           checkoutItems.length > 1
             ? `${checkoutItems[0].productName} 외 ${checkoutItems.length - 1}건`
@@ -49,14 +56,27 @@ export const useCheckoutPayment = ({
         failUrl: `${window.location.origin}/checkout/fail`,
       });
     } catch (error) {
-      const err = error as { code?: string };
+      const err = error as {
+        code?: string;
+        status?: number;
+        message?: string;
+      };
 
       if (err.code === "PAY_PROCESS_CANCELED") {
         alert("결제가 취소되었습니다.");
         return;
       }
 
-      console.error("결제 실패:", error);
+      if (err.status === 409) {
+        alert(err.message ?? "재고가 부족합니다.");
+        return;
+      }
+
+      if (err.status === 503) {
+        alert(err.message ?? "재고 처리 중입니다. 잠시 후 다시 시도해주세요.");
+        return;
+      }
+      alert("결제 처리 중 오류가 발생했습니다.");
     }
   };
 
