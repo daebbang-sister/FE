@@ -42,7 +42,7 @@ export default function CheckoutShipping({
 
   return (
     <div>
-      <h6 className="title3 mb-6">배송정보</h6>
+      <h6 className="title3 mb-6">배송 정보</h6>
       {selectedAddress ? (
         <div>
           <div className="flex items-center justify-between">
@@ -62,7 +62,7 @@ export default function CheckoutShipping({
             </Button>
           </div>
           <div className="body2 flex flex-col gap-1.5">
-            <p>
+            <p className="mt-1.5 truncate xl:mt-0">
               {selectedAddress?.address} {selectedAddress?.detailAddress}
             </p>
             <p className="text-text-disabled">

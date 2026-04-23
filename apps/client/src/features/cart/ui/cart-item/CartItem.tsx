@@ -141,10 +141,10 @@ export default function CartItem({
         />
       </div>
       {/* 오른쪽 */}
-      <div className="w-full">
+      <div className="min-w-0 flex-1">
         <div className="mb-9">
-          <div className="mb-3 flex items-center justify-between">
-            <h6>{name}</h6>
+          <div className="mb-3 flex items-center justify-between gap-1.75">
+            <h6 className="truncate">{name}</h6>
             <XButton
               onClick={onDeleteItem}
               iconSize={15}
@@ -195,7 +195,7 @@ export default function CartItem({
                   {isLoading ? (
                     <p>로딩중</p>
                   ) : (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col">
                       <div className="flex items-center">
                         <p className="w-17.5">컬러</p>
                         <div className="w-full">

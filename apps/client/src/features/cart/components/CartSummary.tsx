@@ -16,10 +16,8 @@ export default function CartSummary({
   onOrderAll,
 }: CartSummaryProps) {
   return (
-    <div
-      className="border-border-default sticky w-full max-w-112.5 self-start border px-7.5 py-10"
-      style={{ top: "calc(var(--size-header-h) + 60px)" }}
-    >
+    <div className="xl:border-border-default top-[calc(var(--size-header-h)+60px)] mt-12 w-full xl:sticky xl:mt-0 xl:max-w-112.5 xl:self-start xl:border xl:px-7.5 xl:py-10">
+      <h6 className="title3 mb-6 block xl:hidden">결제 정보</h6>
       <div className="flex flex-col gap-3">
         <div className="flex justify-between">
           <span>상품 합계 금액</span>
