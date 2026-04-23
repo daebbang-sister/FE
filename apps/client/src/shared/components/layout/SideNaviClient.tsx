@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Category, FIXED_CATEGORIES } from "@/shared/hooks/category";
+import { useBreakpoint } from "@/shared/hooks/useMediaQuery";
 
 type Props = {
   categories: Category[];
@@ -12,6 +13,8 @@ type Props = {
 
 export default function SideNaviClient({ categories }: Props) {
   const { isSideOpen, closeSide, closeAll } = useLayoutUI();
+  const { isMobile } = useBreakpoint();
+
   const pathname = usePathname();
 
   useEffect(() => {
@@ -23,6 +26,7 @@ export default function SideNaviClient({ categories }: Props) {
   }, [isSideOpen]);
   useEffect(() => {
     closeAll();
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [pathname, closeAll]);
 
   return (
@@ -35,9 +39,9 @@ export default function SideNaviClient({ categories }: Props) {
 
       {/* side panel */}
       <aside
-        className={`fixed top-0 left-0 z-910 h-full w-full bg-white px-10 py-12.5 transition-transform duration-300 md:w-116.25 ${isSideOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed top-0 left-0 z-910 h-full w-full bg-white px-10 py-10 transition-transform duration-300 md:w-116.25 md:py-12.5 ${isSideOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <button className="mb-12" onClick={closeSide}>
+        <button className="mb-10 md:mb-12" onClick={closeSide}>
           <svg
             width="18"
             height="18"
@@ -58,13 +62,16 @@ export default function SideNaviClient({ categories }: Props) {
             <ul className="text-text-disabled [&_a:hover]:text-text-primary flex flex-col gap-4">
               {FIXED_CATEGORIES.map((item) => (
                 <li key={item.key}>
-                  <Link href={`/products/${item.key}`}>{item.label}</Link>
+                  <Link href={`/products/${item.key}`} scroll={true}>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
               {categories.map((category) => (
                 <li key={category.id}>
                   <Link
                     href={`/products/${category.categoryName.toLocaleLowerCase()}`}
+                    scroll={true}
                   >
                     {category.categoryName}
                   </Link>
@@ -76,16 +83,39 @@ export default function SideNaviClient({ categories }: Props) {
             <p className="title3 mb-6">COMMUNITY</p>
             <ul className="text-text-disabled [&_a:hover]:text-text-primary flex flex-col gap-4">
               <li>
-                <Link href={"/"}>자주 묻는 질문</Link>
+                <Link href={"/"} scroll={true}>
+                  자주 묻는 질문
+                </Link>
               </li>
               <li>
-                <Link href={"/notice"}>공지사항</Link>
+                <Link href={"/notice"} scroll={true}>
+                  공지사항
+                </Link>
               </li>
               <li>
-                <Link href={"/"}>고객센터</Link>
+                <Link href={"/"} scroll={true}>
+                  고객센터
+                </Link>
               </li>
             </ul>
           </div>
+          {isMobile && (
+            <div>
+              <p className="title3 mb-6">MY PAGE</p>
+              <ul className="text-text-disabled [&_a:hover]:text-text-primary flex flex-col gap-4">
+                <li>
+                  <Link href={"/mypage"} scroll={true}>
+                    마이페이지
+                  </Link>
+                </li>
+                <li>
+                  <Link href={"/cart"} scroll={true}>
+                    장바구니
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </article>
       </aside>
     </>
