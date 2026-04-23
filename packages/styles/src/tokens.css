@@ -68,3 +68,9 @@
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
 }
+
+@media (max-width: 768px) {
+  :root {
+    --size-header-h: 80px;
+  }
+}
