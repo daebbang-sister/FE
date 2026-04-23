@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="text-neutral-0 flex min-h-[var(--size-footer-h)] w-full flex-col-reverse gap-10 bg-neutral-900 px-10 py-15 md:flex-row md:justify-around md:gap-0">
-      <section>
+    <footer className="text-neutral-0 flex min-h-[var(--size-footer-h)] w-full flex-col-reverse gap-10 bg-neutral-900 px-10 py-15 md:flex-row md:gap-0 lg:px-60">
+      <section className="flex-1">
         <div className="font-poppins text-title2 mb-6">DAEBBANGSISTER</div>
         <ul className="text-body2 text-weight-regular flex flex-col gap-1.25 font-thin">
           <li>상호 : (주)대빵언니: 000</li>
@@ -13,6 +13,7 @@ export default function Footer() {
           <li>연락처 (전화 또는 이메일)</li>
         </ul>
       </section>
+
       <section className="flex gap-15">
         <article>
           <p className="text-body1 mb-4">고객센터</p>
@@ -72,9 +73,21 @@ export default function Footer() {
         <article>
           <p className="text-body1 mb-4">서비스 정보</p>
           <ul className="text-body2 flex flex-col gap-1.25 font-thin">
-            <li>이용약관</li>
-            <li>개인정보처리방침</li>
-            <li>이용안내</li>
+            <li>
+              <Link href="/terms" target="_blank" rel="noopener noreferrer">
+                이용약관
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacy" target="_blank" rel="noopener noreferrer">
+                개인정보처리방침
+              </Link>
+            </li>
+            <li>
+              <Link href="/guide" target="_blank" rel="noopener noreferrer">
+                이용안내
+              </Link>
+            </li>
           </ul>
         </article>
       </section>
