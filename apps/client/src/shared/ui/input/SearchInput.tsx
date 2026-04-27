@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 
 type Props = {
   value: string;
+  query: string;
 };
 
-export default function SearchInput({ value }: Props) {
+export default function SearchInput({ value, query }: Props) {
   const router = useRouter();
   const [search, setSearch] = useState<string>(value);
 
@@ -20,7 +21,7 @@ export default function SearchInput({ value }: Props) {
     if (search.trim() === "") {
       return;
     }
-    router.push(`/products/search?keyword=${encodeURIComponent(search)}`);
+    router.push(`/${query}?keyword=${encodeURIComponent(search)}`);
   };
 
   return (

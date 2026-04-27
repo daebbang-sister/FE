@@ -11,6 +11,7 @@ import {
 } from "@/features/cart/utils";
 import { CheckoutItem } from "@/features/checkout/model";
 import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
+import PageLoading from "@/shared/components/layout/PageLoading";
 import { Button } from "@repo/ui";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,6 +19,7 @@ import { useRouter } from "next/navigation";
 export default function CartContainer() {
   const {
     items,
+    isLoading,
     isAllChecked,
     handleUpdateCart,
     handleToggleAll,
@@ -70,6 +72,14 @@ export default function CartContainer() {
     setItem(toCheckoutItems(items));
     router.push("/checkout");
   };
+
+  if (isLoading) {
+    return (
+      <section className="min-h-[calc(100vh-var(--size-header-h)-var(--size-footer-h))]">
+        <PageLoading />
+      </section>
+    );
+  }
 
   return (
     <div className="page-y container">

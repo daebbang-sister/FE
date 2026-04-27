@@ -13,6 +13,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function useCart() {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const { isLoggedIn } = useAuthStore();
   const getBaskets = (): CartItem[] =>
@@ -21,12 +23,18 @@ export default function useCart() {
     localStorage.setItem("baskets", JSON.stringify(baskets));
 
   const loadCart = useCallback(async () => {
-    if (isLoggedIn) {
-      const getCartData = await fetchCart({ size: 8 });
-      const { carts } = getCartData.data;
-      setItems(carts.map((item) => ({ ...item, checked: true })));
-    } else {
-      setItems(getBaskets().map((item) => ({ ...item, checked: true })));
+    try {
+      setIsLoading(true);
+
+      if (isLoggedIn) {
+        const getCartData = await fetchCart({ size: 8 });
+        const { carts } = getCartData.data;
+        setItems(carts.map((item) => ({ ...item, checked: true })));
+      } else {
+        setItems(getBaskets().map((item) => ({ ...item, checked: true })));
+      }
+    } finally {
+      setIsLoading(false);
     }
   }, [isLoggedIn]);
 
@@ -139,6 +147,7 @@ export default function useCart() {
 
   return {
     items,
+    isLoading,
     isAllChecked,
     handleUpdateCart,
     handleUpdateOption,

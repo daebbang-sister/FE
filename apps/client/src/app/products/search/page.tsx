@@ -77,7 +77,7 @@ export default async function ProductsSearchPage({ searchParams }: Props) {
     <section className="container-wide">
       <article className="w-full">
         <h2 className="title2 flex justify-center pt-17 pb-9">검색결과</h2>
-        <SearchInput value={keyword}></SearchInput>
+        <SearchInput value={keyword} query={"products/search"}></SearchInput>
         {isEmpty && (
           <p className="text-text-disabled my-28 flex justify-center">
             {keyword
