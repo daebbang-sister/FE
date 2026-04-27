@@ -192,7 +192,7 @@ export default function WishlistGrid() {
         })}
       </article>
 
-      <article className="flex justify-center pb-10">
+      <article className="mt-30 flex justify-center pb-10">
         <PageLinkButton
           totalItems={data.totalElements}
           limit={pageSize}

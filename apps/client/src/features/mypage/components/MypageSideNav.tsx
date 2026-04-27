@@ -55,7 +55,9 @@ export default function MypageSideNav() {
   return (
     <aside>
       <div className="mb-6 flex items-center gap-2 md:mb-12">
-        <p className="title2">{userInfo?.userName || "비회원"}님</p>
+        <p className="title2 whitespace-nowrap">
+          {userInfo?.userName || "비회원"}님
+        </p>
         <div className="bg-text-primary flex items-center gap-1 rounded-full px-1.5 py-1">
           <svg
             width="10"
