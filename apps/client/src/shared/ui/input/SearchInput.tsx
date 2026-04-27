@@ -7,7 +7,7 @@ type Props = {
   value: string;
 };
 
-export default function ProductSearchInput({ value }: Props) {
+export default function SearchInput({ value }: Props) {
   const router = useRouter();
   const [search, setSearch] = useState<string>(value);
 
