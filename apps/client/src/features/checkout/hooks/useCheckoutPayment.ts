@@ -4,6 +4,7 @@ import {
   CheckoutItem,
   PrepareOrderItem,
 } from "@/features/checkout/model";
+import { useCallback } from "react";
 
 type TossWidgets = {
   setAmount: (args: { currency: "KRW"; value: number }) => void;
@@ -29,16 +30,19 @@ export const useCheckoutPayment = ({
   selectedAddress,
   usedPoints,
 }: PropsCheckoutPayment) => {
-  const requestPayment = async () => {
+  const requestPayment = useCallback(async () => {
     try {
-      if (!widgetsRef.current) return;
+      if (!widgetsRef.current) {
+        alert("결제 모듈이 아직 로드되지 않았습니다.");
+        return;
+      }
+
       const items: PrepareOrderItem[] = checkoutItems.map((item) => ({
         productDetailId: item.productDetailId,
         quantity: item.quantity,
       }));
 
       const order = await fetchPrepareOrder(items, usedPoints);
-      localStorage.setItem("order_debug", JSON.stringify(order));
 
       await widgetsRef.current.setAmount({
         currency: "KRW",
@@ -78,7 +82,7 @@ export const useCheckoutPayment = ({
       }
       alert("결제 처리 중 오류가 발생했습니다.");
     }
-  };
+  }, [widgetsRef, checkoutItems, selectedAddress, usedPoints]);
 
   return { requestPayment };
 };

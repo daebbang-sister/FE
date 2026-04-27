@@ -1,4 +1,5 @@
 import { checkoutSchema } from "@/features/checkout/schemas/checkout.schema";
+import { useCallback } from "react";
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -15,10 +16,13 @@ export const useCheckoutAgree = ({ setValue, watch }: Props) => {
 
   const allAgreeChecked = agreePrivacy && agreeOrder;
 
-  const handleAllAgreeChecked = (checked: boolean) => {
-    setValue("agreeOrder", checked);
-    setValue("agreePrivacy", checked);
-  };
+  const handleAllAgreeChecked = useCallback(
+    (checked: boolean) => {
+      setValue("agreeOrder", checked);
+      setValue("agreePrivacy", checked);
+    },
+    [setValue]
+  );
 
   return {
     agreePrivacy,

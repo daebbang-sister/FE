@@ -28,7 +28,7 @@ export default function CheckoutContainer() {
     setValue,
     control,
     watch,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<FormData>({
     mode: "onChange",
     resolver: zodResolver(checkoutSchema),
@@ -97,21 +97,15 @@ export default function CheckoutContainer() {
   }, [isModalOpen, selectedAddress]);
 
   const onSubmit = async (data: FormData) => {
-    console.log("🔥 SUBMIT:", data);
-
     if (data.paymentMethod === "card") {
       await requestPayment();
       return;
     }
 
     if (data.paymentMethod === "bank") {
-      console.log("무통장 주문 생성");
       return;
     }
   };
-
-  console.log("isValid:", isValid);
-  console.log("errors:", errors);
 
   return (
     <div className="page-y container">

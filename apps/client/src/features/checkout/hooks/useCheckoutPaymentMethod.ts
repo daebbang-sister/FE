@@ -1,5 +1,5 @@
 import { checkoutSchema } from "@/features/checkout/schemas/checkout.schema";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { UseFormSetValue } from "react-hook-form";
 import { z } from "zod";
 
@@ -11,20 +11,22 @@ export const useCheckoutPaymentMethod = (
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedProvider, setSelectedProvider] = useState("toss");
 
-  const handleTabChange = (index: number) => {
-    setTabIndex(index);
-    setValue("paymentMethod", index === 0 ? "card" : "bank");
+  const handleTabChange = useCallback(
+    (index: number) => {
+      setTabIndex(index);
 
-    if (index === 0) {
-      setValue("paymentMethod", "card");
-      setSelectedProvider("toss");
-      setValue("bank", "");
-      setValue("depositorName", "");
-    } else {
-      setValue("paymentMethod", "bank");
-      setSelectedProvider("");
-    }
-  };
+      if (index === 0) {
+        setValue("paymentMethod", "card");
+        setSelectedProvider("toss");
+        setValue("bank", "");
+        setValue("depositorName", "");
+      } else {
+        setValue("paymentMethod", "bank");
+        setSelectedProvider("");
+      }
+    },
+    [setValue]
+  );
 
   return {
     tabIndex,
