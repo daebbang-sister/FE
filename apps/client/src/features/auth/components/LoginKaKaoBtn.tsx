@@ -1,11 +1,12 @@
 export default function LoginKaKaoBtn() {
+  const handleKakaoLogin = () => {
+    window.location.href = "/api/proxy/oauth2/authorization/kakao";
+  };
   return (
     <>
       <button
         type="button"
-        onClick={() => {
-          window.location.href = "/api/proxy/oauth2/authorization/kakao";
-        }}
+        onClick={handleKakaoLogin}
         className="flex h-12.75 w-full items-center justify-center gap-2 rounded-xl bg-[#FEE500] px-4 py-3 font-bold text-black hover:brightness-95 active:brightness-90"
       >
         <svg

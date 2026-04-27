@@ -13,72 +13,114 @@ type Props = {
   productId: number;
 };
 
+type ConfirmedWishState = {
+  isWished: boolean;
+  wishId: number | null;
+};
+
 export default function WishButton({ productId }: Props) {
   const router = useRouter();
-  const [isWished, setIsWished] = useState<boolean>(false);
-  const [WishID, setWishID] = useState<number | null>(null);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const wishIdRef = useRef<number | null>(null);
-  const lastConfirmedWishedRef = useRef(false);
+  const [isWished, setIsWished] = useState(false);
+  const [wishId, setWishId] = useState<number | null>(null);
 
-  useEffect(() => {
-    wishIdRef.current = WishID;
-  }, [WishID]);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestWishedRef = useRef(false);
+
+  const confirmedRef = useRef<ConfirmedWishState>({
+    isWished: false,
+    wishId: null,
+  });
+
+  const syncWishStatus = async () => {
+    const result = await getWishListCheckAPI(productId);
+
+    setIsWished(result.isWished);
+    setWishId(result.wishId);
+
+    latestWishedRef.current = result.isWished;
+    confirmedRef.current = {
+      isWished: result.isWished,
+      wishId: result.wishId,
+    };
+  };
 
   useEffect(() => {
     const fetchWish = async () => {
       try {
-        const result = await getWishListCheckAPI(productId);
-        setWishID(result?.wishId);
-        setIsWished(result?.isWished);
-
-        wishIdRef.current = result.wishId;
-        lastConfirmedWishedRef.current = result.isWished;
+        await syncWishStatus();
       } catch (e) {
         const status = (e as { status?: string | number })?.status;
+
         if (status === "401" || status === "403") return;
+
         console.error(e);
       }
     };
+
     fetchWish();
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [productId]);
 
   const handleWishClick = () => {
-    const nextWished = !isWished;
+    const nextWished = !latestWishedRef.current;
+
+    latestWishedRef.current = nextWished;
     setIsWished(nextWished);
+
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
+
     timerRef.current = setTimeout(async () => {
       try {
-        if (nextWished === lastConfirmedWishedRef.current) {
+        const confirmed = confirmedRef.current;
+
+        if (nextWished === confirmed.isWished) {
           return;
         }
+
         if (nextWished) {
           const res = await postWishListAPI(productId);
 
-          setWishID(res.wishId);
-          wishIdRef.current = res.wishId;
-          lastConfirmedWishedRef.current = true;
+          setWishId(res.wishId);
+
+          confirmedRef.current = {
+            isWished: true,
+            wishId: res.wishId,
+          };
+
+          latestWishedRef.current = true;
           return;
         }
 
-        const currentWishId = wishIdRef.current;
-
-        if (currentWishId === null) {
-          console.error("wishId가 없어 위시리스트를 삭제할 수 없습니다.");
-          setIsWished(true);
-          lastConfirmedWishedRef.current = true;
+        if (confirmed.wishId === null) {
+          await syncWishStatus();
           return;
         }
 
-        await deleteWishListAPI([currentWishId]);
+        await deleteWishListAPI([confirmed.wishId]);
 
-        setWishID(null);
-        wishIdRef.current = null;
-        lastConfirmedWishedRef.current = false;
+        setWishId(null);
+
+        confirmedRef.current = {
+          isWished: false,
+          wishId: null,
+        };
+
+        latestWishedRef.current = false;
       } catch (err) {
+        const confirmed = confirmedRef.current;
+
+        setIsWished(confirmed.isWished);
+        setWishId(confirmed.wishId);
+        latestWishedRef.current = confirmed.isWished;
+
         if (
           err instanceof ApiError &&
           (err.status === "401" || err.status === "403")
@@ -86,14 +128,14 @@ export default function WishButton({ productId }: Props) {
           const goLogin = confirm(
             "로그인이 필요한 서비스입니다.\n로그인 화면으로 이동하시겠습니까?"
           );
+
           if (goLogin) {
             router.push("/login");
           }
-          setIsWished(lastConfirmedWishedRef.current);
+
           return;
         }
 
-        setIsWished(lastConfirmedWishedRef.current);
         console.error(err);
       }
     }, 800);
