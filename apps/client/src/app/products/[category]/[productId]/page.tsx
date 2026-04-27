@@ -48,7 +48,6 @@ export default async function ProductDetailPage({ params }: Props) {
             sellingPrice={productDetail.sellingPrice}
             discountRate={productDetail.discountRate}
             options={productDetail.options}
-            isWished={productDetail.isWished}
           />
         </aside>
         <div className="min-w-0 lg:col-start-1 lg:row-start-2">
