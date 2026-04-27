@@ -18,3 +18,12 @@ export type WishListItem = {
   discountRate: number | null;
   sellingPrice: number;
 };
+
+export type WishListItemId = {
+  wishId: number;
+};
+
+export type WishListCheck = {
+  wishId: number | null;
+  isWished: boolean;
+};

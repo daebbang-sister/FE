@@ -21,7 +21,7 @@ export function useGetWishlist(page?: number, size?: number) {
       setError(null);
 
       const result = await getWishListAPI(page, size);
-      console.log(result);
+      // console.log(result);
       setData(result);
     } catch (err) {
       setError(

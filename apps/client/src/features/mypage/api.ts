@@ -1,5 +1,5 @@
 import request from "@/shared/lib/request";
-import { UserInfo, WishListItem } from "./model";
+import { UserInfo, WishListCheck, WishListItem, WishListItemId } from "./model";
 import { PageResponse } from "@/shared/type/model";
 
 // userInfo API #####
@@ -24,14 +24,10 @@ export const getWishListAPI = (
 };
 
 export const postWishListAPI = (productId: number) =>
-  request<null>(
-    "/v1/wish-lists",
-    {
-      method: "POST",
-      body: JSON.stringify({ productId }),
-    },
-    "full"
-  );
+  request<WishListItemId>("/v1/wish-lists", {
+    method: "POST",
+    body: JSON.stringify({ productId }),
+  });
 
 export const deleteWishListAPI = (ids: number[]) => {
   const params = new URLSearchParams();
@@ -56,3 +52,11 @@ export const allDeleteWishListAPI = () =>
     },
     "full"
   );
+
+export const getWishListCheckAPI = (
+  productId: number
+): Promise<WishListCheck> => {
+  return request<WishListCheck>(`/v1/wish-lists/check?productId=${productId}`, {
+    method: "GET",
+  });
+};
