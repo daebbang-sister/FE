@@ -42,7 +42,7 @@ export default function CheckoutAddressModal({
         <ModalBody>
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <p>주소</p>
+              {addresses ? <b>주소를 등록해주세요</b> : <p>주소</p>}
               <Button variant="black" type="button" className="w-22.5">
                 주소 등록
               </Button>
@@ -104,11 +104,16 @@ export default function CheckoutAddressModal({
           </Button>
           <Button
             type="button"
-            onClick={() =>
+            onClick={() => {
+              if (!tempSelectedAddress) {
+                handleCloseModal();
+                return;
+              }
+
               handleConfirmAddress((address) => {
                 setValue("selectedAddressId", address.addressId);
-              })
-            }
+              });
+            }}
             variant="gray"
             className="w-full max-w-38.75"
           >

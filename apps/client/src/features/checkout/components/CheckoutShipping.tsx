@@ -1,12 +1,7 @@
 import { Button, Dropdown, Input } from "@repo/ui";
 import { shipRequestOptions } from "@/features/checkout/constants/shipRequestOptions";
 import { useEffect, useRef } from "react";
-import {
-  UseFormSetValue,
-  UseFormWatch,
-  UseFormRegister,
-  FieldErrors,
-} from "react-hook-form";
+import { UseFormSetValue, UseFormRegister, FieldErrors } from "react-hook-form";
 import { checkoutSchema } from "@/features/checkout/schemas/checkout.schema";
 import z from "zod";
 import { Address } from "@/features/checkout/model";
