@@ -83,17 +83,17 @@ export default function SideNaviClient({ categories }: Props) {
             <p className="title3 mb-6">COMMUNITY</p>
             <ul className="text-text-disabled [&_a:hover]:text-text-primary flex flex-col gap-4">
               <li>
-                <Link href={"/"} scroll={true}>
+                <Link href={"/faq"} scroll={true}>
                   자주 묻는 질문
                 </Link>
               </li>
               <li>
-                <Link href={"/notice"} scroll={true}>
+                <Link href={"/notices"} scroll={true}>
                   공지사항
                 </Link>
               </li>
               <li>
-                <Link href={"/"} scroll={true}>
+                <Link href={"https://pf.kakao.com/_DHZxmG"} scroll={true}>
                   고객센터
                 </Link>
               </li>
