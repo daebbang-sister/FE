@@ -1,8 +1,8 @@
 import { getProductSearch } from "@/features/product/api";
 import ProductListGrid from "@/features/product/components/product-list/ProductListGrid";
-import ProductSearchInput from "@/features/product/ui/product-search/ProductSearchInput";
 import { ApiError } from "@/shared/lib/error";
 import { PageLinkButton } from "@/shared/ui/button/PageLinkButton";
+import SearchInput from "@/shared/ui/input/SearchInput";
 
 type Props = {
   searchParams: Promise<{
@@ -77,7 +77,7 @@ export default async function ProductsSearchPage({ searchParams }: Props) {
     <section className="container-wide">
       <article className="w-full">
         <h2 className="title2 flex justify-center pt-17 pb-9">검색결과</h2>
-        <ProductSearchInput value={keyword}></ProductSearchInput>
+        <SearchInput value={keyword} query={"products/search"}></SearchInput>
         {isEmpty && (
           <p className="text-text-disabled my-28 flex justify-center">
             {keyword
