@@ -51,7 +51,7 @@ export default async function ProductDetailPage({ params }: Props) {
           />
         </aside>
         <div className="min-w-0 lg:col-start-1 lg:row-start-2">
-          <ProductDetailTab />
+          <ProductDetailTab productId={productDetail.id} />
         </div>
       </div>
     </section>
