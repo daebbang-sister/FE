@@ -1,10 +1,11 @@
 import MypageTitle from "@/features/mypage/components/MypageTitle";
+import ReviewList from "@/features/mypage/components/ReviewList";
 
 export default function MyPageReview() {
   return (
-    <section>
+    <section className="h-full">
       <MypageTitle title={"상품리뷰"} />
-      <article></article>
+      <ReviewList />
     </section>
   );
 }

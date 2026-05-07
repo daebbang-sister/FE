@@ -9,7 +9,9 @@ export default async function MyPageLayout({
   return (
     <MypageAuthGuard>
       <section className="container gap-13.5 py-15.75 md:grid md:grid-cols-[1fr_776px]">
-        <MypageSideNav />
+        <article className="md:sticky md:top-40.75 md:self-start">
+          <MypageSideNav />
+        </article>
         <article>{children}</article>
       </section>
     </MypageAuthGuard>

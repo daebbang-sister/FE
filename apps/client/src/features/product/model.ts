@@ -78,3 +78,16 @@ export type MyReviewList = BaseReview & {
   pointStatus: string;
   expectedPoint: number;
 };
+export type UpdateReviewData = {
+  rating: number;
+  content: string;
+  keepImageUrls: string[];
+};
+export type ReviewSubmitParams = UpdateReviewData & {
+  images: File[];
+};
+export type CreateReviewData = {
+  rating: number;
+  content: string;
+  orderDetailId: number;
+};
