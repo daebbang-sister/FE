@@ -1,7 +1,12 @@
 import request from "@/shared/lib/request";
-import { CategoryProduct, ProductDetail } from "@/features/product/model";
+import {
+  CategoryProduct,
+  MyReviewList,
+  ProductDetail,
+  ReviewList,
+  ReviewSummary,
+} from "@/features/product/model";
 import { PageResponse } from "@/shared/type/model";
-import { headers } from "next/headers";
 
 export const getNewProducts = (
   direction?: string,
@@ -40,22 +45,6 @@ export const getProductDetail = (productId: number): Promise<ProductDetail> =>
     method: "GET",
   });
 
-// export const getProductDetail = async (
-//   productId: number
-// ): Promise<ProductDetail> => {
-//   const headerStore = await headers();
-//   const cookie = headerStore.get("cookie") ?? "";
-
-//   console.log("SSR cookie:", cookie);
-
-//   return request<ProductDetail>(`/v1/products/${productId}`, {
-//     method: "GET",
-//     headers: {
-//       cookie,
-//     },
-//   });
-// };
-
 export const getProductSearch = (
   keyword: string,
   sortType?: string,
@@ -74,5 +63,29 @@ export const getProductSearch = (
   return request<PageResponse<CategoryProduct>>(
     `/v1/products/search?${params.toString()}`,
     { method: "GET" }
+  );
+};
+
+export const getProductReviewCount = (
+  productId: number
+): Promise<ReviewSummary> =>
+  request<ReviewSummary>(`/v1/products/${productId}/reviews/stats`, {
+    method: "GET",
+  });
+
+export const getProductReviewList = (
+  productId: number,
+  page?: number,
+  size?: number
+): Promise<PageResponse<ReviewList>> => {
+  const params = new URLSearchParams();
+  if (page !== undefined) params.set("page", String(page));
+  if (size !== undefined) params.set("size", String(size));
+
+  return request<PageResponse<ReviewList>>(
+    `/v1/products/${productId}/reviews?${params.toString()}`,
+    {
+      method: "GET",
+    }
   );
 };

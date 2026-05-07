@@ -1,6 +1,11 @@
 import request from "@/shared/lib/request";
 import { UserInfo, WishListCheck, WishListItem, WishListItemId } from "./model";
 import { PageResponse } from "@/shared/type/model";
+import {
+  CreateReviewData,
+  MyReviewList,
+  UpdateReviewData,
+} from "@/features/product/model";
 
 // userInfo API #####
 export const fetchGetUser = () => {
@@ -13,10 +18,8 @@ export const getWishListAPI = (
   size?: number
 ): Promise<PageResponse<WishListItem>> => {
   const params = new URLSearchParams();
-
   if (page !== undefined) params.set("page", String(page));
   if (size !== undefined) params.set("size", String(size));
-
   return request<PageResponse<WishListItem>>(
     `/v1/wish-lists?${params.toString()}`,
     { method: "GET" }
@@ -34,7 +37,6 @@ export const deleteWishListAPI = (ids: number[]) => {
   ids.forEach((id) => {
     params.append("ids", String(id));
   });
-
   return request<null>(
     `/v1/wish-lists?${params.toString()}`,
     {
@@ -58,5 +60,79 @@ export const getWishListCheckAPI = (
 ): Promise<WishListCheck> => {
   return request<WishListCheck>(`/v1/wish-lists/check?productId=${productId}`, {
     method: "GET",
+  });
+};
+
+// review API #####
+export const getMyReviewList = (
+  page?: number,
+  size?: number
+): Promise<PageResponse<MyReviewList>> => {
+  const params = new URLSearchParams();
+  if (page !== undefined) params.set("page", String(page));
+  if (size !== undefined) params.set("size", String(size));
+
+  return request<PageResponse<MyReviewList>>(
+    `/v1/reviews/my?${params.toString()}`,
+    {
+      method: "GET",
+    }
+  );
+};
+
+export const deleteMyReview = (reviewId: number) =>
+  request<null>(
+    `/v1/reviews/${reviewId}`,
+    {
+      method: "DELETE",
+    },
+    "full"
+  );
+
+export const updateMyReview = (
+  reviewId: number,
+  data: UpdateReviewData,
+  images: File[]
+) => {
+  const formData = new FormData();
+  formData.append(
+    "data",
+    new Blob([JSON.stringify(data)], {
+      type: "application/json",
+    })
+  );
+  images.forEach((file) => {
+    formData.append("images", file);
+  });
+  return request(`/v1/reviews/${reviewId}`, {
+    method: "PUT",
+    body: formData,
+  });
+};
+
+export const postMyReviewList = (
+  orderDetailId: number,
+  data: Omit<CreateReviewData, "orderDetailId">,
+  images: File[]
+) => {
+  const formData = new FormData();
+  formData.append(
+    "data",
+    new Blob(
+      [
+        JSON.stringify({
+          ...data,
+          orderDetailId,
+        }),
+      ],
+      { type: "application/json" }
+    )
+  );
+  images.forEach((file) => {
+    formData.append("images", file);
+  });
+  return request(`/v1/reviews`, {
+    method: "POST",
+    body: formData,
   });
 };

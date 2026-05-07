@@ -4,7 +4,11 @@ import ProductDetailReview from "@/features/product/components/product-detail/Pr
 import ProductDetailImage from "@/features/product/components/product-detail/ProductDetailImage";
 import { TabButton } from "@repo/ui";
 import { useEffect, useRef, useState } from "react";
-export default function ProductDetailTab() {
+
+type Props = {
+  productId: number;
+};
+export default function ProductDetailTab({ productId }: Props) {
   // 위험한 로직: 탭 컴포넌트의 상태 관리 충돌 가능성 ProductDetailTab
   // 컴포넌트에서 IntersectionObserver와 탭 클릭 핸들러(handleTabChange)가
   // activeTab 상태를 동시에 제어할 수 있는 구조입니다.
@@ -65,7 +69,7 @@ export default function ProductDetailTab() {
       </article>
 
       <article ref={reviewRef} className="scroll-mt-28">
-        <ProductDetailReview rating={3} />
+        <ProductDetailReview productId={productId} />
       </article>
     </section>
   );
