@@ -1,5 +1,12 @@
 import request from "@/shared/lib/request";
-import { UserInfo, WishListCheck, WishListItem, WishListItemId } from "./model";
+import {
+  MyPoints,
+  MyPointsHistory,
+  UserInfo,
+  WishListCheck,
+  WishListItem,
+  WishListItemId,
+} from "./model";
 import { PageResponse } from "@/shared/type/model";
 import {
   CreateReviewData,
@@ -135,4 +142,27 @@ export const postMyReviewList = (
     method: "POST",
     body: formData,
   });
+};
+
+// point API #####
+export const getMyPointsAPI = (): Promise<MyPoints> => {
+  return request<MyPoints>(`/v1/points/me`, {
+    method: "GET",
+  });
+};
+
+export const getMyPointsHistoryAPI = (
+  page?: number,
+  size?: number
+): Promise<PageResponse<MyPointsHistory>> => {
+  const params = new URLSearchParams();
+  if (page !== undefined) params.set("page", String(page));
+  if (size !== undefined) params.set("size", String(size));
+
+  return request<PageResponse<MyPointsHistory>>(
+    `/v1/points/me/history?${params.toString()}`,
+    {
+      method: "GET",
+    }
+  );
 };
