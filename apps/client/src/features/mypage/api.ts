@@ -2,6 +2,8 @@ import request from "@/shared/lib/request";
 import {
   MyPoints,
   MyPointsHistory,
+  UpdateUserInfo,
+  UpdateUserProfileRequest,
   UserInfo,
   WishListCheck,
   WishListItem,
@@ -13,6 +15,8 @@ import {
   MyReviewList,
   UpdateReviewData,
 } from "@/features/product/model";
+import { PhoneNumber } from "@/features/auth/model";
+import { ApiResponse } from "@repo/types";
 
 // userInfo API #####
 export const fetchGetUser = () => {
@@ -166,3 +170,34 @@ export const getMyPointsHistoryAPI = (
     }
   );
 };
+
+// profile API #####
+export const getUserProfileAPI = (): Promise<UpdateUserInfo> => {
+  return request<UpdateUserInfo>(`/v1/users/me/edit`, {
+    method: "GET",
+  });
+};
+
+export const updateUserProfileAPI = (
+  payload: UpdateUserProfileRequest
+): Promise<ApiResponse<null>> =>
+  request<null>(
+    `/v1/users/me`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    },
+    "full"
+  );
+
+export const profileSmsSend = (
+  userData: PhoneNumber
+): Promise<ApiResponse<null>> =>
+  request<null>(
+    "/v1/sms/send/change",
+    {
+      method: "POST",
+      body: JSON.stringify(userData),
+    },
+    "full"
+  );

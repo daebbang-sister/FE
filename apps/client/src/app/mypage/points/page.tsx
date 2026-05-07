@@ -60,7 +60,7 @@ export default function MyPagePoints() {
   };
 
   return (
-    <section className="h-[calc(100%-186px)]">
+    <section className="h-[calc(100%-256px)]">
       <MypageTitle title={"적립금"} />
 
       <PointsHistoryDashboard pointsData={data} />
