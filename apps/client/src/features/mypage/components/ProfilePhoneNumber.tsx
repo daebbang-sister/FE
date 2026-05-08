@@ -7,7 +7,7 @@ import { PhoneNumber, PhoneVerify } from "@/features/auth/model";
 import { ProfileFormValues } from "@/features/mypage/schemas/update-profile.schema";
 import { ApiError } from "@/shared/lib/error";
 import { Button, Dropdown, Input } from "@repo/ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Control,
   Controller,
@@ -93,9 +93,14 @@ export default function ProfilePhoneNumber({
     }
   };
 
+  const resetPhoneVerification = () => {
+    setIsPhoneVerified(false);
+    setIsSmsSent(false);
+  };
+
   return (
     <div>
-      <SignUpInputLabel htmlFor="phoen-number">
+      <SignUpInputLabel htmlFor="phone-number">
         연락처 <small className="text-text-disabled">(변경시 인증 필요)</small>
       </SignUpInputLabel>
       <div className="mb-3 grid grid-cols-4 gap-2.5">
@@ -107,7 +112,10 @@ export default function ProfilePhoneNumber({
             <Dropdown
               id="phone1"
               value={field.value}
-              onChange={field.onChange}
+              onChange={(value) => {
+                field.onChange(value);
+                resetPhoneVerification();
+              }}
               placeholder="010"
               options={phoneOptions}
               size="L"
@@ -124,6 +132,7 @@ export default function ProfilePhoneNumber({
           {...register("phone2", {
             onChange: (e) => {
               e.target.value = e.target.value.replace(/\D/g, "");
+              resetPhoneVerification();
             },
           })}
         />
@@ -137,6 +146,7 @@ export default function ProfilePhoneNumber({
           {...register("phone3", {
             onChange: (e) => {
               e.target.value = e.target.value.replace(/\D/g, "");
+              resetPhoneVerification();
             },
           })}
         />
