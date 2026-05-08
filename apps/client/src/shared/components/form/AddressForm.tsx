@@ -98,8 +98,8 @@ export default function AddressForm() {
   return (
     <>
       <section>
-        <div className="body1 flex items-center justify-between border-b border-neutral-300 py-3">
-          <p>주소</p>
+        <div className="flex items-center justify-between border-b border-neutral-300 py-3">
+          <p className="body1">주소</p>
           <Button
             type="button"
             variant={"black"}

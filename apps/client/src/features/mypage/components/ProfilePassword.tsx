@@ -13,9 +13,7 @@ export default function ProfilePassword({ register, errors, trigger }: Props) {
   return (
     <>
       <div>
-        <SignUpInputLabel htmlFor="userPassword" required>
-          비밀번호
-        </SignUpInputLabel>
+        <SignUpInputLabel htmlFor="userPassword">비밀번호</SignUpInputLabel>
         <Input
           id="userPassword"
           type="password"
@@ -27,7 +25,7 @@ export default function ProfilePassword({ register, errors, trigger }: Props) {
         />
       </div>
       <div>
-        <SignUpInputLabel htmlFor="userPasswordCheck" required>
+        <SignUpInputLabel htmlFor="userPasswordCheck">
           비밀번호 확인
         </SignUpInputLabel>
         <Input

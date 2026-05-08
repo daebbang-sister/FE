@@ -11,9 +11,7 @@ type Props = {
 export default function ProfileEmail({ register, errors }: Props) {
   return (
     <div>
-      <SignUpInputLabel htmlFor="userEmail" required>
-        이메일
-      </SignUpInputLabel>
+      <SignUpInputLabel htmlFor="userEmail">이메일</SignUpInputLabel>
       <Input
         id="userEmail"
         type="email"

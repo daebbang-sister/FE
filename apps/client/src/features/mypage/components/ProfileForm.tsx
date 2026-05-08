@@ -78,6 +78,8 @@ export default function ProfileForm() {
     const currentPhone = `${data.phone1}-${data.phone2}-${data.phone3}`;
     const originalPhone = userInfo?.userPhoneNumber;
     const isPhoneChanged = currentPhone !== originalPhone;
+    const isPasswordChanged = !!data.userPassword;
+
     if (isPhoneChanged && !isPhoneVerified) {
       setError("phone1", {
         type: "manual",
@@ -85,15 +87,16 @@ export default function ProfileForm() {
       });
       return;
     }
-
     const payload = toUpdateUserProfileRequest(data);
     try {
       await updateUserProfileAPI(payload);
-      alert(
-        "회원 정보 수정에 성공했습니다.\n다시 로그인 후 이용 부탁드립니다."
-      );
-      await logoutUser();
-      logout();
+      if (isPasswordChanged) {
+        alert("비밀번호가 변경되었습니다.\n다시 로그인 후 이용 부탁드립니다.");
+        await logoutUser();
+        logout();
+        return;
+      }
+      alert("회원 정보가 수정되었습니다.");
     } catch (err) {
       if (err instanceof ApiError) {
         alert(err.message);
@@ -170,11 +173,13 @@ export default function ProfileForm() {
           setIsPhoneVerified={setIsPhoneVerified}
         />
         <ProfileEmail register={register} errors={errors} />
-        <AddressForm />
         <Button type="submit" variant="gray" className="mt-6">
           수정
         </Button>
       </form>
+      <div className="mt-6">
+        <AddressForm />
+      </div>
       <div className="mt-18 flex justify-center">
         <p
           className="caption1 text-text-disabled cursor-pointer underline"
