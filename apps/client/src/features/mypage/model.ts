@@ -62,3 +62,24 @@ export type UpdateUserProfileRequest = {
   phoneNumber?: string;
   email?: string;
 };
+
+// adress models
+export type UserAdressList = {
+  addressId: number;
+  alias: string | null;
+  receiver: string;
+  receiverPhoneNumber: string;
+  zipCode: string;
+  address: string;
+  detailAddress: string;
+  isDefault: boolean;
+};
+export type PostAddressRequest = {
+  receiverPhoneNumber: string;
+  receiver: string;
+  detailAddress: string;
+  address: string;
+  isDefault: boolean;
+  alias: string | null;
+  zipCode: string;
+};

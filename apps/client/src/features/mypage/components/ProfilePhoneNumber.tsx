@@ -96,7 +96,7 @@ export default function ProfilePhoneNumber({
   return (
     <div>
       <SignUpInputLabel htmlFor="phoen-number" required>
-        연락처
+        연락처 <small className="text-text-disabled">(변경시 인증 필요)</small>
       </SignUpInputLabel>
       <div className="mb-3 grid grid-cols-4 gap-2.5">
         <Controller

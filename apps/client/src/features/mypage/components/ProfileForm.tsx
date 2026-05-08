@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getUserProfileAPI, updateUserProfileAPI } from "@/features/mypage/api";
+import {
+  deleteUserAPI,
+  getUserProfileAPI,
+  updateUserProfileAPI,
+} from "@/features/mypage/api";
 import { UpdateUserInfo } from "@/features/mypage/model";
 import ProfilePassword from "@/features/mypage/components/ProfilePassword";
 import ProfilePhoneNumber from "@/features/mypage/components/ProfilePhoneNumber";
@@ -19,6 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ApiError } from "@/shared/lib/error";
 import { useAuthStore } from "@/shared/store/auth.store";
 import { logoutUser } from "@/features/auth/api";
+import AddressForm from "@/shared/components/form/AddressForm";
 
 export default function ProfileForm() {
   const { logout } = useAuthStore();
@@ -98,8 +103,25 @@ export default function ProfileForm() {
     }
   };
 
-  const fetchDeleteUser = () => {
-    alert("회원탈퇴");
+  const fetchDeleteUser = async () => {
+    const conf = confirm(
+      "회원 탈퇴를 하시겠습니까?\n탈퇴 후 계정을 복구할 수 없습니다."
+    );
+    if (!conf) {
+      return;
+    }
+    try {
+      await deleteUserAPI();
+      alert("회원탈퇴");
+      await logoutUser();
+      logout();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("회원탈퇴 중 오류가 발생했습니다.");
+      }
+    }
   };
 
   if (isLoading) {
@@ -134,7 +156,6 @@ export default function ProfileForm() {
             status={"disabled"}
           />
         </div>
-
         <ProfilePassword
           register={register}
           errors={errors}
@@ -149,8 +170,8 @@ export default function ProfileForm() {
           setIsPhoneVerified={setIsPhoneVerified}
         />
         <ProfileEmail register={register} errors={errors} />
-
-        <Button type="submit" variant="gray" className="mt-12">
+        <AddressForm />
+        <Button type="submit" variant="gray" className="mt-6">
           수정
         </Button>
       </form>

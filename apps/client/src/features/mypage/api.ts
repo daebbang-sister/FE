@@ -2,8 +2,10 @@ import request from "@/shared/lib/request";
 import {
   MyPoints,
   MyPointsHistory,
+  PostAddressRequest,
   UpdateUserInfo,
   UpdateUserProfileRequest,
+  UserAdressList,
   UserInfo,
   WishListCheck,
   WishListItem,
@@ -177,7 +179,6 @@ export const getUserProfileAPI = (): Promise<UpdateUserInfo> => {
     method: "GET",
   });
 };
-
 export const updateUserProfileAPI = (
   payload: UpdateUserProfileRequest
 ): Promise<ApiResponse<null>> =>
@@ -189,7 +190,6 @@ export const updateUserProfileAPI = (
     },
     "full"
   );
-
 export const profileSmsSend = (
   userData: PhoneNumber
 ): Promise<ApiResponse<null>> =>
@@ -198,6 +198,39 @@ export const profileSmsSend = (
     {
       method: "POST",
       body: JSON.stringify(userData),
+    },
+    "full"
+  );
+export const deleteUserAPI = () =>
+  request<null>(
+    `/v1/users`,
+    {
+      method: "DELETE",
+    },
+    "full"
+  );
+
+// adress API #####
+export const getUserAddressAPI = (): Promise<UserAdressList[]> => {
+  return request<UserAdressList[]>(`/v1/addresses`, {
+    method: "GET",
+  });
+};
+export const postAddressAPI = (body: PostAddressRequest) =>
+  request<null>("/v1/addresses", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+export const updateAddressAPI = (addressId: number, body: PostAddressRequest) =>
+  request<null>(`/v1/addresses/${addressId}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+export const deleteAddressAPI = (addressId: number) =>
+  request<null>(
+    `/v1/addresses/${addressId}`,
+    {
+      method: "DELETE",
     },
     "full"
   );
