@@ -2,6 +2,10 @@ import request from "@/shared/lib/request";
 import {
   MyPoints,
   MyPointsHistory,
+  PostAddressRequest,
+  UpdateUserInfo,
+  UpdateUserProfileRequest,
+  UserAdressList,
   UserInfo,
   WishListCheck,
   WishListItem,
@@ -13,6 +17,8 @@ import {
   MyReviewList,
   UpdateReviewData,
 } from "@/features/product/model";
+import { PhoneNumber } from "@/features/auth/model";
+import { ApiResponse } from "@repo/types";
 
 // userInfo API #####
 export const fetchGetUser = () => {
@@ -166,3 +172,65 @@ export const getMyPointsHistoryAPI = (
     }
   );
 };
+
+// profile API #####
+export const getUserProfileAPI = (): Promise<UpdateUserInfo> => {
+  return request<UpdateUserInfo>(`/v1/users/me/edit`, {
+    method: "GET",
+  });
+};
+export const updateUserProfileAPI = (
+  payload: UpdateUserProfileRequest
+): Promise<ApiResponse<null>> =>
+  request<null>(
+    `/v1/users/me`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    },
+    "full"
+  );
+export const profileSmsSend = (
+  userData: PhoneNumber
+): Promise<ApiResponse<null>> =>
+  request<null>(
+    "/v1/sms/send/change",
+    {
+      method: "POST",
+      body: JSON.stringify(userData),
+    },
+    "full"
+  );
+export const deleteUserAPI = () =>
+  request<null>(
+    `/v1/users`,
+    {
+      method: "DELETE",
+    },
+    "full"
+  );
+
+// adress API #####
+export const getUserAddressAPI = (): Promise<UserAdressList[]> => {
+  return request<UserAdressList[]>(`/v1/addresses`, {
+    method: "GET",
+  });
+};
+export const postAddressAPI = (body: PostAddressRequest) =>
+  request<null>("/v1/addresses", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+export const updateAddressAPI = (addressId: number, body: PostAddressRequest) =>
+  request<null>(`/v1/addresses/${addressId}`, {
+    method: "PUT",
+    body: JSON.stringify(body),
+  });
+export const deleteAddressAPI = (addressId: number) =>
+  request<null>(
+    `/v1/addresses/${addressId}`,
+    {
+      method: "DELETE",
+    },
+    "full"
+  );

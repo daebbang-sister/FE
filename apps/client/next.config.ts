@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "daebbang-sister-image.s3.ap-northeast-2.amazonaws.com",
+      },
     ],
   },
 };

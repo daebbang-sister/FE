@@ -196,10 +196,7 @@ export default function ReviewList() {
               <section className="flex gap-1.25">
                 {(review.imageUrls ?? []).map((item, index) => {
                   return (
-                    <div
-                      key={index}
-                      className="relative h-31.25 w-31.25 border border-black"
-                    >
+                    <div key={index} className="relative h-31.25 w-31.25">
                       <Image
                         src={item}
                         alt="썸네일"
