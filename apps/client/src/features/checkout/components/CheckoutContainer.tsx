@@ -126,17 +126,12 @@ export default function CheckoutContainer() {
   }, [isModalOpen, selectedAddress]);
 
   const onSubmit = async (data: FormData) => {
-    console.log("form data", data);
-    console.log("shipRequest", shipRequest);
-    console.log("shipRequestCustom", shipRequestCustom);
-    console.log("orderNote", orderNote);
     if (data.paymentMethod === "card") {
       await requestPayment();
       return;
     }
 
     if (data.paymentMethod === "bank") {
-      console.log("무통장 결제");
       return;
     }
   };
