@@ -22,6 +22,8 @@ type PropsCheckoutPayment = {
   checkoutItems: CheckoutItem[];
   selectedAddress?: Address;
   usedPoints: number;
+  shippingFee: number;
+  orderNote: string | null;
 };
 
 export const useCheckoutPayment = ({
@@ -29,6 +31,8 @@ export const useCheckoutPayment = ({
   checkoutItems,
   selectedAddress,
   usedPoints,
+  shippingFee,
+  orderNote,
 }: PropsCheckoutPayment) => {
   const requestPayment = useCallback(async () => {
     try {
@@ -42,7 +46,22 @@ export const useCheckoutPayment = ({
         quantity: item.quantity,
       }));
 
-      const order = await fetchPrepareOrder(items, usedPoints);
+      const order = await fetchPrepareOrder({
+        items,
+        usedPoint: usedPoints,
+        receiver: selectedAddress?.receiver ?? "",
+        receiverPhoneNumber: selectedAddress?.receiverPhoneNumber ?? "",
+        zipCode: selectedAddress?.zipCode ?? "",
+        address: selectedAddress?.address ?? "",
+        detailAddress: selectedAddress?.detailAddress ?? "",
+        shippingFee,
+        orderNote,
+        isAddToAddressBook: false,
+        isDefaultAddress: selectedAddress?.isDefault ?? false,
+        addressAlias: selectedAddress?.alias ?? null,
+      });
+
+      console.log("order", order);
 
       await widgetsRef.current.setAmount({
         currency: "KRW",
@@ -82,7 +101,14 @@ export const useCheckoutPayment = ({
       }
       alert("결제 처리 중 오류가 발생했습니다.");
     }
-  }, [widgetsRef, checkoutItems, selectedAddress, usedPoints]);
+  }, [
+    widgetsRef,
+    checkoutItems,
+    selectedAddress,
+    usedPoints,
+    shippingFee,
+    orderNote,
+  ]);
 
   return { requestPayment };
 };

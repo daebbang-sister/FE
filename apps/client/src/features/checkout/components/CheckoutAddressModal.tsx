@@ -23,6 +23,7 @@ type AddressModalProps = {
   handleCloseModal: () => void;
   handleConfirmAddress: (callback: (address: Address) => void) => void;
   setValue: UseFormSetValue<FormData>;
+  handleOpenAddressForm: () => void;
 };
 
 export default function CheckoutAddressModal({
@@ -33,6 +34,7 @@ export default function CheckoutAddressModal({
   handleCloseModal,
   handleConfirmAddress,
   setValue,
+  handleOpenAddressForm,
 }: AddressModalProps) {
   return (
     <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
@@ -42,8 +44,16 @@ export default function CheckoutAddressModal({
         <ModalBody>
           <div>
             <div className="mb-3 flex items-center justify-between">
-              {addresses ? <b>주소를 등록해주세요</b> : <p>주소</p>}
-              <Button variant="black" type="button" className="w-22.5">
+              {addresses.length > 0 ? <p>주소</p> : <b>주소를 등록해주세요</b>}
+              <Button
+                variant="black"
+                type="button"
+                className="w-22.5"
+                onClick={() => {
+                  handleCloseModal();
+                  handleOpenAddressForm();
+                }}
+              >
                 주소 등록
               </Button>
             </div>
@@ -80,14 +90,14 @@ export default function CheckoutAddressModal({
                       {address.receiverPhoneNumber}
                     </p>
                   </div>
-                  <div className="flex items-center justify-end gap-2.5">
+                  {/* <div className="flex items-center justify-end gap-2.5">
                     <Button variant="stroke" type="button" className="w-fit">
                       수정
                     </Button>
                     <Button variant="gray" type="button" className="w-fit">
                       삭제
                     </Button>
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>

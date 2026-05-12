@@ -67,7 +67,7 @@ export default function CheckoutShipping({
         </div>
       ) : (
         <div className="flex items-center justify-between">
-          <b>기본 배송지를 등록해주세요</b>
+          <b>배송지를 등록해주세요</b>
           <Button
             type="button"
             variant="black"
@@ -100,14 +100,14 @@ export default function CheckoutShipping({
             {errors.shipRequest.message}
           </p>
         )}
-        <Input
-          {...register("shipRequestCustom")}
-          ref={inputRef}
-          id="ship-request-custom"
-          disabled={shipRequest !== "직접 입력"}
-          placeholder="요청사항을 입력해주세요."
-          className="mt-3"
-        />
+        {shipRequest === "직접 입력" && (
+          <Input
+            {...register("shipRequestCustom")}
+            id="ship-request-custom"
+            placeholder="요청사항을 입력해주세요."
+            className="mt-3"
+          />
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { checkoutSchema } from "@/features/checkout/schemas/checkout.schema";
 import { z } from "zod";
+import { useEffect, useState } from "react";
+import { getMyPointsAPI } from "@/features/mypage/api";
 
 type FormData = z.infer<typeof checkoutSchema>;
 
@@ -10,8 +12,29 @@ type Props = {
 };
 
 export const useCheckoutPoints = ({ setValue, watch }: Props) => {
-  const availablePoints = 400;
+  const [availablePoints, setAvailablePoints] = useState(0);
   const usedPoints = watch("usedPoints");
+
+  useEffect(() => {
+    const fetchPoints = async () => {
+      try {
+        const data = await getMyPointsAPI();
+
+        setAvailablePoints(data.currentAmount);
+      } catch (error) {
+        console.error("적립금 조회 실패", error);
+        setAvailablePoints(0);
+      }
+    };
+
+    fetchPoints();
+  }, []);
+
+  useEffect(() => {
+    if (usedPoints > availablePoints) {
+      setValue("usedPoints", availablePoints);
+    }
+  }, [availablePoints, usedPoints, setValue]);
 
   const handleUseAllPoints = () => {
     setValue("usedPoints", availablePoints, {
