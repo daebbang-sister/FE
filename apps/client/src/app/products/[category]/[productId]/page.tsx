@@ -31,7 +31,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
   return (
     <section className="container my-15.5">
-      <div className="grid grid-cols-1 gap-y-6.25 lg:gap-x-14.5 lg:gap-y-6.25">
+      <div className="grid grid-cols-1 gap-y-12 lg:gap-x-14.5 lg:gap-y-6.25">
         <div className="min-w-0 lg:col-start-1 lg:row-start-1">
           <ProdcutCarousel
             mainImages={productDetail.mainImageUrl}
