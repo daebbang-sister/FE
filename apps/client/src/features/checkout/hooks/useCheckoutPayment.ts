@@ -22,6 +22,8 @@ type PropsCheckoutPayment = {
   checkoutItems: CheckoutItem[];
   selectedAddress?: Address;
   usedPoints: number;
+  shippingFee: number;
+  orderNote: string | null;
 };
 
 export const useCheckoutPayment = ({
@@ -29,7 +31,35 @@ export const useCheckoutPayment = ({
   checkoutItems,
   selectedAddress,
   usedPoints,
+  shippingFee,
+  orderNote,
 }: PropsCheckoutPayment) => {
+  const prepareOrder = useCallback(async () => {
+    if (!selectedAddress) {
+      throw new Error("배송지를 선택해주세요.");
+    }
+
+    const items: PrepareOrderItem[] = checkoutItems.map((item) => ({
+      productDetailId: item.productDetailId,
+      quantity: item.quantity,
+    }));
+
+    return await fetchPrepareOrder({
+      items,
+      usedPoint: usedPoints,
+      receiver: selectedAddress?.receiver ?? "",
+      receiverPhoneNumber: selectedAddress?.receiverPhoneNumber ?? "",
+      zipCode: selectedAddress?.zipCode ?? "",
+      address: selectedAddress?.address ?? "",
+      detailAddress: selectedAddress?.detailAddress ?? "",
+      shippingFee,
+      orderNote,
+      isAddToAddressBook: false,
+      isDefaultAddress: selectedAddress?.isDefault ?? false,
+      addressAlias: selectedAddress?.alias ?? null,
+    });
+  }, [checkoutItems, usedPoints, selectedAddress, shippingFee, orderNote]);
+
   const requestPayment = useCallback(async () => {
     try {
       if (!widgetsRef.current) {
@@ -37,12 +67,7 @@ export const useCheckoutPayment = ({
         return;
       }
 
-      const items: PrepareOrderItem[] = checkoutItems.map((item) => ({
-        productDetailId: item.productDetailId,
-        quantity: item.quantity,
-      }));
-
-      const order = await fetchPrepareOrder(items, usedPoints);
+      const order = await prepareOrder();
 
       await widgetsRef.current.setAmount({
         currency: "KRW",
@@ -80,9 +105,13 @@ export const useCheckoutPayment = ({
         alert(err.message ?? "재고 처리 중입니다. 잠시 후 다시 시도해주세요.");
         return;
       }
+
       alert("결제 처리 중 오류가 발생했습니다.");
     }
-  }, [widgetsRef, checkoutItems, selectedAddress, usedPoints]);
+  }, [widgetsRef, prepareOrder, checkoutItems, selectedAddress]);
 
-  return { requestPayment };
+  return {
+    requestPayment,
+    prepareOrder,
+  };
 };

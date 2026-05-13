@@ -99,8 +99,8 @@ export default function AddressModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent className="h-[70%] w-[90%] max-w-199 overflow-y-scroll md:h-auto">
-        <ModalHeader title={isEditMode ? "배송지 수정" : "신규 배송지 추가"} />
+      <ModalContent className="w-full max-w-199">
+        <ModalHeader title={isEditMode ? "배송지 수정" : "배송지 추가"} />
         <ModalBody>
           {isLoading ? (
             <p>로딩중</p>

@@ -195,7 +195,7 @@ export default function CartItem({
                   {isLoading ? (
                     <p>로딩중</p>
                   ) : (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-3">
                       <div className="flex items-center">
                         <p className="w-17.5">컬러</p>
                         <div className="w-full">

@@ -5,7 +5,7 @@ import { useAddresses } from "@/features/checkout/hooks/useAddresses";
 import { checkoutSchema } from "@/features/checkout/schemas/checkout.schema";
 import { useCheckoutStore } from "@/features/checkout/store/checkout.store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import z from "zod";
 import { useCheckoutPayment } from "@/features/checkout/hooks/useCheckoutPayment";
@@ -18,6 +18,11 @@ import CheckoutShipping from "@/features/checkout/components/CheckoutShipping";
 import CheckoutItems from "@/features/checkout/components/CheckoutItems";
 import CheckoutAddressModal from "@/features/checkout/components/CheckoutAddressModal";
 import CheckoutNotice from "@/features/checkout/components/CheckoutNotice";
+import AddressModal from "@/shared/components/modal/AddressModal";
+import { AddressFormValues } from "@/shared/schemas/address-form.schema";
+import { postAddressAPI } from "@/features/mypage/api";
+import { ApiError } from "@/shared/lib/error";
+import { useRouter } from "next/navigation";
 
 type FormData = z.infer<typeof checkoutSchema>;
 
@@ -35,6 +40,7 @@ export default function CheckoutContainer() {
     defaultValues: {
       selectedAddressId: 0,
       shipRequest: "",
+      shipRequestCustom: "",
       paymentMethod: "card",
       usedPoints: 0,
       agreePrivacy: false,
@@ -55,6 +61,7 @@ export default function CheckoutContainer() {
     control,
     name: "selectedAddressId",
   });
+  const router = useRouter();
   const defaultAddress = addresses.find((a) => a.isDefault);
   const selectedAddress =
     addresses.find((address) => address.addressId === selectedAddressId) ??
@@ -62,6 +69,11 @@ export default function CheckoutContainer() {
     undefined;
   const shipRequest = watch("shipRequest");
   const usedPoints = watch("usedPoints");
+  const shipRequestCustom = watch("shipRequestCustom");
+  const orderNote =
+    shipRequest === "직접 입력"
+      ? shipRequestCustom || null
+      : shipRequest || null;
   const inputRef = useRef<HTMLInputElement>(null);
   const checkoutItems = useCheckoutStore((s) => s.items);
   const { totalPrice, shippingFee, totalPayment, savingPoint } =
@@ -72,12 +84,33 @@ export default function CheckoutContainer() {
     });
 
   const { widgetsRef } = useTossWidgets(totalPayment);
-  const { requestPayment } = useCheckoutPayment({
+  const { requestPayment, prepareOrder } = useCheckoutPayment({
     widgetsRef,
     checkoutItems,
     selectedAddress,
     usedPoints,
+    shippingFee,
+    orderNote,
   });
+  const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
+  const clearCheckout = useCheckoutStore((s) => s.clear);
+
+  const handleConfirmOption = async (values: AddressFormValues) => {
+    try {
+      await postAddressAPI(values);
+
+      setIsAddressFormOpen(false);
+      handleCloseModal();
+
+      window.location.reload();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        alert(err.message);
+      } else {
+        alert("배송지 등록 중 오류가 발생했습니다.");
+      }
+    }
+  };
 
   useEffect(() => {
     if (shipRequest === "직접 입력") {
@@ -103,6 +136,43 @@ export default function CheckoutContainer() {
     }
 
     if (data.paymentMethod === "bank") {
+      try {
+        // const order = await prepareOrder();
+
+        await prepareOrder();
+
+        clearCheckout();
+
+        router.replace("/mypage/orders");
+        // router.push(`mypage/orders/${order.orderNumber}`);
+
+        return;
+      } catch (error) {
+        const err = error as {
+          status?: number;
+          message?: string;
+        };
+
+        if (err.status === 400) {
+          alert(err.message ?? "잘못된 요청입니다.");
+          return;
+        }
+
+        if (err.status === 409) {
+          alert(err.message ?? "재고가 부족합니다.");
+          return;
+        }
+
+        if (err.status === 503) {
+          alert(
+            err.message ?? "재고 처리 중입니다. 잠시 후 다시 시도해주세요."
+          );
+          return;
+        }
+
+        alert("주문 처리 중 오류가 발생했습니다.");
+      }
+
       return;
     }
   };
@@ -111,7 +181,7 @@ export default function CheckoutContainer() {
     <div className="page-y container">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex min-h-screen flex-col items-start justify-between xl:flex-row xl:gap-13.5"
+        className="flex flex-col items-start justify-between xl:min-h-screen xl:flex-row xl:gap-13.5"
       >
         {/* 왼쪽 */}
         <div className="flex w-full flex-1 flex-col gap-12 xl:min-w-0">
@@ -166,6 +236,13 @@ export default function CheckoutContainer() {
         handleCloseModal={handleCloseModal}
         handleConfirmAddress={handleConfirmAddress}
         setValue={setValue}
+        handleOpenAddressForm={() => setIsAddressFormOpen(true)}
+      />
+      <AddressModal
+        isOpen={isAddressFormOpen}
+        onClose={() => setIsAddressFormOpen(false)}
+        defaultValues={null}
+        onConfirmOption={handleConfirmOption}
       />
     </div>
   );

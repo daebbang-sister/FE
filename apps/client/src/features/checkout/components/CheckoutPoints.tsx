@@ -15,8 +15,13 @@ export default function CheckoutPoints({
   setValue,
   watch,
 }: CheckoutPointsProps) {
-  const { availablePoints, usedPoints, handleUseAllPoints, handlePointsInput } =
-    useCheckoutPoints({ setValue, watch });
+  const {
+    availablePoints,
+    usedPoints,
+    handleUseAllPoints,
+    handlePointsInput,
+    isPointError,
+  } = useCheckoutPoints({ setValue, watch });
 
   return (
     <div>
@@ -28,6 +33,7 @@ export default function CheckoutPoints({
           type="number"
           value={usedPoints === 0 ? "" : String(usedPoints)}
           onChange={handlePointsInput}
+          disabled={isPointError}
         />
         <Button
           type="button"
@@ -39,9 +45,15 @@ export default function CheckoutPoints({
         </Button>
       </div>
 
-      <p className="caption1 text-text-disabled">
-        보유 적립금 : {availablePoints.toLocaleString()}원
-      </p>
+      {isPointError ? (
+        <p className="caption1 text-danger-200">
+          적립금 정보를 불러올 수 없습니다.
+        </p>
+      ) : (
+        <p className="caption1 text-text-disabled">
+          보유 적립금 : {availablePoints.toLocaleString()}원
+        </p>
+      )}
     </div>
   );
 }

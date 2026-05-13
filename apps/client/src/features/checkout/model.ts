@@ -17,6 +17,16 @@ export type PrepareOrderItem = {
 export type PrepareOrderRequest = {
   items: PrepareOrderItem[];
   usedPoint: number;
+  receiver: string;
+  receiverPhoneNumber: string;
+  zipCode: string;
+  address: string;
+  detailAddress: string;
+  shippingFee: number;
+  orderNote: string | null;
+  isAddToAddressBook: boolean;
+  isDefaultAddress: boolean;
+  addressAlias: string | null;
 };
 
 export type PrepareOrderData = {

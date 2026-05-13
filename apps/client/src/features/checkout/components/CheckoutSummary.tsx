@@ -58,7 +58,7 @@ export default function CheckoutSummary({
         <span>{totalPayment.toLocaleString()}won</span>
       </div>
       <p className="caption1 text-danger-200 mt-3">
-        ※ 배송지 및 할인 적용에 따라 최종 결제 금액이 변경될 수 있습니다.
+        ※ 배송지 및 혜택 적용에 따라 최종 결제 금액이 변경될 수 있습니다.
       </p>
 
       <div className="mt-9">
