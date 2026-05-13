@@ -22,6 +22,7 @@ import AddressModal from "@/shared/components/modal/AddressModal";
 import { AddressFormValues } from "@/shared/schemas/address-form.schema";
 import { postAddressAPI } from "@/features/mypage/api";
 import { ApiError } from "@/shared/lib/error";
+import { useRouter } from "next/navigation";
 
 type FormData = z.infer<typeof checkoutSchema>;
 
@@ -60,6 +61,7 @@ export default function CheckoutContainer() {
     control,
     name: "selectedAddressId",
   });
+  const router = useRouter();
   const defaultAddress = addresses.find((a) => a.isDefault);
   const selectedAddress =
     addresses.find((address) => address.addressId === selectedAddressId) ??
@@ -82,7 +84,7 @@ export default function CheckoutContainer() {
     });
 
   const { widgetsRef } = useTossWidgets(totalPayment);
-  const { requestPayment } = useCheckoutPayment({
+  const { requestPayment, prepareOrder } = useCheckoutPayment({
     widgetsRef,
     checkoutItems,
     selectedAddress,
@@ -91,6 +93,8 @@ export default function CheckoutContainer() {
     orderNote,
   });
   const [isAddressFormOpen, setIsAddressFormOpen] = useState(false);
+  const clearCheckout = useCheckoutStore((s) => s.clear);
+
   const handleConfirmOption = async (values: AddressFormValues) => {
     try {
       await postAddressAPI(values);
@@ -132,6 +136,11 @@ export default function CheckoutContainer() {
     }
 
     if (data.paymentMethod === "bank") {
+      // const order = await prepareOrder();
+      await prepareOrder();
+      clearCheckout();
+      // router.push(`mypage/orders/${order.orderNumber}`);
+      router.replace("mypage/orders");
       return;
     }
   };
