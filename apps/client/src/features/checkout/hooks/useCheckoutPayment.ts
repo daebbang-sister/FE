@@ -35,6 +35,10 @@ export const useCheckoutPayment = ({
   orderNote,
 }: PropsCheckoutPayment) => {
   const prepareOrder = useCallback(async () => {
+    if (!selectedAddress) {
+      throw new Error("배송지를 선택해주세요.");
+    }
+
     const items: PrepareOrderItem[] = checkoutItems.map((item) => ({
       productDetailId: item.productDetailId,
       quantity: item.quantity,
