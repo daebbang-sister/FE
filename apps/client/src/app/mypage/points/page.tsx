@@ -74,6 +74,7 @@ export default function MyPagePoints() {
         <PageButton
           totalItems={totalElements}
           limit={pageSize}
+          currentPage={currentPage}
           pageGroupSize={5}
           onPageChange={(page) => handlePageChange(page)}
         />

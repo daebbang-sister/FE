@@ -1,10 +1,10 @@
-"use client";
-
-import { useState } from "react";
+// "use client";
+// import { useState } from "react";
 
 type PaginationProps = {
   totalItems: number;
   limit: number;
+  currentPage: number;
   pageGroupSize?: number;
   onPageChange?: (page: number) => void;
 };
@@ -12,10 +12,11 @@ type PaginationProps = {
 export function PageButton({
   totalItems,
   limit,
+  currentPage,
   pageGroupSize = 5,
   onPageChange,
 }: PaginationProps) {
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   const isInvalid =
     !Number.isFinite(totalItems) ||
     !Number.isFinite(limit) ||
@@ -36,7 +37,7 @@ export function PageButton({
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPage) return;
-    setCurrentPage(page);
+    // setCurrentPage(page);
     onPageChange?.(page);
   };
 
