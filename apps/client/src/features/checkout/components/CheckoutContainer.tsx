@@ -136,11 +136,43 @@ export default function CheckoutContainer() {
     }
 
     if (data.paymentMethod === "bank") {
-      // const order = await prepareOrder();
-      await prepareOrder();
-      clearCheckout();
-      // router.push(`mypage/orders/${order.orderNumber}`);
-      router.replace("mypage/orders");
+      try {
+        // const order = await prepareOrder();
+
+        await prepareOrder();
+
+        clearCheckout();
+
+        router.replace("/mypage/orders");
+        // router.push(`mypage/orders/${order.orderNumber}`);
+
+        return;
+      } catch (error) {
+        const err = error as {
+          status?: number;
+          message?: string;
+        };
+
+        if (err.status === 400) {
+          alert(err.message ?? "잘못된 요청입니다.");
+          return;
+        }
+
+        if (err.status === 409) {
+          alert(err.message ?? "재고가 부족합니다.");
+          return;
+        }
+
+        if (err.status === 503) {
+          alert(
+            err.message ?? "재고 처리 중입니다. 잠시 후 다시 시도해주세요."
+          );
+          return;
+        }
+
+        alert("주문 처리 중 오류가 발생했습니다.");
+      }
+
       return;
     }
   };

@@ -13,6 +13,7 @@ type Props = {
 
 export const useCheckoutPoints = ({ setValue, watch }: Props) => {
   const [availablePoints, setAvailablePoints] = useState(0);
+  const [isPointError, setIsPointError] = useState(false);
   const usedPoints = watch("usedPoints");
 
   useEffect(() => {
@@ -21,9 +22,11 @@ export const useCheckoutPoints = ({ setValue, watch }: Props) => {
         const data = await getMyPointsAPI();
 
         setAvailablePoints(data.currentAmount);
+        setIsPointError(false);
       } catch (error) {
         console.error("적립금 조회 실패", error);
         setAvailablePoints(0);
+        setIsPointError(true);
       }
     };
 
@@ -65,5 +68,6 @@ export const useCheckoutPoints = ({ setValue, watch }: Props) => {
     usedPoints,
     handleUseAllPoints,
     handlePointsInput,
+    isPointError,
   };
 };
