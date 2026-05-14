@@ -16,10 +16,10 @@ export default function BoardTable({ data, query }: Props) {
     <table className="mt-18 w-full table-fixed text-center">
       <thead className="body1 bg-neutral-100">
         <tr className="[&>th]:py-4 [&>th]:font-normal">
-          <th className="w-15 md:w-20">번호</th>
+          <th className="w-11 md:w-20">번호</th>
           <th className="w-auto">제목</th>
           <th className="w-20 md:w-30">작성자</th>
-          <th className="w-30">작성일</th>
+          <th className="md:w-20 md:w-30">작성일</th>
         </tr>
       </thead>
 
@@ -31,7 +31,7 @@ export default function BoardTable({ data, query }: Props) {
               <Link href={`/${query}/${post.id}`}>{post.title}</Link>
             </td>
             <td>{post.author}</td>
-            <td>{post.createdAt}</td>
+            <td className="truncate">{post.createdAt}</td>
           </tr>
         ))}
       </tbody>

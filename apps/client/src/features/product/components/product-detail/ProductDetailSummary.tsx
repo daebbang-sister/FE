@@ -188,7 +188,7 @@ export default function ProductDetailSummary({
   };
 
   return (
-    <section className="bg-neutral-0 flex w-full flex-col gap-9 border border-neutral-300 px-7.5 py-10 lg:w-112.5">
+    <section className="bg-neutral-0 flex w-full flex-col gap-9 border-t border-b border-neutral-300 py-12 lg:w-112.5 lg:border lg:px-7.5 lg:py-10">
       <article className="flex flex-col gap-3">
         <p className="body1 text-text-primary">{productName}</p>
         <p className="body1 text-text-disabled">{simpleDescription}</p>

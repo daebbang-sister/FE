@@ -75,7 +75,7 @@ export default function ProductListGrid({ products }: Props) {
           />
         )}
       </div>
-      <div className="mt-2.5 grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-2.5 grid grid-cols-2 gap-x-2.5 gap-y-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-5 lg:gap-y-12">
         {products.content.map((product) => (
           <ProductCard
             key={product.id}

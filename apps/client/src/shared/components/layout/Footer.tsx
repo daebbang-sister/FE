@@ -3,10 +3,12 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="min-h-[var(--size-footer-h)] w-full bg-neutral-900">
-      <article className="text-neutral-0 container flex flex-col-reverse gap-10 py-15 md:flex-row md:gap-0">
+      <article className="text-neutral-0 container-wide flex flex-col-reverse gap-8 py-10 md:flex-row md:gap-0 md:py-15">
         <section className="flex-1">
-          <div className="font-poppins text-title2 mb-6">DAEBBANGSISTER</div>
-          <ul className="text-body2 text-weight-regular flex flex-col gap-1.25 font-thin">
+          <div className="font-poppins title3 md:title2 mb-3 md:mb-6">
+            DAEBBANGSISTER
+          </div>
+          <ul className="[&>li]:caption2 md:[&>li]:body2 text-weight-regular flex flex-col gap-1.25 font-thin">
             <li>상호 : (주)대빵언니: 000</li>
             <li>
               주소 : 대구 달성군 현풍읍 테크노상업로 20 (테크노타워1) 107호
@@ -67,15 +69,15 @@ export default function Footer() {
                 </svg>
               </Link>
             </div>
-            <ul className="text-body2 flex flex-col gap-1.25 font-thin">
+            <ul className="[&>li]:caption2 md:[&>li]:body2 flex flex-col gap-1.25 font-thin">
               <li>평일 오전10:00 ~ 오후6:00</li>
               <li>점심 오후12:00 ~ 오후1:00</li>
               <li>(공휴일 휴무)</li>
             </ul>
           </article>
           <article>
-            <p className="text-body1 mb-4">서비스 정보</p>
-            <ul className="text-body2 flex flex-col gap-1.25 font-thin">
+            <p className="body1 mb-4">서비스 정보</p>
+            <ul className="[&>li]:caption2 md:[&>li]:body2 flex flex-col gap-1.25 font-thin">
               <li>
                 <Link href="/terms" target="_blank" rel="noopener noreferrer">
                   이용약관

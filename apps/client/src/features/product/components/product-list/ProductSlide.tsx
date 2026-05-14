@@ -17,7 +17,7 @@ export default function ProductSlide({ products }: Props) {
 
   return (
     <div ref={emblaRef} className="mb-12 w-full overflow-hidden">
-      <div className="flex gap-5">
+      <div className="flex gap-2.5 lg:gap-5">
         {products.map((product) => (
           <div
             key={product.id}

@@ -122,9 +122,9 @@ export default function CartItem({
   };
 
   return (
-    <div className="border-border-default first:border-border-default flex gap-6 border-b pt-6 pb-6 first:border-t last:border-b-0 last:pb-0">
+    <div className="border-border-default first:border-border-default flex gap-4 border-b pt-6 pb-6 first:border-t last:border-b-0 last:pb-0 md:gap-6">
       {/* 왼쪽 */}
-      <div className="relative w-full max-w-37.5">
+      <div className="relative w-full max-w-30 md:max-w-37.5">
         <div className="absolute top-2.5 left-2.5 z-9">
           <CheckBox
             id={id}
