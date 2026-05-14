@@ -12,7 +12,7 @@ const tabVariants = cva("text-center", {
     },
     size: {
       M: "p-4 body1",
-      L: "p-5 title3",
+      L: "p-4 body1 md:p-5 md:title3",
     },
   },
   defaultVariants: {

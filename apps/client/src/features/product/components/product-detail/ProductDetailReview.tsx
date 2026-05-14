@@ -96,7 +96,7 @@ export default function ProductReview({ productId }: Props) {
   return (
     <>
       <section ref={sectionRef}>
-        <h2 className="title2 mb-9">고객 리뷰</h2>
+        <h2 className="md:title2 body1 mb-9">고객 리뷰</h2>
 
         <article className="flex items-center text-center">
           <div className="w-35 md:w-56.25">
