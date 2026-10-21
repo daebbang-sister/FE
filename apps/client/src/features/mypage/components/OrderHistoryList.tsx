@@ -17,7 +17,7 @@ export default function OrderHistoryList() {
     { label: "배송중", value: "배송중" },
     { label: "배송완료", value: "배송완료" },
   ];
-  const dateOptions = [{ label: "최근 3개월", value: "최근 3개월" }];
+  const dateOptions = [{ label: "최근의 3개월", value: "최근의 3개월" }];
 
   const [orderItem, setOrderItem] = useState<PageResponse<OrderItem> | null>(
     null
