@@ -2,6 +2,9 @@ import request from "@/shared/lib/request";
 import {
   MyPoints,
   MyPointsHistory,
+  OrderItem,
+  OrdersCounts,
+  OrdertDetail,
   PostAddressRequest,
   UpdateUserInfo,
   UpdateUserProfileRequest,
@@ -234,3 +237,58 @@ export const deleteAddressAPI = (addressId: number) =>
     },
     "full"
   );
+
+// orders API #####
+export const getOrdersCountAPI = (
+  startDate: string,
+  endDate: string
+): Promise<OrdersCounts> => {
+  return request<OrdersCounts>(
+    `/v1/orders/status-count?startDate=${startDate}&endDate=${endDate}`,
+    {
+      method: "GET",
+    }
+  );
+};
+export const getOrdersListAPI = (
+  startDate: string,
+  endDate: string,
+  page?: number,
+  size?: number
+): Promise<PageResponse<OrderItem>> => {
+  const params = new URLSearchParams();
+  params.set("startDate", startDate);
+  params.set("endDate", endDate);
+  if (page !== undefined) params.set("page", String(page));
+  if (size !== undefined) params.set("size", String(size));
+
+  return request<PageResponse<OrderItem>>(`/v1/orders?${params.toString()}`, {
+    method: "GET",
+  });
+};
+export const getOrdersDetailAPI = (
+  orderNumber: string
+): Promise<OrdertDetail> => {
+  return request<OrdertDetail>(`/v1/orders/${orderNumber}`, {
+    method: "GET",
+  });
+};
+
+export const orderAllCancelAPI = (orderNumber: string, cancelReason: string) =>
+  request<null>(`/v1/orders/${orderNumber}/cancel`, {
+    method: "POST",
+    body: JSON.stringify({ cancelReason }),
+  });
+
+export const orderCancelAPI = (
+  orderNumber: string,
+  orderDetailIds: number,
+  cancelReason: string
+) =>
+  request<null>(`/v1/orders/${orderNumber}/cancel/partial`, {
+    method: "POST",
+    body: JSON.stringify({
+      orderDetailIds,
+      cancelReason,
+    }),
+  });

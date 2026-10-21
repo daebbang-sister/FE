@@ -83,3 +83,52 @@ export type PostAddressRequest = {
   alias: string | null;
   zipCode: string;
 };
+
+// orders models
+export type OrdersCounts = {
+  paid: number;
+  preparingDelivery: number;
+  inDelivery: number;
+  delivered: number;
+};
+export type OrderItem = {
+  orderNumber: string;
+  orderStatus: string;
+  orderedAt: string;
+  paymentAmount: number;
+  totalQuantity: number;
+  representativeProductName: string;
+  representativeImageUrl: string;
+  representativeColor: string;
+  representativeSize: string;
+  representativeUnitPrice: number;
+  representativeQuantity: number;
+};
+
+export type OrderProductDetail = {
+  orderDetailId: number;
+  productDetailId: number;
+  productName: string;
+  imageUrl: string;
+  color: string;
+  colorCode: string;
+  size: string;
+  quantity: number;
+  originalPrice: number;
+  discountRate: number;
+  discountPrice: number;
+  status: string;
+};
+export type OrdertDetail = {
+  orderNumber: string;
+  orderStatus: string;
+  orderedAt: string;
+  totalOriginalAmount: number;
+  totalSellingAmount: number;
+  shippingFee: number;
+  usedPoint: number;
+  paymentAmount: number;
+  expectedPoint: number;
+  earnedPoint: number;
+  details: OrderProductDetail[];
+};

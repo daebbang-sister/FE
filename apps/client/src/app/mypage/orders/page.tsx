@@ -4,10 +4,12 @@ import OrderHistoryList from "@/features/mypage/components/OrderHistoryList";
 
 export default function MyPageOrders() {
   return (
-    <section>
+    <section className="h-full">
       <MypageTitle title={"주문조회"} />
       <OrderHistoryDashboard />
-      <OrderHistoryList />
+      <article className="h-[calc(100%-356px)]">
+        <OrderHistoryList />
+      </article>
     </section>
   );
 }

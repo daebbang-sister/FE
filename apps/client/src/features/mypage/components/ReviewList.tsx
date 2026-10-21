@@ -11,7 +11,7 @@ import PageLoading from "@/shared/components/layout/PageLoading";
 import ReviewModal from "@/shared/components/modal/ReviewModal";
 import { PageResponse } from "@/shared/type/model";
 import ReviewRatings from "@/shared/ui/review/ReviewRatings";
-import { PageButton } from "@repo/ui";
+import { Button, PageButton } from "@repo/ui";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -120,6 +120,7 @@ export default function ReviewList() {
       // 새로운 사진 있을시 재호출 통신 (URL때문)
       if (hasNewImages) {
         await fetchMyReview(currentPage);
+        setSelectedReview(null);
         return;
       }
       // 추가 사진 없을시 상태만 업데이트
@@ -128,6 +129,7 @@ export default function ReviewList() {
         content,
         imageUrls: keepImageUrls,
       });
+      setSelectedReview(null);
     } catch (error) {
       console.error(error);
       alert("리뷰 수정에 실패 하였습니다.");
@@ -159,22 +161,24 @@ export default function ReviewList() {
                   {review.pointStatus}
                 </div>
                 {review.pointStatus.includes("대기") && (
-                  <div className="caption2 [&>div]:text-neutral-0 flex gap-1 [&>div]:cursor-pointer [&>div]:px-2 [&>div]:py-0.5">
-                    <div
-                      className="bg-text-disabled"
+                  <div className="flex h-9.5 gap-1">
+                    <Button
+                      className="caption1"
+                      variant="gray"
                       onClick={() => {
                         setIsOptionModalOpen(true);
                         setSelectedReview(review);
                       }}
                     >
                       수정
-                    </div>
-                    <div
-                      className="bg-danger-800"
+                    </Button>
+                    <Button
+                      className="caption1"
+                      variant="gray"
                       onClick={() => fetchDeleteMyReview(review.reviewId)}
                     >
                       삭제
-                    </div>
+                    </Button>
                   </div>
                 )}
               </section>
@@ -215,6 +219,7 @@ export default function ReviewList() {
         <PageButton
           totalItems={totalElements}
           limit={pageSize}
+          currentPage={currentPage}
           pageGroupSize={5}
           onPageChange={(page) => handlePageChange(page)}
         />
